@@ -1,0 +1,28 @@
+name: TravelPlannerV2
+model: claude-haiku-4-5-20251001
+
+test_commands:
+  backend:  cd backend && python3 -m pytest tests/ -v --tb=short
+  frontend: npx jest --no-coverage
+  e2e:      npx playwright test --reporter=line
+
+test_dirs:
+  backend:  backend/tests/
+  frontend: app/__tests__/
+  e2e:      e2e/
+
+source_dirs:
+  backend:  backend/routers/ backend/services/ backend/models.py backend/schemas.py
+  frontend: app/
+
+stack:
+  backend_language:   python
+  frontend_language:  typescript
+  backend_framework:  fastapi
+  frontend_framework: nextjs
+  test_frameworks:    pytest, jest, playwright
+  database:           sqlite (local) / postgresql (production via Railway)
+  ai_calls:           anthropic claude-haiku-4-5-20251001 (inline in routers)
+
+report_path: reports/qa-report.md
+commit_tests: true

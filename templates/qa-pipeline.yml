@@ -1,0 +1,286 @@
+name: Agent QA Pipeline
+
+# Visual DAG in GitHub Actions — each agent phase is its own job so GitHub
+# renders the full orchestrator graph with live status boxes and arrows:
+#
+#  [pytest] ──┐
+#             ├──→ [qa-agent] ──→ [check-bugs] ──→ [fix-agent] ──→ [re-test] ──→ [docs-agent]
+#  [jest]  ──┘                                   (skipped if clean)
+#
+# Authentication: uses your Claude Pro/Max subscription — no API key, no per-token billing.
+# One-time setup:
+#   1. Run `claude setup-token` in your terminal
+#   2. Copy the token it prints
+#   3. Add it to repo → Settings → Secrets → Actions as CLAUDE_CODE_OAUTH_TOKEN
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write        # agents commit test files, fixes, and docs
+  pull-requests: write   # post summary comment
+  id-token: write        # required by claude-code-action for GitHub OIDC token
+
+# Shared env available to all jobs via outputs/artifacts
+env:
+  BASE_REF: ${{ github.event.pull_request.base.ref }}
+  HEAD_REF: ${{ github.event.pull_request.head.ref }}
+
+jobs:
+  # ── Gate: regular CI must pass before agents run ───────────────────────────
+  pytest:
+    name: "Gate — pytest"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest tests/ -v --tb=short
+
+  jest:
+    name: "Gate — jest"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx jest --ci --no-coverage
+
+  # ── Phase 1: QA Agent — find bugs, write tests, produce qa-report ──────────
+  qa-agent:
+    name: "QA Agent"
+    runs-on: ubuntu-latest
+    needs: [pytest, jest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r backend/requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Run /qa
+        uses: anthropics/claude-code-action@beta
+        with:
+          direct_prompt: /qa ${{ env.BASE_REF }} HEAD
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+      # Pass qa-report to downstream jobs via artifact
+      - name: Upload qa-report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report
+          path: reports/qa-report.md
+          retention-days: 14
+          if-no-files-found: ignore
+
+  # ── Check report: did QA Agent find bugs? ──────────────────────────────────
+  check-bugs:
+    name: "Bugs Found?"
+    runs-on: ubuntu-latest
+    needs: qa-agent
+    outputs:
+      bugs: ${{ steps.parse.outputs.bugs }}
+    steps:
+      - name: Download qa-report
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-report
+          path: reports/
+        continue-on-error: true
+
+      - name: Parse report
+        id: parse
+        run: |
+          python3 - << 'EOF'
+          import sys, os
+          from pathlib import Path
+
+          report = Path("reports/qa-report.md")
+          found = False
+          if report.exists():
+              in_bugs = False
+              for line in report.read_text(encoding="utf-8").splitlines():
+                  if "### Bugs Found" in line:
+                      in_bugs = True
+                      continue
+                  if in_bugs and line.startswith("### "):
+                      break
+                  if in_bugs and line.startswith("| ") and \
+                     not line.startswith("| #") and "---" not in line:
+                      found = True
+                      break
+
+          result = "true" if found else "false"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write(f"bugs={result}\n")
+          print(f"bugs={result}")
+          EOF
+
+  # ── Phase 2: Fix Agent — only runs when bugs were found ────────────────────
+  fix-agent:
+    name: "Fix Agent"
+    runs-on: ubuntu-latest
+    needs: check-bugs
+    if: needs.check-bugs.outputs.bugs == 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r backend/requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Download qa-report
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-report
+          path: reports/
+
+      - name: Run /fix
+        uses: anthropics/claude-code-action@beta
+        with:
+          direct_prompt: /fix reports/qa-report.md
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+  # ── Phase 2b: Re-test — verify fixes didn't break anything ────────────────
+  re-test:
+    name: "Re-test (verify fixes)"
+    runs-on: ubuntu-latest
+    needs: fix-agent
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r backend/requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Run /qa (verification)
+        uses: anthropics/claude-code-action@beta
+        with:
+          direct_prompt: /qa ${{ env.BASE_REF }} HEAD
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+      - name: Upload updated qa-report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report-final
+          path: reports/qa-report.md
+          retention-days: 14
+          if-no-files-found: ignore
+
+  # ── Phase 3: Docs Agent — runs after fix (or after check-bugs if no bugs) ──
+  docs-agent:
+    name: "Docs Agent"
+    runs-on: ubuntu-latest
+    needs: [check-bugs, fix-agent]
+    # Run whether or not fix-agent ran (but always after check-bugs)
+    if: always() && needs.check-bugs.result == 'success'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Run /docs-sync
+        uses: anthropics/claude-code-action@beta
+        with:
+          direct_prompt: /docs-sync ${{ env.BASE_REF }} HEAD
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+  # ── Summary: post QA report as PR comment ──────────────────────────────────
+  summary:
+    name: "Post Summary"
+    runs-on: ubuntu-latest
+    needs: [docs-agent, re-test]
+    if: always()
+    steps:
+      # Try final report first (exists only when fix-agent ran), fall back to initial
+      - name: Download qa-report-final
+        id: dl-final
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-report-final
+          path: reports/
+        continue-on-error: true
+
+      - name: Download qa-report (fallback)
+        if: steps.dl-final.outcome != 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-report
+          path: reports/
+        continue-on-error: true
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '_QA report not generated._';
+            try {
+              const raw = fs.readFileSync('reports/qa-report.md', 'utf8');
+              report = raw.length > 3000
+                ? raw.slice(0, 3000) + '\n\n…_(truncated — see artifact for full report)_'
+                : raw;
+            } catch {}
+
+            const body = [
+              '## Agent Pipeline Results',
+              '',
+              '<details><summary>QA Report</summary>',
+              '',
+              report,
+              '',
+              '</details>',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
