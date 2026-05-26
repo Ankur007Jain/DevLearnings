@@ -13,6 +13,7 @@ Personal reference notes — things I learned while building, organized by topic
 | [github-actions/](github-actions/) | CI pipelines, workflows, DAG visualization |
 | [claude-agents/](claude-agents/) | Agentic loops, multi-agent orchestration, slash commands |
 | [claude-code/](claude-code/) | Claude Code tips, subscriptions, GitHub App setup |
+| [frontend/](frontend/) | Next.js/React UI patterns, animations, event handling |
 | [templates/](templates/) | Copy-paste starter files for new projects |
 
 ---
@@ -30,6 +31,9 @@ Personal reference notes — things I learned while building, organized by topic
 
 ### Claude Code
 - [claude-code-action setup (Pro subscription, no API key)](claude-code/claude-code-action-setup.md)
+
+### Frontend
+- [Sign-in page UI patterns — immersive lanes, marquee, photo carousel, event bubbling](frontend/sign-in-page-ui-patterns.md)
 
 ### Templates
 - [.test-agent.yml](templates/test-agent.yml)
