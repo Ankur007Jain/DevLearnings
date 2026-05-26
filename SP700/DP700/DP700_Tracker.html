@@ -5,533 +5,241 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DP-700 Exam Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #07090f;
-    --surface: #0d1220;
-    --card: #111827;
-    --card-hover: #141f33;
-    --border: #1a2640;
-    --border-bright: #243550;
-    --accent: #00c9a7;
-    --accent-dim: rgba(0,201,167,0.12);
-    --amber: #f59e0b;
-    --amber-dim: rgba(245,158,11,0.12);
-    --green: #22c55e;
-    --green-dim: rgba(34,197,94,0.12);
-    --kql: #ff6b35;
-    --kql-dim: rgba(255,107,53,0.12);
-    --text: #dde4f0;
-    --text-muted: #4a6080;
-    --text-dim: #2a3a52;
-    --d1: #4f9cf9;
-    --d2: #a78bfa;
-    --d3: #34d399;
-    --priority: #ef4444;
-    --priority-dim: rgba(239,68,68,0.10);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f8fafc; --surface: #ffffff; --card: #ffffff; --card-hover: #f1f5f9;
+  --border: #e2e8f0; --border-bright: #cbd5e1;
+  --accent: #0891b2; --accent-dim: rgba(8,145,178,0.08);
+  --amber: #d97706; --amber-dim: rgba(217,119,6,0.08);
+  --green: #16a34a; --green-dim: rgba(22,163,74,0.08);
+  --kql: #ea580c; --kql-dim: rgba(234,88,12,0.08);
+  --priority: #dc2626; --priority-dim: rgba(220,38,38,0.07);
+  --text: #0f172a; --text-muted: #64748b; --text-dim: #94a3b8;
+  --d1: #2563eb; --d2: #7c3aed; --d3: #059669;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(8,145,178,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(8,145,178,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 24px 80px;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* NAV TABS */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px;position:sticky;top:0;background:var(--bg);z-index:100;padding-top:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.tab-btn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;border:none;background:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
 
-  /* Grid background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,201,167,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,201,167,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* HEADER */
+header{padding:28px 0 20px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:28px;gap:24px;flex-wrap:wrap;}
+.header-left h1{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:4px;line-height:1;}
+.header-left h1 span{color:var(--accent);}
+.header-subtitle{color:var(--text-muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.header-stats{display:flex;gap:2px;}
+.stat-block{background:var(--surface);border:1px solid var(--border);padding:12px 20px;text-align:center;min-width:90px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.stat-block:first-child{border-radius:6px 0 0 6px;}.stat-block:last-child{border-radius:0 6px 6px 0;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;line-height:1;color:var(--accent);}
+.stat-val.amber{color:var(--amber);}.stat-val.green{color:var(--green);}.stat-val.red{color:var(--priority);}
+.stat-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;}
 
-  .wrap { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 24px 60px; }
+/* LAST ATTEMPT BANNER */
+.last-attempt{background:var(--priority-dim);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.la-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--priority);white-space:nowrap;}
+.la-score{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--priority);}
+.la-weak{font-size:10px;color:var(--text-muted);display:flex;flex-direction:column;gap:3px;}
+.la-weak b{color:var(--priority);}
+.la-gap{margin-left:auto;text-align:right;font-size:9px;color:var(--text-muted);}
+.la-gap span{display:block;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--priority);}
 
-  /* ── HEADER ── */
-  header {
-    padding: 28px 0 20px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
+/* MASTER PROGRESS */
+.master-progress{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+.mp-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;min-width:120px;}
+.mp-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.mp-bar{height:100%;background:linear-gradient(90deg,var(--accent),#00e5c4);border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.mp-pct{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);min-width:52px;text-align:right;}
 
-  .header-left h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 44px;
-    letter-spacing: 4px;
-    color: var(--text);
-    line-height: 1;
-  }
-  .header-left h1 span { color: var(--accent); }
+/* DOMAIN GRID */
+.domains{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+@media(max-width:900px){.domains{grid-template-columns:1fr;}}
+.domain-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.domain-card:hover{border-color:var(--border-bright);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.domain-header{padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none;transition:background .15s;}
+.domain-header:hover{background:var(--card-hover);}
+.domain-ring{flex-shrink:0;width:48px;height:48px;position:relative;}
+.domain-ring svg{width:48px;height:48px;transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:3;}
+.ring-fill{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1);}
+.ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;}
+.domain-meta{flex:1;min-width:0;}
+.domain-name{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:2px;}
+.domain-weight{font-size:10px;color:var(--text-muted);}
+.domain-counts{font-size:11px;color:var(--text-muted);}
+.domain-counts span{color:var(--text);}
+.domain-chevron{font-size:11px;color:var(--text-muted);transition:transform .2s;}
+.domain-card.open .domain-chevron{transform:rotate(180deg);}
+.domain-body{display:none;padding:0 18px 16px;}
+.domain-card.open .domain-body{display:block;}
+.section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 0 6px;border-top:1px solid var(--border);margin-top:8px;}
+.section-label:first-child{margin-top:0;border-top:none;padding-top:4px;}
+.section-label.weak{color:var(--priority);opacity:.7;}
+.topic-row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:5px;cursor:pointer;transition:background .12s;position:relative;}
+.topic-row:hover{background:rgba(255,255,255,.03);}
+.topic-row[data-priority="1"]{border-left:2px solid rgba(239,68,68,.4);margin-left:-2px;padding-left:10px;}
+.topic-row[data-priority="1"][data-status="2"]{border-left-color:rgba(34,197,94,.3);}
+.status-btn{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border-bright);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;position:relative;z-index:1;}
+.status-btn:hover{transform:scale(1.15);}
+.topic-row[data-status="0"] .status-btn{border-color:var(--border-bright);color:transparent;}
+.topic-row[data-status="1"] .status-btn{border-color:var(--amber);background:var(--amber-dim);color:var(--amber);}
+.topic-row[data-status="2"] .status-btn{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.topic-label{flex:1;font-size:12px;line-height:1.4;}
+.topic-row[data-status="2"] .topic-label{color:var(--text-muted);text-decoration:line-through;text-decoration-color:var(--text-dim);}
+.kql-tag{flex-shrink:0;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--kql);background:var(--kql-dim);border:1px solid rgba(255,107,53,.25);padding:1px 5px;border-radius:3px;}
+.priority-tag{flex-shrink:0;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--priority);background:var(--priority-dim);border:1px solid rgba(239,68,68,.3);padding:1px 5px;border-radius:3px;}
 
-  .header-subtitle {
-    color: var(--text-muted);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+/* FOCUS ZONE */
+.focus-zone{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;}
+.focus-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap;}
+.focus-title{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:8px;}
+.focus-title::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 8px var(--accent);}50%{opacity:.5;box-shadow:0 0 3px var(--accent);}}
+.focus-filter{display:flex;gap:6px;flex-wrap:wrap;}
+.filter-btn{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.filter-btn.f-amber.active{border-color:var(--amber);color:var(--amber);background:var(--amber-dim);}
+.filter-btn.f-priority.active{border-color:var(--priority);color:var(--priority);background:var(--priority-dim);}
+.focus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;}
+.focus-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;}
+.focus-item:hover{border-color:var(--border-bright);background:var(--card-hover);}
+.focus-domain-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.focus-item-label{flex:1;font-size:11px;line-height:1.3;}
+.focus-status{font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:3px;flex-shrink:0;}
+.focus-status.s0{color:var(--text-muted);border:1px solid var(--border);}
+.focus-status.s1{color:var(--amber);background:var(--amber-dim);border:1px solid rgba(245,158,11,.25);}
+.focus-empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);font-size:12px;letter-spacing:1px;}
+.focus-empty span{color:var(--green);}
+.legend{display:flex;gap:24px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--border);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);}
+.legend-item{display:flex;align-items:center;gap:8px;}
 
-  .header-stats {
-    display: flex;
-    gap: 2px;
-    align-items: stretch;
-  }
+/* STUDY TAB */
+.study-nav{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.snav-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+.snav-btn:hover{border-color:var(--border-bright);color:var(--text);}
+.snav-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.snav-btn.d1.active{border-color:var(--d1);color:var(--d1);background:rgba(79,156,249,.1);}
+.snav-btn.d2.active{border-color:var(--d2);color:var(--d2);background:rgba(167,139,250,.1);}
+.snav-btn.d3.active{border-color:var(--d3);color:var(--d3);background:rgba(52,211,153,.1);}
+.study-domain{display:none;}.study-domain.active{display:block;}
 
-  .stat-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 12px 20px;
-    text-align: center;
-    min-width: 90px;
-    position: relative;
-    transition: border-color 0.2s;
-  }
-  .stat-block:first-child { border-radius: 6px 0 0 6px; }
-  .stat-block:last-child { border-radius: 0 6px 6px 0; }
-  .stat-block:hover { border-color: var(--border-bright); }
+.study-section{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.study-section-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;user-select:none;}
+.study-section-header:hover{background:var(--card-hover);}
+.study-section-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.study-section-tags{display:flex;gap:6px;align-items:center;}
+.study-section-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.study-section.open .study-section-body{display:block;}
+.study-section.open .study-section-header .chevron{transform:rotate(180deg);}
+.chevron{font-size:11px;color:var(--text-muted);transition:transform .2s;}
 
-  .stat-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 2px;
-    line-height: 1;
-    color: var(--accent);
-  }
-  .stat-val.amber { color: var(--amber); }
-  .stat-val.green { color: var(--green); }
-  .stat-val.warning { color: #ef4444; }
+/* Study content components */
+.study-block{margin-top:20px;}
+.study-block:first-child{margin-top:16px;}
+.block-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.block-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  .stat-label {
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+/* Decision table */
+.dt{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px;}
+.dt th{text-align:left;padding:8px 12px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);background:var(--surface);}
+.dt td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:rgba(255,255,255,.02);}
+.dt .trigger{color:var(--accent);font-size:10px;}
+.dt .yes{color:var(--green);}
+.dt .no{color:var(--text-muted);}
+.dt .warn{color:var(--amber);}
+.dt .bad{color:var(--priority);}
 
-  /* ── MASTER PROGRESS ── */
-  .master-progress {
-    margin-bottom: 28px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .mp-label {
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    white-space: nowrap;
-    min-width: 120px;
-  }
-  .mp-bar-wrap {
-    flex: 1;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .mp-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), #00e5c4);
-    border-radius: 3px;
-    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-    width: 0%;
-  }
-  .mp-pct {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    color: var(--accent);
-    min-width: 52px;
-    text-align: right;
-    letter-spacing: 1px;
-  }
+/* Gotchas */
+.gotcha-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.gotcha-list li{padding:10px 14px;border-radius:6px;border-left:3px solid var(--amber);background:var(--amber-dim);font-size:12px;line-height:1.5;}
+.gotcha-list li strong{color:var(--amber);display:block;margin-bottom:2px;font-size:11px;}
 
-  /* ── DOMAIN GRID ── */
-  .domains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
-  @media (max-width: 900px) { .domains { grid-template-columns: 1fr; } }
+/* Scenario Q&A */
+.qa-list{display:flex;flex-direction:column;gap:12px;}
+.qa-item{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.qa-q{padding:12px 16px;font-size:12px;line-height:1.5;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;transition:background .15s;}
+.qa-q:hover{background:var(--card-hover);}
+.qa-q-text{flex:1;}
+.qa-q-icon{flex-shrink:0;color:var(--text-muted);font-size:11px;margin-top:2px;transition:transform .2s;}
+.qa-item.open .qa-q-icon{transform:rotate(180deg);}
+.qa-a{display:none;padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);font-size:12px;line-height:1.6;color:var(--text);}
+.qa-item.open .qa-a{display:block;}
+.qa-a strong{color:var(--accent);}
+.qa-a .wrong{color:var(--priority);}
+.qa-a .right{color:var(--green);}
 
-  .domain-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-  .domain-card:hover { border-color: var(--border-bright); }
+/* Code blocks */
+.code-block{background:#f1f5f9;border:1px solid var(--border);border-radius:6px;padding:12px 16px;font-size:11px;line-height:1.6;margin-top:8px;overflow-x:auto;white-space:pre;}
+.kw{color:#0891b2;}.fn{color:#7c3aed;}.str{color:#d97706;}.cm{color:#94a3b8;font-style:italic;}
 
-  .domain-header {
-    padding: 16px 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.15s;
-  }
-  .domain-header:hover { background: var(--card-hover); }
+/* Priority badge */
+.weak-badge{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--priority);background:var(--priority-dim);border:1px solid rgba(239,68,68,.3);padding:2px 8px;border-radius:3px;}
+.kql-badge{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--kql);background:var(--kql-dim);border:1px solid rgba(255,107,53,.25);padding:2px 8px;border-radius:3px;}
 
-  .domain-ring {
-    flex-shrink: 0;
-    width: 48px; height: 48px;
-    position: relative;
-  }
-  .domain-ring svg { width: 48px; height: 48px; transform: rotate(-90deg); }
-  .ring-bg { fill: none; stroke: var(--border); stroke-width: 3; }
-  .ring-fill { fill: none; stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1); }
-  .ring-pct {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-  }
-
-  .domain-meta { flex: 1; min-width: 0; }
-  .domain-name {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-  .domain-weight {
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-  }
-  .domain-counts {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .domain-counts span { color: var(--text); }
-
-  .domain-chevron {
-    font-size: 12px;
-    color: var(--text-muted);
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-  .domain-card.open .domain-chevron { transform: rotate(180deg); }
-
-  .domain-body { display: none; padding: 0 18px 16px; }
-  .domain-card.open .domain-body { display: block; }
-
-  .section-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 12px 0 6px;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-  .section-label:first-child { margin-top: 0; border-top: none; padding-top: 4px; }
-
-  .topic-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.12s;
-    position: relative;
-  }
-  .topic-row:hover { background: rgba(255,255,255,0.03); }
-
-  .status-btn {
-    flex-shrink: 0;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border-bright);
-    background: transparent;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    transition: all 0.15s;
-    position: relative;
-    z-index: 1;
-  }
-  .status-btn:hover { transform: scale(1.15); }
-
-  /* Status states */
-  .topic-row[data-status="0"] .status-btn { border-color: var(--border-bright); color: transparent; }
-  .topic-row[data-status="1"] .status-btn { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
-  .topic-row[data-status="2"] .status-btn { border-color: var(--green); background: var(--green-dim); color: var(--green); }
-
-  .topic-label {
-    flex: 1;
-    font-size: 12px;
-    line-height: 1.4;
-    color: var(--text);
-    transition: color 0.15s;
-  }
-  .topic-row[data-status="2"] .topic-label { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-dim); }
-
-  .kql-tag {
-    flex-shrink: 0;
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--kql);
-    background: var(--kql-dim);
-    border: 1px solid rgba(255,107,53,0.25);
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
-  .priority-tag {
-    flex-shrink: 0;
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--priority);
-    background: var(--priority-dim);
-    border: 1px solid rgba(239,68,68,0.3);
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
-  .topic-row[data-priority="1"] {
-    border-left: 2px solid rgba(239,68,68,0.4);
-    margin-left: -2px;
-    padding-left: 10px;
-  }
-  .topic-row[data-priority="1"][data-status="2"] {
-    border-left-color: rgba(34,197,94,0.3);
-  }
-
-  /* ── FOCUS ZONE ── */
-  .focus-zone {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .focus-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    gap: 16px;
-  }
-  .focus-title {
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .focus-title::before {
-    content: '';
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
-    50% { opacity: 0.5; box-shadow: 0 0 3px var(--accent); }
-  }
-
-  .focus-filter {
-    display: flex; gap: 6px;
-  }
-  .filter-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-  .filter-btn.f-amber.active { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
-  .filter-btn.f-priority.active { border-color: var(--priority); color: var(--priority); background: var(--priority-dim); }
-
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 6px;
-  }
-  .focus-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .focus-item:hover { border-color: var(--border-bright); background: var(--card-hover); }
-
-  .focus-domain-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .focus-item-label {
-    flex: 1;
-    font-size: 11px;
-    color: var(--text);
-    line-height: 1.3;
-  }
-  .focus-item .kql-tag { font-size: 7px; padding: 1px 4px; }
-
-  .focus-status {
-    font-size: 9px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 2px 6px;
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
-  .focus-status.s0 { color: var(--text-muted); border: 1px solid var(--border); }
-  .focus-status.s1 { color: var(--amber); background: var(--amber-dim); border: 1px solid rgba(245,158,11,0.25); }
-
-  .focus-empty {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px;
-    color: var(--text-muted);
-    font-size: 12px;
-    letter-spacing: 1px;
-  }
-  .focus-empty span { color: var(--green); }
-
-  /* ── LEGEND ── */
-  .legend {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    padding: 14px 0;
-    border-top: 1px solid var(--border);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .legend-item { display: flex; align-items: center; gap: 8px; }
-  .legend-dot {
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 8px;
-  }
-  .legend-dot.s0 { border: 1.5px solid #2a3a52; }
-  .legend-dot.s1 { border: 1.5px solid var(--amber); background: var(--amber-dim); color: var(--amber); }
-  .legend-dot.s2 { border: 1.5px solid var(--green); background: var(--green-dim); color: var(--green); }
-
-  /* Scroll bar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
-
-  /* Ripple animation on status change */
-  @keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(2.5); opacity: 0; }
-  }
-  .ripple-ring {
-    position: absolute;
-    inset: -2px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    animation: ripple 0.4s ease-out forwards;
-    pointer-events: none;
-  }
+@keyframes ripple{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.5);opacity:0;}}
+.ripple-ring{position:absolute;inset:-2px;border-radius:50%;border:1.5px solid currentColor;animation:ripple .4s ease-out forwards;pointer-events:none;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px;}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-left">
-      <h1>DP<span>-700</span> TRACKER</h1>
-      <div class="header-subtitle">Microsoft Fabric Data Engineer Associate &nbsp;|&nbsp; Exam Readiness</div>
-    </div>
-    <div class="header-stats">
-      <div class="stat-block">
-        <div class="stat-val warning" id="days-left">—</div>
-        <div class="stat-label">Days Left</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-val" id="stat-total">0</div>
-        <div class="stat-label">Total Topics</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-val amber" id="stat-studied">0</div>
-        <div class="stat-label">Studied</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-val green" id="stat-confident">0</div>
-        <div class="stat-label">Confident</div>
-      </div>
-    </div>
-  </header>
+<header>
+  <div class="header-left">
+    <h1>DP<span>-700</span> TRACKER</h1>
+    <div class="header-subtitle">Microsoft Fabric Data Engineer Associate &nbsp;|&nbsp; Exam Readiness</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-block"><div class="stat-val red" id="days-left">—</div><div class="stat-label">Days Left</div></div>
+    <div class="stat-block"><div class="stat-val" id="stat-total">0</div><div class="stat-label">Topics</div></div>
+    <div class="stat-block"><div class="stat-val amber" id="stat-studied">0</div><div class="stat-label">Studied</div></div>
+    <div class="stat-block"><div class="stat-val green" id="stat-confident">0</div><div class="stat-label">Confident</div></div>
+  </div>
+</header>
 
-  <!-- LAST ATTEMPT BANNER -->
-  <div style="background:var(--priority-dim);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-    <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--priority);white-space:nowrap;">Last Attempt — Feb 3 2026</div>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--priority);">619</span><span style="font-size:9px;color:var(--text-muted);letter-spacing:1px;margin-left:4px;">/ 1000 &nbsp;(need 700)</span></div>
-      <div style="width:1px;background:var(--border);"></div>
-      <div style="font-size:10px;color:var(--text-muted);display:flex;flex-direction:column;gap:3px;justify-content:center;">
-        <div style="letter-spacing:1px;color:var(--text);font-size:9px;text-transform:uppercase;margin-bottom:2px;">⚠ Weakest areas from report:</div>
-        <div>→ <span style="color:var(--priority)">Identify &amp; Resolve Errors</span></div>
-        <div>→ <span style="color:var(--priority)">Configure Security &amp; Governance</span></div>
-        <div>→ <span style="color:var(--priority)">Ingest &amp; Transform Streaming Data</span></div>
-      </div>
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+  <button class="tab-btn" data-tab="study">📖 Study Notes</button>
+</div>
+
+<!-- ══ DASHBOARD TAB ══════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-dashboard">
+
+  <div class="last-attempt">
+    <div class="la-label">Last Attempt — Feb 3, 2026</div>
+    <div><span class="la-score">619</span><span style="font-size:10px;color:var(--text-muted);margin-left:6px;">/ 1000 &nbsp;(need 700)</span></div>
+    <div style="width:1px;background:var(--border);align-self:stretch;"></div>
+    <div class="la-weak">
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">⚠ Weakest areas from report</div>
+      <div>→ <b>Identify &amp; Resolve Errors</b></div>
+      <div>→ <b>Configure Security &amp; Governance</b></div>
+      <div>→ <b>Ingest &amp; Transform Streaming Data</b></div>
     </div>
-    <div style="margin-left:auto;font-size:9px;letter-spacing:1px;color:var(--text-muted);text-align:right;">Gap: <span style="color:var(--priority);font-family:'Bebas Neue';font-size:18px;">81</span> pts</div>
+    <div class="la-gap"><div style="font-size:9px;letter-spacing:1px;color:var(--text-muted);">Points gap</div><span>81</span></div>
   </div>
 
-  <!-- MASTER PROGRESS -->
   <div class="master-progress">
     <div class="mp-label">Overall Readiness</div>
     <div class="mp-bar-wrap"><div class="mp-bar" id="master-bar"></div></div>
     <div class="mp-pct" id="master-pct">0%</div>
   </div>
 
-  <!-- DOMAIN CARDS -->
   <div class="domains" id="domains-container"></div>
 
-  <!-- FOCUS ZONE -->
   <div class="focus-zone">
     <div class="focus-header">
-      <div class="focus-title">Focus Zone — Priority Topics</div>
+      <div class="focus-title">Focus Zone</div>
       <div class="focus-filter">
         <button class="filter-btn active" data-filter="all">All Gaps</button>
         <button class="filter-btn f-priority" data-filter="priority">⚠ Last Fail</button>
@@ -541,346 +249,774 @@
     <div class="focus-grid" id="focus-grid"></div>
   </div>
 
-  <!-- LEGEND -->
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot s0"></div> Not Started — click to mark Studied</div>
-    <div class="legend-item"><div class="legend-dot s1">📖</div> Studied — click to mark Confident</div>
-    <div class="legend-item"><div class="legend-dot s2">✓</div> Confident — click to reset</div>
-    <div class="legend-item"><span style="color:var(--kql);background:var(--kql-dim);border:1px solid rgba(255,107,53,.25);padding:2px 6px;border-radius:3px;font-size:9px;letter-spacing:1px;">KQL</span>&nbsp; KQL / Streaming topic — prioritize</div>
-    <div class="legend-item"><span style="color:var(--priority);background:var(--priority-dim);border:1px solid rgba(239,68,68,.3);padding:2px 6px;border-radius:3px;font-size:9px;letter-spacing:1px;">⚠ Priority</span>&nbsp; Weak in last attempt — must nail</div>
+    <div class="legend-item"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid #2a3a52;"></span> Not Started</div>
+    <div class="legend-item"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--amber);background:var(--amber-dim);font-size:8px;text-align:center;line-height:14px;color:var(--amber);">📖</span> Studied</div>
+    <div class="legend-item"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--green);background:var(--green-dim);font-size:8px;text-align:center;line-height:14px;color:var(--green);">✓</span> Confident</div>
+    <div class="legend-item"><span class="priority-tag">⚠ Priority</span> Weak in last attempt</div>
+    <div class="legend-item"><span class="kql-tag">KQL</span> Streaming / RTI topic</div>
   </div>
-
 </div>
 
-<script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
-const EXAM_DATE = new Date('2026-06-02T09:00:00');
+<!-- ══ STUDY NOTES TAB ══════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-study">
+  <div class="study-nav">
+    <button class="snav-btn d1 active" data-domain="s-d1">D1 — Implement &amp; Manage</button>
+    <button class="snav-btn d2" data-domain="s-d2">D2 — Ingest &amp; Transform</button>
+    <button class="snav-btn d3" data-domain="s-d3">D3 — Monitor &amp; Optimize</button>
+  </div>
 
+  <!-- ── DOMAIN 1 ────────────────────────────── -->
+  <div class="study-domain active" id="s-d1">
+
+    <!-- Workspace Settings -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d1)">Workspace Settings</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Decision Table — Which Setting?</div>
+          <table class="dt">
+            <tr><th>Setting</th><th>Controls</th><th>Exam Trigger Words</th></tr>
+            <tr><td>Spark workspace settings</td><td>Default pool, runtime version, high concurrency mode, auto-scale</td><td class="trigger">"optimize notebooks", "shared sessions", "cold start"</td></tr>
+            <tr><td>Domain workspace settings</td><td>Assign workspace to a Fabric domain, inherit domain governance</td><td class="trigger">"data mesh", "group by business unit", "domain governance"</td></tr>
+            <tr><td>OneLake workspace settings</td><td>Managed/unmanaged items, cross-workspace access</td><td class="trigger">"control storage", "restrict item creation"</td></tr>
+            <tr><td>Data workflow settings</td><td>Apache Airflow environment, starter pool for Data Factory</td><td class="trigger">"Airflow", "external orchestration"</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Gotchas</div>
+          <ul class="gotcha-list">
+            <li><strong>High Concurrency ≠ Autoscale</strong>High Concurrency = multiple users share ONE live Spark session (kills cold start). Autoscale = adjusts node count. They're independent settings.</li>
+            <li><strong>Default lakehouse at workspace level</strong>If you set a default lakehouse in Spark workspace settings, all notebooks in that workspace inherit it automatically — no need to attach per notebook.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lifecycle Management -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d1)">Lifecycle Management</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Deployment Pipelines — Key Rules</div>
+          <table class="dt">
+            <tr><th>Fact</th><th>Detail</th></tr>
+            <tr><td>Stages</td><td>Dev → Test → Prod. Each stage = a separate Fabric workspace.</td></tr>
+            <tr><td>What deploys</td><td class="yes">Item definitions/metadata (notebooks, pipelines, lakehouses, warehouses)</td></tr>
+            <tr><td>What does NOT deploy</td><td class="no">Data inside tables. Pipeline run history. Workspace settings.</td></tr>
+            <tr><td>Deployment rules</td><td>Override item properties per stage (e.g. different DB connection in Prod)</td></tr>
+            <tr><td>One workspace per stage</td><td>A workspace can only belong to ONE pipeline stage</td></tr>
+            <tr><td>Auto-binding</td><td>Deploying a report also deploys its bound semantic model (unless already exists)</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Git Integration — Key Rules</div>
+          <table class="dt">
+            <tr><th>Fact</th><th>Detail</th></tr>
+            <tr><td>Supported repos</td><td>Azure DevOps or GitHub</td></tr>
+            <tr><td>Syncs to git</td><td class="yes">Notebooks, Pipelines, Dataflows Gen2, Lakehouse metadata, Reports, Semantic models</td></tr>
+            <tr><td>Does NOT sync</td><td class="no">Table data, run history, workspace settings</td></tr>
+            <tr><td>Auto-sync?</td><td class="warn">NO — changes in Fabric UI must be manually committed</td></tr>
+            <tr><td>Who can commit</td><td>Workspace Admin or Member only</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Database Projects</div>
+          <ul class="gotcha-list">
+            <li><strong>Schema-as-code for warehouses</strong>SQL scripts in a Git repo define your warehouse schema. "Publish" deploys changes incrementally — no drop-and-recreate. New stored procedure in repo → publish → it appears in the warehouse.</li>
+          </ul>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Scenario Q&amp;A</div>
+          <div class="qa-list">
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">After deploying a pipeline from Dev to Test, it still points to the Dev database. What's missing?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Deployment rule</span> — add a rule that overrides the data source connection at the Test stage. Deployment pipelines copy item definitions but don't automatically update connection strings.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A developer edits a notebook in Fabric UI. A colleague pulls the latest from GitHub and doesn't see the changes. Why?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓</span> Changes in Fabric UI do NOT auto-sync to Git. The developer must manually <strong>commit</strong> from the Fabric workspace UI. Until committed, changes are local only.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Governance — WEAK AREA -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--priority)">Security &amp; Governance</div>
+        <div class="study-section-tags"><span class="weak-badge">⚠ Weak Area</span><span class="chevron" style="margin-left:8px;">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Security Layers — Decision Table</div>
+          <table class="dt">
+            <tr><th>Scenario</th><th>Use This</th><th>NOT this</th></tr>
+            <tr><td>User needs access to ALL items in a workspace</td><td class="yes">Workspace role (Viewer/Contributor/Member/Admin)</td><td class="no">Item permission</td></tr>
+            <tr><td>User needs only ONE specific lakehouse, not others</td><td class="yes">Item permission (ReadData on that lakehouse)</td><td class="no">Workspace role</td></tr>
+            <tr><td>User needs only the Sales table, not HR table</td><td class="yes">OneLake data access role scoped to /Tables/Sales/</td><td class="no">Item permission alone</td></tr>
+            <tr><td>User can query but must not see Salary column</td><td class="yes">Column-level security on warehouse (DENY/GRANT) or dynamic data masking</td><td class="no">Row-level security</td></tr>
+            <tr><td>User should see masked SSN values, not real ones</td><td class="yes">Dynamic Data Masking on warehouse column</td><td class="no">Column-level security (that blocks access entirely)</td></tr>
+            <tr><td>Users in role Sales see only their region's rows</td><td class="yes">Row-Level Security (RLS) in warehouse</td><td class="no">Dynamic data masking</td></tr>
+            <tr><td>Lakehouse folder-level access</td><td class="yes">OneLake data access roles</td><td class="no">Workspace roles (too broad)</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Workspace Roles Cheatsheet</div>
+          <table class="dt">
+            <tr><th>Role</th><th>Can create items</th><th>Can share workspace</th><th>Can manage permissions</th></tr>
+            <tr><td>Admin</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Member</td><td class="yes">Yes</td><td class="yes">Yes (not add Admins)</td><td class="warn">Limited</td></tr>
+            <tr><td>Contributor</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+            <tr><td>Viewer</td><td class="no">No</td><td class="no">No</td><td class="no">No — read only</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Sensitivity Labels vs Endorsed Items</div>
+          <table class="dt">
+            <tr><th>Feature</th><th>Purpose</th><th>Who applies it</th><th>Inherits?</th></tr>
+            <tr><td>Sensitivity Labels</td><td>Data classification (Confidential, Public, etc.) from Microsoft Purview</td><td>User with label usage rights</td><td class="yes">Yes — downstream items inherit from source</td></tr>
+            <tr><td>Promoted (Endorsed)</td><td>Marks item as quality-approved by team</td><td>Any workspace member</td><td class="no">No</td></tr>
+            <tr><td>Certified (Endorsed)</td><td>Officially vetted by designated certifiers</td><td>Only designated certifiers</td><td class="no">No</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Gotchas</div>
+          <ul class="gotcha-list">
+            <li><strong>Dynamic Data Masking ≠ blocking access</strong>DDM shows masked values (e.g. XXXX-1234 for SSN). Users with UNMASK permission still see the real data. It's obfuscation, not access control.</li>
+            <li><strong>OneLake Data Access Roles are NEW (GA 2025)</strong>These are folder/file level within a lakehouse. Separate from item permissions. You create a role, assign paths, assign users. Exam will test this.</li>
+            <li><strong>Workspace logging captures item operations</strong>Who read, modified, or deleted items. Stored in a Log Analytics workspace. NOT the same as pipeline run monitoring.</li>
+            <li><strong>Sensitivity labels can be auto-inherited</strong>If you label a source dataset as Confidential, any report built from it may inherit that label automatically (depends on tenant policy).</li>
+          </ul>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Scenario Q&amp;A</div>
+          <div class="qa-list">
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A user can query a warehouse but must only see masked credit card numbers. They should NOT be fully blocked. What do you implement?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Dynamic Data Masking</span> on the credit card column. This shows masked values to users without UNMASK permission while still allowing them to query. <br><br><span class="wrong">✗ Not column-level security</span> — that blocks the column entirely, which would prevent the query from returning results at all.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">Users in the Sales team should only see rows where Region = their own region. What do you configure?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Row-Level Security (RLS)</span> on the warehouse. Create a security predicate function that filters rows based on the current user's identity, then apply it to the table via a security policy.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A user needs read access to the /Tables/Customers/ folder in a lakehouse but nothing else in the workspace. What's the minimum access required?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Two steps:</span><br>1. Grant <strong>ReadData item permission</strong> on that specific lakehouse (not a workspace role)<br>2. Create an <strong>OneLake data access role</strong> scoped to /Tables/Customers/ and assign the user<br><br><span class="wrong">✗ Not a workspace role</span> — Viewer would expose all items in the workspace.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A Confidential sensitivity label is applied to a lakehouse. A data engineer creates a new report from that lakehouse. What label does the report get?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Confidential</span> — sensitivity labels propagate downstream. The report inherits the label from the source lakehouse automatically (if the tenant policy allows inheritance).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orchestration -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d1)">Orchestrate Processes</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Dataflow Gen2 vs Pipeline vs Notebook — Decision Table</div>
+          <table class="dt">
+            <tr><th>Choose</th><th>When</th><th>NOT when</th></tr>
+            <tr><td style="color:var(--d1)">Dataflow Gen2</td><td>Low-code transforms, Power Query (M), small-medium data, business analysts building ETL, no coding required</td><td class="no">Large-scale data, complex logic, real-time, custom Python</td></tr>
+            <tr><td style="color:var(--d2)">Data Pipeline</td><td>Orchestrating multiple activities, Copy data at scale, conditional branching, calling external APIs, running notebooks as activities</td><td class="no">Heavy transformation logic (use notebook for that)</td></tr>
+            <tr><td style="color:var(--d3)">Notebook</td><td>PySpark transforms, complex business logic, ML, custom Python libraries, large-scale distributed processing</td><td class="no">Simple data copies, low-code requirements</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Triggers — Schedule vs Event-Based</div>
+          <table class="dt">
+            <tr><th>Trigger Type</th><th>Use When</th><th>Example</th></tr>
+            <tr><td>Schedule trigger</td><td>Fixed cadence (hourly, daily, weekly)</td><td>Run pipeline every day at 2am</td></tr>
+            <tr><td>Storage event trigger</td><td>File arrives in ADLS/OneLake</td><td>New CSV lands in /raw/ → trigger pipeline</td></tr>
+            <tr><td>Custom event trigger</td><td>Event arrives in Azure Event Grid</td><td>Upstream system fires event → start processing</td></tr>
+            <tr><td>Tumbling window trigger</td><td>Sequential non-overlapping time windows, retry-aware</td><td>Process data for each hour in order, handle backfill</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Gotchas</div>
+          <ul class="gotcha-list">
+            <li><strong>Dynamic content in pipelines uses @{} syntax</strong>Parameters and expressions: <code>@pipeline().parameters.fileName</code>. Functions available: concat, utcNow, formatDateTime, if, equals, etc.</li>
+            <li><strong>Notebook as pipeline activity</strong>You can run a notebook from a pipeline activity. Pass parameters using the "Base parameters" section. The notebook reads them via <code>mssparkutils.notebook.exit()</code> or widgets.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /s-d1 -->
+
+  <!-- ── DOMAIN 2 ────────────────────────────── -->
+  <div class="study-domain" id="s-d2">
+
+    <!-- Loading Patterns -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d2)">Loading Patterns</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Full vs Incremental Load</div>
+          <table class="dt">
+            <tr><th>Pattern</th><th>How</th><th>Use When</th><th>Fabric Tool</th></tr>
+            <tr><td>Full load</td><td>Truncate + reload every run</td><td>Small tables, no reliable change tracking</td><td>Copy Activity (pipeline)</td></tr>
+            <tr><td>Incremental — watermark</td><td>Track max timestamp/ID, load only new rows</td><td>Source has a reliable updated_at column</td><td>Pipeline with Lookup + Copy</td></tr>
+            <tr><td>Incremental — CDC</td><td>Read change feed from source</td><td>SQL DB with CDC enabled, Cosmos DB</td><td>Mirroring or pipeline</td></tr>
+            <tr><td>Incremental — Delta</td><td>MERGE into Delta table</td><td>Upsert pattern (new + updated rows)</td><td>Notebook (PySpark MERGE)</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Tool Selection — Batch Transforms</div>
+          <table class="dt">
+            <tr><th>Tool</th><th>Language</th><th>Best For</th><th>Avoid When</th></tr>
+            <tr><td>Dataflow Gen2</td><td>Power Query (M)</td><td>Low-code, simple transforms, business users</td><td>Large data, complex PySpark logic</td></tr>
+            <tr><td>Notebook</td><td>PySpark / Python</td><td>Large-scale, complex logic, ML, custom libs</td><td>Simple copy tasks</td></tr>
+            <tr><td>T-SQL (Warehouse)</td><td>SQL</td><td>Structured data, SQL-familiar teams, DW workloads</td><td>Unstructured data, files</td></tr>
+            <tr><td>KQL (Eventhouse)</td><td>KQL</td><td>Time-series, logs, streaming analytics, Real-Time Intelligence</td><td>Traditional DW workloads</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Data Store Selection</div>
+          <table class="dt">
+            <tr><th>Store</th><th>Choose When</th></tr>
+            <tr><td style="color:var(--d1)">Lakehouse</td><td>Mixed structured/unstructured, open Delta format, PySpark + SQL, medallion architecture</td></tr>
+            <tr><td style="color:var(--d2)">Warehouse</td><td>Pure SQL workloads, T-SQL, DW schema (star schema), enterprise BI</td></tr>
+            <tr><td style="color:var(--kql)">KQL Database (Eventhouse)</td><td>Streaming/time-series data, logs, IoT, sub-second query latency</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Shortcuts — All 5 Types</div>
+          <table class="dt">
+            <tr><th>Shortcut Type</th><th>Source</th><th>Writable?</th></tr>
+            <tr><td>OneLake shortcut</td><td>Another Fabric item (lakehouse, warehouse)</td><td class="warn">Read-only from shortcut side</td></tr>
+            <tr><td>ADLS Gen2 shortcut</td><td>Azure Data Lake Storage Gen2</td><td class="warn">Read-only</td></tr>
+            <tr><td>Amazon S3 shortcut</td><td>AWS S3 bucket</td><td class="warn">Read-only</td></tr>
+            <tr><td>Google Cloud Storage</td><td>GCS bucket</td><td class="warn">Read-only</td></tr>
+            <tr><td>Dataverse shortcut</td><td>Microsoft Dataverse</td><td class="warn">Read-only</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Mirroring — Supported Sources</div>
+          <ul class="gotcha-list">
+            <li><strong>Mirroring replicates data continuously into OneLake (Delta format)</strong>Supported: Azure SQL DB, Azure Cosmos DB, Snowflake, Azure SQL Managed Instance. Near-real-time replication, no pipelines needed. Data lands in the lakehouse as Delta tables.</li>
+            <li><strong>Mirroring vs Shortcut</strong>Shortcut = pointer (data stays at source). Mirroring = copy (data lives in OneLake). Use mirroring when you need Fabric-native processing on replicated data.</li>
+          </ul>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Handling Bad Data</div>
+          <table class="dt">
+            <tr><th>Problem</th><th>Solution in Fabric</th></tr>
+            <tr><td>Duplicates</td><td>PySpark: <code>dropDuplicates()</code> / T-SQL: ROW_NUMBER() OVER with dedup CTE / Delta MERGE with unique key</td></tr>
+            <tr><td>Missing/null values</td><td>PySpark: <code>fillna()</code>, <code>dropna()</code> / Power Query: Replace Values, Remove Rows</td></tr>
+            <tr><td>Late-arriving data</td><td>Watermark tolerance in streaming / Reprocessing window in batch incremental loads / Delta MERGE handles late arrivals</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Streaming — WEAK AREA -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--priority)">Streaming Data</div>
+        <div class="study-section-tags"><span class="weak-badge">⚠ Weak Area</span><span class="kql-badge" style="margin-left:6px;">KQL</span><span class="chevron" style="margin-left:8px;">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Eventstream vs Spark Structured Streaming — Decision Table</div>
+          <table class="dt">
+            <tr><th>Choose</th><th>When</th><th>Key Trait</th></tr>
+            <tr><td style="color:var(--kql)">Eventstream</td><td>Low-code streaming ingestion, route events to multiple destinations, transform without code, IoT Hub / Event Hub / Kafka sources</td><td>No-code UI, fan-out to multiple sinks, Real-Time Intelligence native</td></tr>
+            <tr><td style="color:var(--d2)">Spark Structured Streaming</td><td>Complex streaming logic in PySpark, join streaming + batch data, ML on streams, custom transforms</td><td>Code-based, runs in notebook, full Spark power</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">RTI Storage Options — Decision Table (Heavily Tested)</div>
+          <table class="dt">
+            <tr><th>Storage Type</th><th>Data Location</th><th>Query Speed</th><th>Choose When</th></tr>
+            <tr><td style="color:var(--kql)">Native (Eventhouse)</td><td>Columnar store inside KQL DB</td><td class="yes">Fastest</td><td>Primary streaming store, sub-second queries, time-series analytics</td></tr>
+            <tr><td>Mirrored (OneLake)</td><td>Delta files in OneLake + KQL DB metadata</td><td class="warn">Slower</td><td>Need both KQL queries AND Spark/SQL access to same data</td></tr>
+            <tr><td>Shortcut (external)</td><td>Data stays in source (ADLS, S3)</td><td class="warn">Slower than native</td><td>Query external data without ingesting it</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Accelerated vs Non-Accelerated Shortcuts in RTI</div>
+          <table class="dt">
+            <tr><th></th><th>Accelerated Shortcut</th><th>Non-Accelerated Shortcut</th></tr>
+            <tr><td>Data cached in KQL?</td><td class="yes">Yes — data ingested into columnar store</td><td class="no">No — queries go to source each time</td></tr>
+            <tr><td>Query speed</td><td class="yes">Fast (native KQL performance)</td><td class="warn">Slower (network + source latency)</td></tr>
+            <tr><td>Storage cost</td><td class="warn">Higher (duplicate storage)</td><td class="yes">Lower (no duplication)</td></tr>
+            <tr><td>Choose when</td><td>Frequent queries, low latency needed</td><td>Infrequent queries, cost sensitive</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">KQL Essentials (Your Weak Spot — Memorize These)</div>
+          <div class="code-block"><span class="cm">// Basic query structure</span>
+<span class="fn">TableName</span>
+| <span class="kw">where</span> Timestamp > <span class="fn">ago</span>(<span class="str">1h</span>)
+| <span class="kw">where</span> Status == <span class="str">"Error"</span>
+| <span class="kw">project</span> Timestamp, DeviceId, Temperature
+| <span class="kw">order by</span> Timestamp <span class="kw">desc</span>
+| <span class="kw">take</span> 100
+
+<span class="cm">// Aggregation</span>
+<span class="fn">SensorData</span>
+| <span class="kw">summarize</span> <span class="fn">avg</span>(Temperature), <span class="fn">count</span>() <span class="kw">by</span> DeviceId, <span class="fn">bin</span>(Timestamp, <span class="str">1h</span>)
+
+<span class="cm">// Extend (add a calculated column)</span>
+<span class="fn">Events</span>
+| <span class="kw">extend</span> FullName = <span class="fn">strcat</span>(FirstName, <span class="str">" "</span>, LastName)
+
+<span class="cm">// Join</span>
+<span class="fn">Orders</span>
+| <span class="kw">join kind=inner</span> (Customers) <span class="kw">on</span> CustomerId</div>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Windowing Functions — Exam Favourite</div>
+          <table class="dt">
+            <tr><th>Window Type</th><th>Behaviour</th><th>KQL / Spark</th></tr>
+            <tr><td>Tumbling</td><td>Fixed, non-overlapping windows. Each event in exactly one window. e.g. 10-min buckets.</td><td><code>bin(Timestamp, 10m)</code> in KQL / <code>window("10 minutes")</code> in Spark</td></tr>
+            <tr><td>Sliding</td><td>Overlapping windows. Event can appear in multiple windows.</td><td>Spark: <code>window("10 minutes", "5 minutes")</code></td></tr>
+            <tr><td>Session</td><td>Gaps between events define window boundaries. Window closes after inactivity gap.</td><td>Spark: <code>session_window()</code></td></tr>
+            <tr><td>Hopping</td><td>Like sliding but with fixed hop interval</td><td>Eventstream native processing</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Scenario Q&amp;A</div>
+          <div class="qa-list">
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">IoT device events arrive from Event Hub. You need to route them to BOTH a KQL database AND a Lakehouse simultaneously, with no code. What do you use?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Eventstream</span> — supports multiple destinations (fan-out) with a no-code UI. Connect Event Hub as source, add KQL Database and Lakehouse as destinations in the same eventstream.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">You need to join a streaming data source with a historical batch table and apply complex business logic in Python. What's the right tool?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Spark Structured Streaming in a notebook</span> — handles stream-batch joins, custom Python logic, full Spark API. Eventstream can't do stream-batch joins or custom code.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">Write a KQL query to get the average temperature per device, grouped into 5-minute buckets, for the last hour.</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><pre class="code-block"><span class="fn">SensorData</span>
+| <span class="kw">where</span> Timestamp > <span class="fn">ago</span>(<span class="str">1h</span>)
+| <span class="kw">summarize</span> <span class="fn">avg</span>(Temperature) <span class="kw">by</span> DeviceId, <span class="fn">bin</span>(Timestamp, <span class="str">5m</span>)
+| <span class="kw">order by</span> Timestamp <span class="kw">desc</span></pre>
+              <code>bin()</code> is the KQL tumbling window. <code>ago(1h)</code> = last 1 hour from now.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /s-d2 -->
+
+  <!-- ── DOMAIN 3 ────────────────────────────── -->
+  <div class="study-domain" id="s-d3">
+
+    <!-- Monitoring -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d3)">Monitor Fabric Items</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Where to Find What</div>
+          <table class="dt">
+            <tr><th>Monitoring Need</th><th>Where to Look</th></tr>
+            <tr><td>Pipeline run history, status, duration</td><td>Monitoring Hub → Pipeline runs</td></tr>
+            <tr><td>Dataflow refresh history and errors</td><td>Monitoring Hub → Dataflow runs</td></tr>
+            <tr><td>Notebook run history</td><td>Monitoring Hub → Spark runs</td></tr>
+            <tr><td>Semantic model refresh</td><td>Semantic model settings → Refresh history</td></tr>
+            <tr><td>Eventstream / Eventhouse metrics</td><td>Item → Monitoring tab</td></tr>
+            <tr><td>Capacity usage (CU consumption)</td><td>Fabric Capacity Metrics app</td></tr>
+            <tr><td>Alerts on data conditions</td><td>Fabric Activator (formerly Data Activator)</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Fabric Activator (Alerts)</div>
+          <ul class="gotcha-list">
+            <li><strong>Activator triggers actions based on data conditions</strong>Set a rule on a semantic model, lakehouse, or eventstream: "When Sales drops below 1000, send Teams message / start a pipeline". It's event-driven automation, not just monitoring.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Errors — WEAK AREA -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--priority)">Identify &amp; Resolve Errors</div>
+        <div class="study-section-tags"><span class="weak-badge">⚠ Weak Area</span><span class="chevron" style="margin-left:8px;">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Pipeline Errors</div>
+          <table class="dt">
+            <tr><th>Error Type</th><th>Symptom</th><th>Fix</th></tr>
+            <tr><td>Source connectivity</td><td>Activity fails at start, "cannot connect to source"</td><td>Check linked service credentials, firewall rules, private endpoint config</td></tr>
+            <tr><td>Schema mismatch</td><td>Copy activity fails mid-run, column not found</td><td>Update column mappings in Copy Activity, or enable schema drift</td></tr>
+            <tr><td>Timeout</td><td>Activity times out after configured duration</td><td>Increase activity timeout setting, optimize source query, add indexes</td></tr>
+            <tr><td>Throttling</td><td>429 errors, intermittent failures</td><td>Reduce parallelism (Degree of Copy), add retry policy</td></tr>
+            <tr><td>Expression errors</td><td>"Expression evaluation failed"</td><td>Check @{} dynamic expressions, null handling, data type mismatches</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Dataflow Gen2 Errors</div>
+          <table class="dt">
+            <tr><th>Error Type</th><th>Symptom</th><th>Fix</th></tr>
+            <tr><td>Refresh timeout</td><td>Refresh killed after 30 min (default)</td><td>Optimize Power Query steps, reduce data volume, increase timeout</td></tr>
+            <tr><td>Gateway issues</td><td>On-prem data source fails</td><td>Check gateway status, ensure gateway has access to source</td></tr>
+            <tr><td>Query folding broken</td><td>Full table scan instead of filter pushdown, slow performance</td><td>Restructure PQ steps so filters come before merges; check if folding indicators are on</td></tr>
+            <tr><td>Credential error</td><td>"Access to resource is forbidden"</td><td>Re-enter credentials for the data source in dataflow settings</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Notebook Errors</div>
+          <table class="dt">
+            <tr><th>Error Type</th><th>Symptom</th><th>Fix</th></tr>
+            <tr><td>OutOfMemoryError</td><td>Spark executor killed, heap space error</td><td>Increase executor memory in Spark settings, use <code>cache()</code> wisely, reduce partition size</td></tr>
+            <tr><td>Session expired</td><td>"Session not found" or cells won't run</td><td>Restart Spark session; check idle timeout setting</td></tr>
+            <tr><td>Library not found</td><td>ImportError on custom library</td><td>Install library in Fabric Environment, attach environment to notebook</td></tr>
+            <tr><td>Delta write conflict</td><td>Concurrent writes to same Delta table</td><td>Enable Delta concurrent writes, check transaction log conflicts</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Eventhouse / KQL Errors</div>
+          <table class="dt">
+            <tr><th>Error Type</th><th>Symptom</th><th>Fix</th></tr>
+            <tr><td>Ingestion failure</td><td>Data not appearing in KQL table</td><td>Check ingestion status table: <code>.show ingestion failures</code>. Check schema mapping, data format (JSON/CSV), compression.</td></tr>
+            <tr><td>Schema mismatch on ingestion</td><td>Records dropped silently</td><td>Verify ingestion mapping matches source schema. Use <code>.show table X ingestion mapping</code></td></tr>
+            <tr><td>Query timeout</td><td>Query killed after limit</td><td>Optimize query: add <code>where</code> filters first, use <code>summarize</code> instead of full scans</td></tr>
+            <tr><td>Update policy failure</td><td>Derived table not populated</td><td>Check update policy function. Test function separately. Check for schema mismatch in output.</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Eventstream Errors</div>
+          <table class="dt">
+            <tr><th>Error Type</th><th>Symptom</th><th>Fix</th></tr>
+            <tr><td>Source disconnected</td><td>No events flowing, source shows red in UI</td><td>Check source credentials (Event Hub SAS key, Kafka config), firewall rules</td></tr>
+            <tr><td>Destination write failure</td><td>Events flowing but not landing in KQL/Lakehouse</td><td>Check destination item permissions, check schema compatibility</td></tr>
+            <tr><td>Schema evolution</td><td>New field in source breaks existing processing</td><td>Update schema mapping in eventstream, enable schema drift if supported</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Shortcut Errors</div>
+          <table class="dt">
+            <tr><th>Error</th><th>Fix</th></tr>
+            <tr><td>"Path not found"</td><td>Verify the target path exists in the source storage. Check for typos, case sensitivity.</td></tr>
+            <tr><td>"Access denied"</td><td>Update credentials for the shortcut. For ADLS: verify SAS token not expired, or managed identity has Storage Blob Data Reader role.</td></tr>
+            <tr><td>Shortcut appears empty</td><td>Check that the source container/folder is not empty. Verify the shortcut path points to a folder, not a parent container.</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Scenario Q&amp;A</div>
+          <div class="qa-list">
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A pipeline Copy Activity runs for 2 hours then fails with a timeout error. The source is a large SQL table. What are the two best fixes?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ 1. Increase the activity timeout</span> in the pipeline activity settings (default is often 7 days but some environments set lower).<br><span class="right">✓ 2. Optimize the source query</span> — add WHERE clause to filter only new data (incremental), add indexes on the source table, or enable partition-based parallel copy to split the load.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">Data is being ingested into a KQL database but records are missing. The eventstream shows events flowing. Where do you look first?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Run:</span> <code>.show ingestion failures</code> in KQL to see dropped records and the reason. Most common causes: schema mismatch (source has new field), wrong data format specified, or mapping error.<br><br>Also check: <code>.show table T ingestion mappings</code> to verify the schema mapping is correct.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A Dataflow Gen2 refresh is very slow and times out. The dataflow reads from a SQL source and does several merge steps. What's the likely problem and fix?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Query folding is broken</span> — merges placed before filter steps prevent query folding (filter pushdown to SQL source). Fix: restructure Power Query steps so all filter/where steps come BEFORE any merge/join. This pushes the WHERE clause to the SQL source and reduces data pulled into memory.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optimization -->
+    <div class="study-section open">
+      <div class="study-section-header">
+        <div class="study-section-title" style="color:var(--d3)">Optimize Performance</div>
+        <div class="study-section-tags"><span class="chevron">▼</span></div>
+      </div>
+      <div class="study-section-body">
+        <div class="study-block">
+          <div class="block-label">Lakehouse Table Optimization</div>
+          <table class="dt">
+            <tr><th>Technique</th><th>What It Does</th><th>When to Use</th></tr>
+            <tr><td>OPTIMIZE (compaction)</td><td>Merges many small Delta files into fewer large ones</td><td>After frequent small writes (streaming, incremental loads)</td></tr>
+            <tr><td>V-Order</td><td>Applies Parquet-level sorting/encoding for faster reads</td><td>Always on in Fabric by default — ensures fast Power BI reads</td></tr>
+            <tr><td>Z-Order (ZORDER BY)</td><td>Co-locates related data for columns used in filters</td><td>When queries frequently filter on specific columns (e.g. Region, Date)</td></tr>
+            <tr><td>VACUUM</td><td>Removes old Delta files beyond retention period</td><td>Periodically to reclaim storage (default 7-day retention)</td></tr>
+            <tr><td>Table partitioning</td><td>Partition by date/region to enable partition pruning</td><td>Large tables with predictable filter patterns</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Data Warehouse Optimization</div>
+          <table class="dt">
+            <tr><th>Technique</th><th>What It Does</th></tr>
+            <tr><td>Statistics</td><td>Auto-updated in Fabric warehouse. Helps query optimizer choose best plan. Run <code>UPDATE STATISTICS</code> after large loads.</td></tr>
+            <tr><td>Result set caching</td><td>Fabric warehouse caches query results. Repeated same queries return instantly.</td></tr>
+            <tr><td>Materialized views (Warehouse)</td><td>Pre-computed aggregates. Query hits materialized view instead of base table.</td></tr>
+            <tr><td>Avoid SELECT *</td><td>Only project columns needed — reduces data scanned in columnar storage</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Spark Performance</div>
+          <table class="dt">
+            <tr><th>Technique</th><th>When</th></tr>
+            <tr><td><code>cache()</code> / <code>persist()</code></td><td>DataFrame used multiple times in same notebook</td></tr>
+            <tr><td>Broadcast join</td><td>One table is small (&lt;10MB) — broadcast it to avoid shuffle</td></tr>
+            <tr><td>Repartition vs Coalesce</td><td>Repartition = increase partitions (full shuffle). Coalesce = reduce partitions (no shuffle). Use coalesce before writing.</td></tr>
+            <tr><td>Avoid UDFs where possible</td><td>Python UDFs break Spark optimization. Use built-in Spark SQL functions instead.</td></tr>
+            <tr><td>Autoscale + High Concurrency</td><td>Autoscale for variable workloads. High Concurrency for interactive multi-user scenarios.</td></tr>
+          </table>
+        </div>
+        <div class="study-block">
+          <div class="block-label">Scenario Q&amp;A</div>
+          <div class="qa-list">
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A lakehouse table has 50,000 small Parquet files after months of streaming ingestion. Queries are slow. What single command fixes this?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ OPTIMIZE</span> — run <code>OPTIMIZE tablename</code> in a notebook (PySpark) or SQL endpoint. This compacts small files into larger ones, dramatically reducing file overhead for reads. Combine with <code>ZORDER BY</code> on filter columns for maximum benefit.</div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-q"><span class="qa-q-text">A Spark notebook joins a 500GB fact table with a 5MB dimension table. The job runs slowly due to shuffle. What's the fix?</span><span class="qa-q-icon">▼</span></div>
+              <div class="qa-a"><span class="right">✓ Broadcast join</span> — hint Spark to broadcast the small dimension table: <code>spark.sql("SELECT /*+ BROADCAST(dim) */ ...")</code> or <code>df.join(broadcast(dim_df), ...)</code>. The small table is sent to all executors, eliminating the shuffle on the large table.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /s-d3 -->
+
+</div><!-- /tab-study -->
+
+</div><!-- /wrap -->
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const EXAM_DATE = new Date('2026-06-02T09:00:00');
+const STORE_KEY = 'dp700_v2';
 const DOMAINS = [
-  {
-    id: 'd1',
-    name: 'Implement & Manage',
-    weight: '30–35%',
-    color: '#4f9cf9',
-    sections: [
-      {
-        name: 'Workspace Settings',
-        topics: [
-          { id: 'd1_01', label: 'Configure Spark workspace settings (high concurrency, auto-scale, runtime)', kql: false },
-          { id: 'd1_02', label: 'Configure domain workspace settings', kql: false },
-          { id: 'd1_03', label: 'Configure OneLake workspace settings', kql: false },
-          { id: 'd1_04', label: 'Configure data workflow workspace settings (Airflow)', kql: false },
-        ]
-      },
-      {
-        name: 'Lifecycle Management',
-        topics: [
-          { id: 'd1_05', label: 'Configure version control (Git — Azure DevOps / GitHub)', kql: false },
-          { id: 'd1_06', label: 'Implement database projects (schema-as-code for warehouses)', kql: false },
-          { id: 'd1_07', label: 'Create and configure deployment pipelines (stages, deployment rules)', kql: false },
-        ]
-      },
-      {
-        name: 'Security & Governance ⚠ WEAK AREA',
-        topics: [
-          { id: 'd1_08', label: 'Implement workspace-level access controls (Admin/Member/Contributor/Viewer)', kql: false, priority: true },
-          { id: 'd1_09', label: 'Implement item-level access controls', kql: false, priority: true },
-          { id: 'd1_10', label: 'Implement row-level, column-level, object-level, folder/file-level access controls', kql: false, priority: true },
-          { id: 'd1_11', label: 'Implement dynamic data masking', kql: false, priority: true },
-          { id: 'd1_12', label: 'Apply sensitivity labels to items', kql: false, priority: true },
-          { id: 'd1_13', label: 'Endorse items (Promoted / Certified)', kql: false, priority: true },
-          { id: 'd1_14', label: 'Implement and use workspace logging', kql: false, priority: true },
-          { id: 'd1_15', label: 'Configure OneLake security (data access roles, folder-level)', kql: false, priority: true },
-        ]
-      },
-      {
-        name: 'Orchestrate Processes',
-        topics: [
-          { id: 'd1_16', label: 'Choose between Dataflow Gen2, pipeline, and notebook', kql: false },
-          { id: 'd1_17', label: 'Design and implement schedules and event-based triggers', kql: false },
-          { id: 'd1_18', label: 'Implement orchestration patterns: parameters and dynamic expressions', kql: false },
-        ]
-      }
-    ]
-  },
-  {
-    id: 'd2',
-    name: 'Ingest & Transform',
-    weight: '30–35%',
-    color: '#a78bfa',
-    sections: [
-      {
-        name: 'Loading Patterns',
-        topics: [
-          { id: 'd2_01', label: 'Design and implement full and incremental data loads', kql: false },
-          { id: 'd2_02', label: 'Prepare data for loading into a dimensional model', kql: false },
-          { id: 'd2_03', label: 'Design loading pattern for streaming data', kql: true },
-        ]
-      },
-      {
-        name: 'Batch Data',
-        topics: [
-          { id: 'd2_04', label: 'Choose appropriate data store (lakehouse vs warehouse vs KQL DB)', kql: false },
-          { id: 'd2_05', label: 'Choose between Dataflows, Notebooks, KQL, T-SQL for transformation', kql: true },
-          { id: 'd2_06', label: 'Create and manage shortcuts (OneLake, ADLS, S3, GCS, Dataverse)', kql: false },
-          { id: 'd2_07', label: 'Implement mirroring (Azure SQL DB, Cosmos DB, Snowflake etc.)', kql: false },
-          { id: 'd2_08', label: 'Ingest data using pipelines (Copy Activity, data sources)', kql: false },
-          { id: 'd2_09', label: 'Ingest data via continuous integration from OneLake', kql: false },
-          { id: 'd2_10', label: 'Transform data using Power Query (M)', kql: false },
-          { id: 'd2_11', label: 'Transform data using PySpark (notebooks)', kql: false },
-          { id: 'd2_12', label: 'Transform data using T-SQL (warehouse / lakehouse SQL endpoint)', kql: false },
-          { id: 'd2_13', label: 'Transform data using KQL (eventhouse)', kql: true },
-          { id: 'd2_14', label: 'Denormalize data', kql: false },
-          { id: 'd2_15', label: 'Group and aggregate data', kql: false },
-          { id: 'd2_16', label: 'Handle duplicate, missing, and late-arriving data', kql: false },
-        ]
-      },
-      {
-        name: 'Streaming Data ⚠ WEAK AREA',
-        topics: [
-          { id: 'd2_17', label: 'Choose appropriate streaming engine (Eventstream vs Spark Streaming)', kql: true, priority: true },
-          { id: 'd2_18', label: 'Choose storage in RTI: native vs mirrored vs shortcut', kql: true, priority: true },
-          { id: 'd2_19', label: 'Choose accelerated vs non-accelerated shortcuts in RTI', kql: true, priority: true },
-          { id: 'd2_20', label: 'Process data using Eventstreams', kql: true, priority: true },
-          { id: 'd2_21', label: 'Process data using Spark Structured Streaming', kql: false, priority: true },
-          { id: 'd2_22', label: 'Process data using KQL (query language, update policies)', kql: true, priority: true },
-          { id: 'd2_23', label: 'Create windowing functions (tumbling, sliding, session, bin())', kql: true, priority: true },
-        ]
-      }
-    ]
-  },
-  {
-    id: 'd3',
-    name: 'Monitor & Optimize',
-    weight: '30–35%',
-    color: '#34d399',
-    sections: [
-      {
-        name: 'Monitor Fabric Items',
-        topics: [
-          { id: 'd3_01', label: 'Monitor data ingestion (pipeline runs, Monitoring hub)', kql: false },
-          { id: 'd3_02', label: 'Monitor data transformation (dataflow refreshes, notebook runs)', kql: false },
-          { id: 'd3_03', label: 'Monitor semantic model refresh', kql: false },
-          { id: 'd3_04', label: 'Configure alerts (Fabric Activator / Data Activator)', kql: false },
-        ]
-      },
-      {
-        name: 'Identify & Resolve Errors ⚠ WEAK AREA',
-        topics: [
-          { id: 'd3_05', label: 'Identify and resolve pipeline errors', kql: false, priority: true },
-          { id: 'd3_06', label: 'Identify and resolve dataflow errors', kql: false, priority: true },
-          { id: 'd3_07', label: 'Identify and resolve notebook errors', kql: false, priority: true },
-          { id: 'd3_08', label: 'Identify and resolve eventhouse errors', kql: true, priority: true },
-          { id: 'd3_09', label: 'Identify and resolve eventstream errors', kql: true, priority: true },
-          { id: 'd3_10', label: 'Identify and resolve T-SQL errors', kql: false, priority: true },
-          { id: 'd3_11', label: 'Identify and resolve shortcut errors', kql: false, priority: true },
-        ]
-      },
-      {
-        name: 'Optimize Performance',
-        topics: [
-          { id: 'd3_12', label: 'Optimize a lakehouse table (V-Order, compaction, Z-Order)', kql: false },
-          { id: 'd3_13', label: 'Optimize a pipeline (parallelism, degree of copy, IR)', kql: false },
-          { id: 'd3_14', label: 'Optimize a data warehouse (distribution, statistics, caching)', kql: false },
-          { id: 'd3_15', label: 'Optimize eventstreams and eventhouses', kql: true },
-          { id: 'd3_16', label: 'Optimize Spark performance (caching, broadcast, partition tuning)', kql: false },
-          { id: 'd3_17', label: 'Optimize query performance (execution plans, indexes, materialized views)', kql: false },
-        ]
-      }
-    ]
-  }
+  { id:'d1', name:'Implement & Manage', weight:'30–35%', color:'#4f9cf9', sections:[
+    { name:'Workspace Settings', topics:[
+      {id:'d1_01',label:'Configure Spark workspace settings (high concurrency, auto-scale)',kql:false},
+      {id:'d1_02',label:'Configure domain workspace settings',kql:false},
+      {id:'d1_03',label:'Configure OneLake workspace settings',kql:false},
+      {id:'d1_04',label:'Configure data workflow workspace settings (Airflow)',kql:false},
+    ]},
+    { name:'Lifecycle Management', topics:[
+      {id:'d1_05',label:'Configure version control (Git — Azure DevOps / GitHub)',kql:false},
+      {id:'d1_06',label:'Implement database projects (schema-as-code for warehouses)',kql:false},
+      {id:'d1_07',label:'Create and configure deployment pipelines (stages, deployment rules)',kql:false},
+    ]},
+    { name:'Security & Governance ⚠', weak:true, topics:[
+      {id:'d1_08',label:'Implement workspace-level access controls (Admin/Member/Contributor/Viewer)',kql:false,priority:true},
+      {id:'d1_09',label:'Implement item-level access controls',kql:false,priority:true},
+      {id:'d1_10',label:'Implement row-level, column-level, object-level, folder/file-level access controls',kql:false,priority:true},
+      {id:'d1_11',label:'Implement dynamic data masking',kql:false,priority:true},
+      {id:'d1_12',label:'Apply sensitivity labels to items',kql:false,priority:true},
+      {id:'d1_13',label:'Endorse items (Promoted / Certified)',kql:false,priority:true},
+      {id:'d1_14',label:'Implement and use workspace logging',kql:false,priority:true},
+      {id:'d1_15',label:'Configure OneLake security (data access roles, folder-level)',kql:false,priority:true},
+    ]},
+    { name:'Orchestrate Processes', topics:[
+      {id:'d1_16',label:'Choose between Dataflow Gen2, pipeline, and notebook',kql:false},
+      {id:'d1_17',label:'Design and implement schedules and event-based triggers',kql:false},
+      {id:'d1_18',label:'Implement orchestration patterns: parameters and dynamic expressions',kql:false},
+    ]},
+  ]},
+  { id:'d2', name:'Ingest & Transform', weight:'30–35%', color:'#a78bfa', sections:[
+    { name:'Loading Patterns', topics:[
+      {id:'d2_01',label:'Design full and incremental data loads (watermark, CDC, Delta MERGE)',kql:false},
+      {id:'d2_02',label:'Prepare data for loading into a dimensional model',kql:false},
+      {id:'d2_03',label:'Design loading pattern for streaming data',kql:true},
+    ]},
+    { name:'Batch Data', topics:[
+      {id:'d2_04',label:'Choose appropriate data store (lakehouse vs warehouse vs KQL DB)',kql:false},
+      {id:'d2_05',label:'Choose between Dataflows, Notebooks, KQL, T-SQL for transformation',kql:true},
+      {id:'d2_06',label:'Create and manage shortcuts (OneLake, ADLS, S3, GCS, Dataverse)',kql:false},
+      {id:'d2_07',label:'Implement mirroring (Azure SQL DB, Cosmos DB, Snowflake)',kql:false},
+      {id:'d2_08',label:'Ingest data using pipelines (Copy Activity, data sources)',kql:false},
+      {id:'d2_09',label:'Ingest data via continuous integration from OneLake',kql:false},
+      {id:'d2_10',label:'Transform data using Power Query (M) and Dataflow Gen2',kql:false},
+      {id:'d2_11',label:'Transform data using PySpark (notebooks)',kql:false},
+      {id:'d2_12',label:'Transform data using T-SQL (warehouse / SQL endpoint)',kql:false},
+      {id:'d2_13',label:'Transform data using KQL (eventhouse, update policies)',kql:true},
+      {id:'d2_14',label:'Handle duplicate, missing, and late-arriving data',kql:false},
+    ]},
+    { name:'Streaming Data ⚠', weak:true, topics:[
+      {id:'d2_15',label:'Choose streaming engine: Eventstream vs Spark Structured Streaming',kql:true,priority:true},
+      {id:'d2_16',label:'Choose storage in RTI: native vs mirrored vs shortcut',kql:true,priority:true},
+      {id:'d2_17',label:'Choose accelerated vs non-accelerated shortcuts in RTI',kql:true,priority:true},
+      {id:'d2_18',label:'Process data using Eventstreams (sources, destinations, transforms)',kql:true,priority:true},
+      {id:'d2_19',label:'Process data using Spark Structured Streaming',kql:false,priority:true},
+      {id:'d2_20',label:'Process data using KQL (query language, update policies)',kql:true,priority:true},
+      {id:'d2_21',label:'Create windowing functions (tumbling, sliding, session, bin())',kql:true,priority:true},
+    ]},
+  ]},
+  { id:'d3', name:'Monitor & Optimize', weight:'30–35%', color:'#34d399', sections:[
+    { name:'Monitor Fabric Items', topics:[
+      {id:'d3_01',label:'Monitor data ingestion (Monitoring Hub, pipeline runs)',kql:false},
+      {id:'d3_02',label:'Monitor data transformation (dataflow refreshes, Spark runs)',kql:false},
+      {id:'d3_03',label:'Monitor semantic model refresh',kql:false},
+      {id:'d3_04',label:'Configure alerts with Fabric Activator',kql:false},
+    ]},
+    { name:'Identify & Resolve Errors ⚠', weak:true, topics:[
+      {id:'d3_05',label:'Identify and resolve pipeline errors (timeout, connectivity, throttling)',kql:false,priority:true},
+      {id:'d3_06',label:'Identify and resolve dataflow errors (query folding, gateway, credentials)',kql:false,priority:true},
+      {id:'d3_07',label:'Identify and resolve notebook errors (OOM, session, library)',kql:false,priority:true},
+      {id:'d3_08',label:'Identify and resolve eventhouse errors (.show ingestion failures)',kql:true,priority:true},
+      {id:'d3_09',label:'Identify and resolve eventstream errors (source, destination, schema)',kql:true,priority:true},
+      {id:'d3_10',label:'Identify and resolve T-SQL errors',kql:false,priority:true},
+      {id:'d3_11',label:'Identify and resolve shortcut errors (path, credentials, permissions)',kql:false,priority:true},
+    ]},
+    { name:'Optimize Performance', topics:[
+      {id:'d3_12',label:'Optimize lakehouse table (OPTIMIZE, V-Order, Z-Order, VACUUM)',kql:false},
+      {id:'d3_13',label:'Optimize a pipeline (parallelism, degree of copy)',kql:false},
+      {id:'d3_14',label:'Optimize a data warehouse (statistics, caching, materialized views)',kql:false},
+      {id:'d3_15',label:'Optimize eventstreams and eventhouses',kql:true},
+      {id:'d3_16',label:'Optimize Spark (cache, broadcast join, repartition, avoid UDFs)',kql:false},
+      {id:'d3_17',label:'Optimize query performance (execution plans, partition pruning)',kql:false},
+    ]},
+  ]},
 ];
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-const STORE_KEY = 'dp700_tracker_v1';
-let state = {}; // { topicId: 0|1|2 }
-let focusFilter = 'all';
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let state = {}, focusFilter = 'all';
+function loadState(){try{state=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');}catch(e){state={};}}
+function saveState(){localStorage.setItem(STORE_KEY,JSON.stringify(state));}
+function getStatus(id){return state[id]??0;}
+function cycleStatus(id){state[id]=(getStatus(id)+1)%3;saveState();refresh();}
 
-function loadState() {
-  try { state = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
-  catch(e) { state = {}; }
-}
+// ─── TABS ──────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
 
-function saveState() {
-  localStorage.setItem(STORE_KEY, JSON.stringify(state));
-}
+// ─── STUDY DOMAIN NAV ──────────────────────────────────────────────────────
+document.querySelectorAll('.snav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.study-domain').forEach(d=>d.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.domain).classList.add('active');
+  });
+});
 
-function getStatus(id) { return state[id] ?? 0; }
+// ─── STUDY SECTION TOGGLE ──────────────────────────────────────────────────
+document.querySelectorAll('.study-section-header').forEach(h=>{
+  h.addEventListener('click',()=>h.closest('.study-section').classList.toggle('open'));
+});
 
-function cycleStatus(id) {
-  state[id] = (getStatus(id) + 1) % 3;
-  saveState();
-  refresh();
-}
+// ─── Q&A TOGGLE ────────────────────────────────────────────────────────────
+document.querySelectorAll('.qa-q').forEach(q=>{
+  q.addEventListener('click',()=>q.closest('.qa-item').classList.toggle('open'));
+});
 
-// ─── RENDER ──────────────────────────────────────────────────────────────────
-function renderDomains() {
-  const container = document.getElementById('domains-container');
-  container.innerHTML = '';
-
-  DOMAINS.forEach((d, i) => {
-    const allTopics = d.sections.flatMap(s => s.topics);
-    const total = allTopics.length;
-    const confident = allTopics.filter(t => getStatus(t.id) === 2).length;
-    const studied = allTopics.filter(t => getStatus(t.id) === 1).length;
-    const pct = Math.round((confident / total) * 100);
-
-    // SVG ring
-    const r = 20;
-    const circ = 2 * Math.PI * r;
-    const offset = circ - (pct / 100) * circ;
-
-    const card = document.createElement('div');
-    card.className = 'domain-card open';
-    card.dataset.domain = d.id;
-
-    // Sections HTML
-    let sectionsHtml = '';
-    d.sections.forEach(sec => {
-      sectionsHtml += `<div class="section-label">${sec.name}</div>`;
-      sec.topics.forEach(t => {
-        const s = getStatus(t.id);
-        const icon = s === 1 ? '📖' : s === 2 ? '✓' : '';
-        sectionsHtml += `
-          <div class="topic-row" data-id="${t.id}" data-status="${s}" data-priority="${t.priority ? 1 : 0}">
-            <button class="status-btn" title="Click to cycle status">${icon}</button>
-            <span class="topic-label">${t.label}</span>
-            ${t.priority ? '<span class="priority-tag">⚠ Priority</span>' : ''}
-            ${t.kql ? '<span class="kql-tag">KQL</span>' : ''}
-          </div>`;
+// ─── RENDER TRACKER ────────────────────────────────────────────────────────
+function renderDomains(){
+  const c=document.getElementById('domains-container');c.innerHTML='';
+  DOMAINS.forEach(d=>{
+    const all=d.sections.flatMap(s=>s.topics);
+    const total=all.length,confident=all.filter(t=>getStatus(t.id)===2).length,studied=all.filter(t=>getStatus(t.id)===1).length;
+    const pct=Math.round((confident/total)*100);
+    const r=20,circ=2*Math.PI*r,offset=circ-(pct/100)*circ;
+    const card=document.createElement('div');
+    card.className='domain-card open';card.dataset.domain=d.id;
+    let sHtml='';
+    d.sections.forEach(sec=>{
+      sHtml+=`<div class="section-label${sec.weak?' weak':''}">${sec.name}</div>`;
+      sec.topics.forEach(t=>{
+        const s=getStatus(t.id),icon=s===1?'📖':s===2?'✓':'';
+        sHtml+=`<div class="topic-row" data-id="${t.id}" data-status="${s}" data-priority="${t.priority?1:0}">
+          <button class="status-btn">${icon}</button>
+          <span class="topic-label">${t.label}</span>
+          ${t.priority?'<span class="priority-tag">⚠</span>':''}
+          ${t.kql?'<span class="kql-tag">KQL</span>':''}
+        </div>`;
       });
     });
-
-    card.innerHTML = `
-      <div class="domain-header" data-toggle="${d.id}">
+    card.innerHTML=`
+      <div class="domain-header">
         <div class="domain-ring">
-          <svg viewBox="0 0 48 48">
-            <circle class="ring-bg" cx="24" cy="24" r="${r}"/>
-            <circle class="ring-fill" cx="24" cy="24" r="${r}"
-              stroke="${d.color}"
-              stroke-dasharray="${circ}"
-              stroke-dashoffset="${offset}"/>
-          </svg>
+          <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="${r}"/><circle class="ring-fill" cx="24" cy="24" r="${r}" stroke="${d.color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/></svg>
           <div class="ring-pct" style="color:${d.color}">${pct}%</div>
         </div>
         <div class="domain-meta">
           <div class="domain-name" style="color:${d.color}">${d.name}</div>
-          <div class="domain-weight">${d.weight} of exam</div>
-          <div class="domain-counts">
-            <span>${confident}</span>/${total} confident &nbsp;·&nbsp; <span>${studied}</span> in progress
-          </div>
+          <div class="domain-weight">${d.weight}</div>
+          <div class="domain-counts"><span>${confident}</span>/${total} confident · <span>${studied}</span> in progress</div>
         </div>
         <div class="domain-chevron">▼</div>
       </div>
-      <div class="domain-body">${sectionsHtml}</div>`;
-
-    container.appendChild(card);
-
-    // Toggle collapse
-    card.querySelector('.domain-header').addEventListener('click', (e) => {
-      if (e.target.closest('.topic-row')) return;
-      card.classList.toggle('open');
-    });
-
-    // Topic click
-    card.querySelectorAll('.topic-row').forEach(row => {
-      row.addEventListener('click', (e) => {
+      <div class="domain-body">${sHtml}</div>`;
+    c.appendChild(card);
+    card.querySelector('.domain-header').addEventListener('click',e=>{if(!e.target.closest('.topic-row'))card.classList.toggle('open');});
+    card.querySelectorAll('.topic-row').forEach(row=>{
+      row.addEventListener('click',e=>{
         e.stopPropagation();
-        const id = row.dataset.id;
-        const btn = row.querySelector('.status-btn');
-        // Ripple
-        const ring = document.createElement('span');
-        ring.className = 'ripple-ring';
-        btn.appendChild(ring);
-        setTimeout(() => ring.remove(), 450);
-        cycleStatus(id);
+        const btn=row.querySelector('.status-btn');
+        const ring=document.createElement('span');ring.className='ripple-ring';btn.appendChild(ring);setTimeout(()=>ring.remove(),450);
+        cycleStatus(row.dataset.id);
       });
     });
   });
 }
 
-function renderStats() {
-  const allTopics = DOMAINS.flatMap(d => d.sections.flatMap(s => s.topics));
-  const total = allTopics.length;
-  const confident = allTopics.filter(t => getStatus(t.id) === 2).length;
-  const studied = allTopics.filter(t => getStatus(t.id) === 1).length;
-  const readiness = Math.round(((confident + studied * 0.5) / total) * 100);
-
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-studied').textContent = studied;
-  document.getElementById('stat-confident').textContent = confident;
-  document.getElementById('master-bar').style.width = readiness + '%';
-  document.getElementById('master-pct').textContent = readiness + '%';
+function renderStats(){
+  const all=DOMAINS.flatMap(d=>d.sections.flatMap(s=>s.topics));
+  const total=all.length,confident=all.filter(t=>getStatus(t.id)===2).length,studied=all.filter(t=>getStatus(t.id)===1).length;
+  const r=Math.round(((confident+studied*.5)/total)*100);
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-studied').textContent=studied;
+  document.getElementById('stat-confident').textContent=confident;
+  document.getElementById('master-bar').style.width=r+'%';
+  document.getElementById('master-pct').textContent=r+'%';
 }
 
-function renderFocusZone() {
-  const grid = document.getElementById('focus-grid');
-  const allTopics = DOMAINS.flatMap(d =>
-    d.sections.flatMap(s => s.topics.map(t => ({ ...t, domainColor: d.color, domainName: d.name })))
-  );
-
-  let filtered = allTopics.filter(t => getStatus(t.id) < 2);
-  if (focusFilter === 'kql') filtered = filtered.filter(t => t.kql);
-  if (focusFilter === 'priority') filtered = filtered.filter(t => t.priority);
-  // Sort: priority first, then KQL
-  filtered.sort((a, b) => ((b.priority ? 2 : 0) + (b.kql ? 1 : 0)) - ((a.priority ? 2 : 0) + (a.kql ? 1 : 0)));
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div class="focus-empty"><span>✓ All topics covered!</span> You're ready.</div>`;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(t => {
-    const s = getStatus(t.id);
-    const statusLabel = s === 0 ? 'Not Started' : 'Studied';
-    const statusClass = `s${s}`;
-    return `
-      <div class="focus-item" data-id="${t.id}">
-        <div class="focus-domain-dot" style="background:${t.domainColor}"></div>
-        <div class="focus-item-label">${t.label}</div>
-        ${t.priority ? '<span class="priority-tag" style="font-size:7px;padding:1px 4px;">⚠</span>' : ''}
-        ${t.kql ? '<span class="kql-tag" style="font-size:7px;padding:1px 4px;">KQL</span>' : ''}
-        <span class="focus-status ${statusClass}">${statusLabel}</span>
-      </div>`;
-  }).join('');
-
-  grid.querySelectorAll('.focus-item').forEach(item => {
-    item.addEventListener('click', () => {
-      cycleStatus(item.dataset.id);
-    });
-  });
+function renderFocus(){
+  const grid=document.getElementById('focus-grid');
+  let all=DOMAINS.flatMap(d=>d.sections.flatMap(s=>s.topics.map(t=>({...t,dc:d.color,dn:d.name}))));
+  let filtered=all.filter(t=>getStatus(t.id)<2);
+  if(focusFilter==='kql')filtered=filtered.filter(t=>t.kql);
+  if(focusFilter==='priority')filtered=filtered.filter(t=>t.priority);
+  filtered.sort((a,b)=>((b.priority?2:0)+(b.kql?1:0))-((a.priority?2:0)+(a.kql?1:0)));
+  if(!filtered.length){grid.innerHTML=`<div class="focus-empty"><span>✓ All topics covered.</span> You're ready.</div>`;return;}
+  grid.innerHTML=filtered.map(t=>{const s=getStatus(t.id);return`
+    <div class="focus-item" data-id="${t.id}">
+      <div class="focus-domain-dot" style="background:${t.dc}"></div>
+      <div class="focus-item-label">${t.label}</div>
+      ${t.priority?'<span class="priority-tag" style="font-size:7px;padding:1px 4px;">⚠</span>':''}
+      ${t.kql?'<span class="kql-tag" style="font-size:7px;padding:1px 4px;">KQL</span>':''}
+      <span class="focus-status s${s}">${s===0?'Not Started':'Studied'}</span>
+    </div>`}).join('');
+  grid.querySelectorAll('.focus-item').forEach(item=>{item.addEventListener('click',()=>cycleStatus(item.dataset.id));});
 }
 
-function renderCountdown() {
-  const now = new Date();
-  const diff = EXAM_DATE - now;
-  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  const el = document.getElementById('days-left');
-  el.textContent = days > 0 ? days : 0;
-  el.className = 'stat-val ' + (days <= 2 ? 'warning' : days <= 4 ? 'amber' : '');
+function renderCountdown(){
+  const days=Math.max(0,Math.ceil((EXAM_DATE-new Date())/(864e5)));
+  const el=document.getElementById('days-left');
+  el.textContent=days;el.className='stat-val'+(days<=2?' red':days<=4?' amber':'');
 }
 
-function refresh() {
-  renderDomains();
-  renderStats();
-  renderFocusZone();
-}
-
-// ─── FILTER BUTTONS ──────────────────────────────────────────────────────────
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    focusFilter = btn.dataset.filter;
-    renderFocusZone();
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');focusFilter=btn.dataset.filter;renderFocus();
   });
 });
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-loadState();
-renderCountdown();
-refresh();
-setInterval(renderCountdown, 60000);
+function refresh(){renderDomains();renderStats();renderFocus();}
+loadState();renderCountdown();refresh();setInterval(renderCountdown,60000);
 </script>
 </body>
 </html>
