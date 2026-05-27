@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Study Notes</title>
+<link rel="stylesheet" href="dp700_styles.css">
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn active">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn">🔷 KQL Lab</a>
+</nav>
+
+<div class="page">
+  <div class="notes-domain-nav">
+    <button class="nd-btn d1 active" onclick="showDomain('d1',this)">D1 · Implement &amp; Manage</button>
+    <button class="nd-btn d2" onclick="showDomain('d2',this)">D2 · Ingest &amp; Transform</button>
+    <button class="nd-btn d3" onclick="showDomain('d3',this)">D3 · Monitor &amp; Optimize</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       DOMAIN 1: IMPLEMENT & MANAGE
+  ═══════════════════════════════════════════════ -->
+  <div id="domain-d1" class="domain-notes active">
+
+    <!-- 1.1 Workspace Settings -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.1 · Workspace Settings Categories</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Category</th><th>What It Controls</th><th>Exam Trigger Words</th></tr>
+          <tr><td><strong>Spark</strong></td><td>Default pool, runtime version, autoscale, high concurrency mode</td><td>"optimize notebook", "Spark pool", "configure runtime"</td></tr>
+          <tr><td><strong>Domain</strong></td><td>Assign workspace to a Fabric domain, inherit domain governance</td><td>"data mesh", "group by business unit", "domain governance"</td></tr>
+          <tr><td><strong>OneLake</strong></td><td>Managed/unmanaged items, storage location, cross-workspace access</td><td>"control where data is stored", "restrict item creation"</td></tr>
+          <tr><td><strong>Data Workflows</strong></td><td>Apache Airflow environment, starter pool for Data Factory</td><td>"Airflow", "orchestrate external workflows", "starter pool"</td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ Gotcha</strong> "Data workflows settings" = Airflow configuration, NOT generic pipeline settings. If the question mentions Airflow or external workflow orchestration → Data Workflows settings.</div>
+      </div>
+    </div>
+
+    <!-- 1.2 Spark Config -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.2 · High Concurrency Mode vs Autoscale</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Feature</th><th>What It Does</th><th>When to Use</th></tr>
+          <tr><td><strong>High Concurrency Mode</strong></td><td>Shares ONE running Spark session across multiple workloads from the <span class="red">same user</span>. Each gets its own REPL core. Eliminates cold-start wait.</td><td>One user running multiple notebooks simultaneously. Reduces startup by up to 36×.</td></tr>
+          <tr><td><strong>Autoscale</strong></td><td>Automatically adds/removes Spark nodes (executors) based on workload demand.</td><td>Variable workload with unpredictable compute peaks.</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Critical — Often Tested Wrong</strong>
+          High Concurrency Mode is <strong>single-user boundary</strong> — it does NOT share sessions between different users. Default max: 5 notebooks per session. Can increase to 50 via <code>spark.highConcurrency.max</code> in Environment settings.
+        </div>
+        <div class="gotcha"><strong>⚠️ Gotcha</strong> Session sharing requires: same user + same default Lakehouse + same Spark compute settings. If ANY differs, a separate Spark session starts.</div>
+        <div class="qa">
+          <div class="qa-q">Q: A data engineer runs 5 notebooks at once. Spark takes 3 min to start each. What to enable?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>High Concurrency Mode.</strong> Shares the existing session — no new startup per notebook. NOT autoscale (that scales nodes, not sessions).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.3 OneLake + Shortcuts -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.3 · OneLake Architecture &amp; Shortcuts</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <pre>Tenant (OneLake — one per tenant)
+ └── Workspace A
+      ├── Lakehouse 1  → /Tables/  (Delta, top-level shortcuts only)
+      │                → /Files/   (any format, any depth shortcuts)
+      ├── Warehouse 1  → (SQL endpoint, backed by OneLake)
+      └── KQL Database → (Eventhouse, shortcuts appear in /Shortcuts/ folder)</pre>
+        <h4>Shortcut Types Decision Table</h4>
+        <table class="dt">
+          <tr><th>Shortcut Type</th><th>Source</th><th>Data Moves?</th><th>Use When</th></tr>
+          <tr><td>OneLake (Internal)</td><td>Another Fabric item (lakehouse, warehouse, KQL DB)</td><td>No</td><td>Reuse data across workspaces without duplication</td></tr>
+          <tr><td>ADLS Gen2</td><td>Azure Data Lake Storage Gen2</td><td>No</td><td>Keep data in Azure, expose in Fabric</td></tr>
+          <tr><td>Amazon S3</td><td>AWS S3 bucket</td><td>No</td><td>Multi-cloud, data stays in AWS</td></tr>
+          <tr><td>Google Cloud Storage</td><td>GCS bucket</td><td>No</td><td>Data in GCP</td></tr>
+          <tr><td>Azure Blob Storage</td><td>Azure Blob</td><td>No</td><td>Legacy Blob storage in Azure</td></tr>
+          <tr><td>Dataverse</td><td>Microsoft Dataverse</td><td>No</td><td>Power Platform data in Fabric</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Shortcut Caching — Tested!</strong>
+          Caching is supported ONLY for: <strong>GCS, S3, S3-compatible, and on-premises data gateway</strong> shortcuts. <span class="red">ADLS Gen2 shortcuts do NOT support caching.</span><br>
+          Enable in: Workspace Settings → OneLake → toggle Cache ON → set retention (1–28 days).<br>
+          Files &gt;1 GB are NOT cached. Retention resets each time file is accessed.
+        </div>
+        <div class="gotcha"><strong>⚠️ Gotcha: Shortcut location rules</strong><br>
+          In the <strong>Tables/</strong> folder: shortcuts at top level only — no subdirectories. The target must be Delta Parquet format for the lakehouse to auto-recognize it as a table.<br>
+          In the <strong>Files/</strong> folder: shortcuts at any depth, any data format.
+        </div>
+        <div class="gotcha"><strong>⚠️ Gotcha: Deleting shortcuts</strong><br>
+          Deleting a shortcut itself = only removes the shortcut object, target data is untouched.<br>
+          Deleting a FILE inside a shortcut = DOES delete the file at the target (if you have write permission).
+        </div>
+        <div class="gotcha"><strong>⚠️ Gotcha: KQL Database shortcuts</strong><br>
+          Shortcuts in a KQL database appear in the <strong>Shortcuts</strong> folder and are treated as external tables. Query with <code>external_table('MyShortcut')</code>.
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: A lakehouse in Workspace A needs to expose its Sales table to Workspace B without copying data. What's the most efficient approach?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">Create an <strong>internal OneLake shortcut</strong> in Workspace B's lakehouse pointing to the Sales table in Workspace A. No data is copied. Users in B query it through the shortcut.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.4 Deployment Pipelines -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.4 · Deployment Pipelines (Lifecycle Management)</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="info-box"><strong>ℹ️ Key Facts</strong>
+          A deployment pipeline can have <strong>2–10 stages</strong> (default 3: Dev → Test → Production). Each stage maps to a separate Fabric workspace. A workspace can only be assigned to ONE stage.
+        </div>
+        <h4>What Gets Deployed</h4>
+        <p><strong>Definitions only — NO data in tables.</strong> Items: Lakehouses, Warehouses, Notebooks, Pipelines, Dataflows Gen2, Reports, Semantic Models, Eventhouses, KQL Databases, Eventstreams, Environments.</p>
+        <h4>Key Concepts</h4>
+        <table class="dt">
+          <tr><th>Concept</th><th>What It Means</th></tr>
+          <tr><td><strong>Deployment Rules</strong></td><td>Override item properties (connection strings, parameters, data sources) per stage. Configure this so the Test stage pipeline points to Test DB, not Dev DB.</td></tr>
+          <tr><td><strong>Item Pairing</strong></td><td>Items in adjacent stages are "paired" — deployments overwrite the paired item. Un-paired items of the same name create duplicates instead of overwriting.</td></tr>
+          <tr><td><strong>Deployment Pipelines vs Azure Pipelines</strong></td><td>Fabric Deployment Pipelines = ALM for Fabric items. Azure Pipelines (ADO) = CI/CD for code. DIFFERENT products.</td></tr>
+        </table>
+        <div class="qa">
+          <div class="qa-q">Q: After deploying from Dev to Test, the Test pipeline still connects to the Dev database. What's missing?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Deployment rule</strong> was not configured. Add a deployment rule for the pipeline that overrides its data source connection to point to the Test database.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.5 Git Integration -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.5 · Git Integration &amp; Database Projects</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Syncs to Git ✅</th><th>Does NOT Sync ❌</th></tr>
+          <tr><td>Notebooks, Pipelines, Dataflows Gen2</td><td>Data in tables</td></tr>
+          <tr><td>Lakehouse metadata, Warehouse metadata</td><td>Pipeline run history</td></tr>
+          <tr><td>Reports, Semantic Models</td><td>Workspace settings</td></tr>
+          <tr><td>Eventhouses, KQL Databases, KQL Querysets</td><td>Credentials / secrets</td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ Key Rules</strong><br>
+          • Changes in Fabric UI do NOT auto-sync to Git — you must explicitly commit.<br>
+          • Only workspace <strong>Admin or Member</strong> can commit to Git.<br>
+          • Workspace roles still control Git commit rights — Git doesn't bypass Fabric security.
+        </div>
+        <h4>Database Projects</h4>
+        <p>Schema-as-code for Fabric Warehouse. Define your warehouse schema (tables, views, stored procedures) as SQL scripts in a Git repo. Publish the project to apply schema changes to the warehouse. Incremental — applies only changes, no drop/recreate.</p>
+        <div class="qa">
+          <div class="qa-q">Q: A developer adds a stored procedure in the Git repo SQL script. How is it deployed to the warehouse?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Publish the database project</strong> from the Git repo to the Fabric workspace. The publish applies the incremental SQL changes to the warehouse.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.6 Security Roles -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.6 · Security: Workspace Roles, Item Permissions, OneLake Access Roles</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <h4>Fabric Security Order of Evaluation</h4>
+        <p>1. Entra Authentication → 2. Fabric Access → 3. Data Security (OneLake / SQL engine)</p>
+        <h4>Workspace Roles</h4>
+        <table class="dt">
+          <tr><th>Role</th><th>Can Do</th></tr>
+          <tr><td><strong>Admin</strong></td><td>Everything: view, modify, share, manage permissions, delete workspace, add admins</td></tr>
+          <tr><td><strong>Member</strong></td><td>View, modify, share all content. Add other Members/Contributors/Viewers. Can commit to Git.</td></tr>
+          <tr><td><strong>Contributor</strong></td><td>View and modify all content. Cannot share. Has CONTROL on warehouse (sees unmasked DDM data).</td></tr>
+          <tr><td><strong>Viewer</strong></td><td>Read-only access to all items in workspace. Cannot write data or create items.</td></tr>
+        </table>
+        <h4>When to Use Which Security Layer</h4>
+        <table class="dt">
+          <tr><th>Requirement</th><th>Use This</th></tr>
+          <tr><td>"User should see ALL items in the workspace"</td><td>Workspace Role (Viewer)</td></tr>
+          <tr><td>"User should see only ONE lakehouse, not the warehouse"</td><td>Item Permission on that lakehouse</td></tr>
+          <tr><td>"User should see only the Sales table, not HR table in a lakehouse"</td><td>OneLake Data Access Role (scoped to /Tables/Sales/)</td></tr>
+          <tr><td>"User should see only rows where Region='West' in a warehouse table"</td><td>Row-Level Security (SQL policy in warehouse)</td></tr>
+          <tr><td>"User should not see the Salary column in a warehouse table"</td><td>Column-Level Security (DENY SELECT on column)</td></tr>
+          <tr><td>"User should see masked phone numbers unless authorized"</td><td>Dynamic Data Masking (DDM)</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 OneLake Data Access Roles</strong> (GA 2025 — New Feature, Heavily Tested)
+          Create a role → assign folder/table paths (e.g., /Tables/Sales/) → assign users or groups.<br>
+          This is SEPARATE from workspace roles. A user with Viewer workspace role still needs OneLake data access role to read specific tables.
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: A user must read only HR table in a lakehouse but nothing else in the workspace. Two steps needed?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">1. Grant <strong>ReadData item permission</strong> on the specific lakehouse (not a workspace role — that gives access to all items).<br>2. Create an <strong>OneLake data access role</strong> scoped to /Tables/HR/ and assign the user.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.7 Advanced Security -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.7 · Advanced Security: DDM, CLS, RLS, Sensitivity Labels</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <h4>Dynamic Data Masking (DDM)</h4>
+        <table class="dt">
+          <tr><th>Mask Type</th><th>Function</th><th>Example</th></tr>
+          <tr><td><strong>Default</strong></td><td>Full mask by data type (XXXX for strings, 0 for numbers, 1900-01-01 for dates)</td><td><code>MASKED WITH (FUNCTION = 'default()')</code></td></tr>
+          <tr><td><strong>Email</strong></td><td>First letter + @XXXX.com</td><td>jXXX@XXXX.com</td></tr>
+          <tr><td><strong>Random</strong></td><td>Random number in a range</td><td><code>random(1, 100)</code></td></tr>
+          <tr><td><strong>Custom String (partial)</strong></td><td>Show prefix, custom padding, suffix</td><td><code>partial(1,"XXXXXXX",0)</code> → 5XXXXXXX</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Who Sees Unmasked Data?</strong>
+          Users with <strong>Admin, Member, or Contributor</strong> workspace role automatically have CONTROL permission on the warehouse and see UNMASKED data by default.<br>
+          To allow a user without those roles to see unmasked data: grant the <code>UNMASK</code> permission.<br>
+          DDM does NOT prevent inference attacks — a user with query access can run range queries to guess values.
+        </div>
+        <h4>Column-Level Security (CLS)</h4>
+        <p>Use <code>DENY SELECT ON table(column) TO user</code>. The column becomes invisible/inaccessible. Applies at the SQL analytics endpoint or warehouse.</p>
+        <h4>Row-Level Security (RLS)</h4>
+        <p>Create an inline table-valued function filtering rows, then create a security policy binding the function to a table. Works in the SQL analytics endpoint and warehouse. Users only see rows matching the predicate.</p>
+        <h4>Sensitivity Labels</h4>
+        <ul>
+          <li>Applied at item level (lakehouse, warehouse, report, semantic model)</li>
+          <li><strong>Propagate downstream automatically</strong> — label a lakehouse table, reports built from it inherit the label</li>
+          <li>Labels do NOT block access on their own — they classify and can trigger policies (e.g., block export)</li>
+          <li>Admin configures which labels are available from Microsoft Purview / Purview Information Protection</li>
+        </ul>
+        <div class="qa">
+          <div class="qa-q">Q: A user has Contributor role and queries a table with DDM on the Email column. What do they see?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">The <strong>actual unmasked email</strong>. Contributor has CONTROL permission on the warehouse by default, which includes UNMASK rights. Only users with lower permissions (e.g., shared via item permission only) see the masked value.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.8 Orchestration -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">1.8 · Orchestration Decision Guide</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Tool</th><th>Use When</th><th>Key Traits</th></tr>
+          <tr><td><strong>Data Pipeline</strong></td><td>Complex orchestration, conditional logic, multi-step workflows, calling other activities</td><td>GUI-based; Copy Activity; ForEach, If Condition, Until; can trigger notebooks/DFs</td></tr>
+          <tr><td><strong>Dataflow Gen2</strong></td><td>No-code / low-code transforms, Power Query logic, business users, loading to semantic models</td><td>Power Query UI; ~300+ connectors; good for simple ETL; not for complex branching</td></tr>
+          <tr><td><strong>Spark Notebook</strong></td><td>Complex transformations, custom Python/Scala/SQL logic, ML, Delta operations</td><td>Full code flexibility; best for heavy transformations; manual scheduling needed</td></tr>
+          <tr><td><strong>Apache Airflow</strong></td><td>Multi-system orchestration, dependency graphs across external platforms (not just Fabric)</td><td>Configured in "Data Workflows" workspace settings; DAG-based; external tools</td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ Exam Decision Rules</strong><br>
+          • "No code, business analyst, Power Query" → <strong>Dataflow Gen2</strong><br>
+          • "Complex orchestration, conditions, multiple activities" → <strong>Pipeline</strong><br>
+          • "Custom Python, PySpark, heavy transforms" → <strong>Notebook</strong><br>
+          • "External systems, DAG, cross-platform" → <strong>Airflow</strong>
+        </div>
+        <h4>Trigger Types</h4>
+        <table class="dt">
+          <tr><th>Trigger</th><th>When It Fires</th><th>Use Case</th></tr>
+          <tr><td>Schedule</td><td>Fixed time/recurrence (daily at 2am)</td><td>Regular batch ETL jobs</td></tr>
+          <tr><td>Tumbling Window</td><td>Fixed non-overlapping time windows; can backfill missed runs</td><td>Incremental processing with guaranteed windows</td></tr>
+          <tr><td>Event-Based</td><td>When a file arrives in storage (blob created/deleted event)</td><td>File-arrival triggered processing</td></tr>
+          <tr><td>On Demand (Manual)</td><td>Triggered manually or via API/pipeline call</td><td>On-demand or parent pipeline triggering child</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- end d1 -->
+
+  <!-- ═══════════════════════════════════════════════
+       DOMAIN 2: INGEST & TRANSFORM
+  ═══════════════════════════════════════════════ -->
+  <div id="domain-d2" class="domain-notes">
+
+    <!-- 2.1 Copy Activity & Batch -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.1 · Copy Activity &amp; Batch Ingestion</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <p>Copy Activity is the workhorse of Data Pipelines. It moves data from a source to a sink with optional transformations via Mapping Data Flows.</p>
+        <h4>Key Settings</h4>
+        <table class="dt">
+          <tr><th>Setting</th><th>What It Controls</th></tr>
+          <tr><td>Degree of Copy Parallelism</td><td>Number of parallel copy threads (default varies by source). Set higher for large tables.</td></tr>
+          <tr><td>Partition option</td><td>Split large tables into partitions for parallel reading (physical partitions, dynamic range, or column-based)</td></tr>
+          <tr><td>Write behavior</td><td>Insert / Upsert / Overwrite — controls how data lands at sink</td></tr>
+          <tr><td>Fault tolerance</td><td>Skip incompatible rows; log skipped rows to storage</td></tr>
+        </table>
+        <h4>Incremental Load Pattern (Watermark)</h4>
+        <ol>
+          <li>Store a watermark value (e.g., last <code>ModifiedDate</code>) in a control table or pipeline variable</li>
+          <li>Use a Lookup activity to GET the current watermark</li>
+          <li>Use Copy Activity with filter: <code>WHERE ModifiedDate &gt; @watermark</code></li>
+          <li>Use a Stored Procedure / Script activity to UPDATE the watermark to <code>MAX(ModifiedDate)</code> from the new load</li>
+        </ol>
+        <div class="tip-box"><strong>✅ Tip</strong> The watermark pattern is the most commonly tested incremental load approach. Always: Read watermark → Filter copy → Update watermark AFTER successful copy.</div>
+        <div class="qa">
+          <div class="qa-q">Q: A pipeline must load only new records since the last run. The source has a LastModified column. What pattern is correct?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">Watermark pattern: store last run timestamp in a control table. Each run: (1) read watermark, (2) copy WHERE LastModified > watermark, (3) update watermark = MAX(LastModified) from current batch after success.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.2 Dataflow Gen2 -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.2 · Dataflow Gen2 vs Pipeline vs Notebook</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th></th><th>Dataflow Gen2</th><th>Pipeline</th><th>Notebook</th></tr>
+          <tr><td><strong>Authoring</strong></td><td>Power Query (no-code UI)</td><td>GUI drag-and-drop</td><td>Code (Python/Scala/SQL)</td></tr>
+          <tr><td><strong>Transforms</strong></td><td>Power Query steps (~300+ connectors)</td><td>Mapping Data Flows or Copy</td><td>Full Spark API</td></tr>
+          <tr><td><strong>Best For</strong></td><td>Business users, simple ETL, semantic model refresh</td><td>Orchestration, multi-step, conditional</td><td>Complex transforms, ML, Delta ops</td></tr>
+          <tr><td><strong>Git Support</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td><strong>Streaming</strong></td><td>Dataflow Gen2 streaming (preview)</td><td>No</td><td>Spark Structured Streaming</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2.3 Metadata-Driven Ingestion -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.3 · Metadata-Driven Ingestion (Control Table Pattern)</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <p>Used when you need to ingest many tables (e.g., 50+ source tables) without creating 50 separate Copy Activities.</p>
+        <h4>Pattern</h4>
+        <ol>
+          <li>Create a <strong>control table</strong> in a lakehouse/warehouse with columns: source_name, source_connection, table_name, destination_path, is_active, last_watermark</li>
+          <li>Use a <strong>Lookup activity</strong> to read all rows from the control table</li>
+          <li>Use a <strong>ForEach activity</strong> to iterate over each row</li>
+          <li>Inside ForEach: Copy Activity parameterized with <code>@item().source_name</code>, <code>@item().table_name</code>, etc.</li>
+          <li>Update watermark per table after successful copy</li>
+        </ol>
+        <div class="tip-box"><strong>✅ Why This Matters on the Exam</strong> The exam tests whether you know to use a control table + ForEach rather than hardcoding many activities. If the scenario says "50 tables, scalable solution, no hardcoding" → metadata-driven ingestion.</div>
+        <pre>Pipeline:
+  Lookup → control_table (all active rows)
+  ForEach (@activity('Lookup').output.value)
+    Copy Activity (source = @item().connection, table = @item().table_name)
+    Script Activity (UPDATE control_table SET watermark = ...)</pre>
+      </div>
+    </div>
+
+    <!-- 2.4 Loading Patterns -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.4 · Lakehouse &amp; Warehouse Loading Patterns</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Pattern</th><th>How</th><th>Use When</th></tr>
+          <tr><td>Full Load (Overwrite)</td><td><code>df.write.mode("overwrite").saveAsTable("table")</code></td><td>Small tables, daily full refresh</td></tr>
+          <tr><td>Append</td><td><code>df.write.mode("append").saveAsTable("table")</code></td><td>Streaming data, new records only</td></tr>
+          <tr><td>Upsert (MERGE)</td><td><code>DeltaTable.forName().merge().whenMatchedUpdate().whenNotMatchedInsert().execute()</code></td><td>SCD Type 1, deduplication</td></tr>
+          <tr><td>COPY INTO (Warehouse)</td><td><code>COPY INTO schema.table FROM 'https://...' WITH (FILE_TYPE='PARQUET')</code></td><td>Load from external storage into warehouse</td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ COPY INTO</strong> loads data from external sources (ADLS, S3, etc.) INTO a Fabric warehouse table. It's idempotent — already loaded files are tracked and not reloaded. Supports Parquet, CSV, JSON, ORC, Avro.</div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Try the watermark pattern</h4>
+          <ol>
+            <li>Create a lakehouse table <code>control_table</code> with columns: table_name, watermark (datetime)</li>
+            <li>Insert a row: ('sales', '2024-01-01')</li>
+            <li>Build a pipeline: Lookup → ForEach → Copy Activity (filter source by watermark) → Script to update watermark</li>
+            <li>Run it twice with new source data — verify only new records land</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.5 Eventstream -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.5 · Eventstream (No-Code Streaming)</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <p>Eventstream brings real-time events into Fabric, transforms them, and routes to multiple destinations — <strong>without any code</strong>.</p>
+        <h4>Key Facts</h4>
+        <ul>
+          <li>Backed by <strong>Azure Event Hubs</strong> — Kafka protocol compatible</li>
+          <li>Delivery guarantee: <strong>At-least-once</strong> (not exactly-once)</li>
+          <li>Max message size: <strong>1 MB</strong></li>
+          <li>Max retention period: <strong>90 days</strong></li>
+          <li>Minimum recommended capacity: <strong>F4</strong></li>
+        </ul>
+        <h4>Sources → Eventstream → Destinations</h4>
+        <table class="dt">
+          <tr><th>Sources (examples)</th><th>Destinations</th></tr>
+          <tr><td>Azure Event Hubs, Azure IoT Hub</td><td><strong>Eventhouse (KQL Database)</strong> — direct or with event processing</td></tr>
+          <tr><td>Azure SQL CDC, PostgreSQL CDC, MySQL CDC</td><td><strong>Lakehouse</strong> — converted to Delta format</td></tr>
+          <tr><td>Kafka (Confluent, MSK, Apache), Cosmos DB CDC</td><td><strong>Fabric Activator</strong> — alerts/actions on conditions</td></tr>
+          <tr><td>Custom Endpoint, Sample Data, GCS Pub/Sub, Kinesis</td><td>Custom Endpoint, Spark Notebook (preview), Derived Stream</td></tr>
+        </table>
+        <h4>No-Code Transformations Available</h4>
+        <p>Filter, Manage Fields (add/remove/rename columns), Aggregate, Group By, Union, Expand, Join between streams.</p>
+        <div class="priority-box"><strong>🚨 Key Exam Point</strong>
+          Eventstream can route to MULTIPLE destinations simultaneously. Each destination gets the full stream independently.
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: Real-time IoT data needs to go to an eventhouse for KQL analysis AND a lakehouse for batch reporting — no code allowed. What tool?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Eventstream</strong> with two destinations: Eventhouse (for KQL) and Lakehouse (for Delta/batch). No code needed. Multiple destinations supported simultaneously.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.6 Spark Structured Streaming -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.6 · Spark Structured Streaming</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <p>Code-based streaming in PySpark/Scala. Use when you need <strong>custom transformation logic</strong> that Eventstream can't express.</p>
+        <h4>Key Concepts</h4>
+        <table class="dt">
+          <tr><th>Concept</th><th>What It Means</th><th>Exam Trigger</th></tr>
+          <tr><td><strong>Checkpoint</strong></td><td>Saves progress to storage so the stream can resume after failure without reprocessing old data</td><td>"resume after failure", "exactly-once", "recovery"</td></tr>
+          <tr><td><strong>Watermark</strong></td><td>Tells Spark how late data can arrive before discarding it. <code>.withWatermark("timestamp", "10 minutes")</code></td><td>"late arriving data", "out of order events"</td></tr>
+          <tr><td><strong>Trigger</strong></td><td>Controls when micro-batches process. Options: default (ASAP), fixed interval, once, available-now</td><td>"process every 30 seconds", "process all available data once"</td></tr>
+          <tr><td><strong>Output Modes</strong></td><td>Append (new rows only), Complete (full result table), Update (only changed rows)</td><td>"write new records only", "update existing aggregations"</td></tr>
+        </table>
+        <pre>df_stream = spark.readStream.format("eventhub")...
+df_agg = (df_stream
+  .withWatermark("EventTime", "5 minutes")
+  .groupBy(window("EventTime", "1 hour"), "DeviceId")
+  .agg(avg("Temperature").alias("avg_temp")))
+
+df_agg.writeStream
+  .format("delta")
+  .outputMode("append")
+  .option("checkpointLocation", "abfss://container/checkpoint/")
+  .start("Tables/DeviceAggregates")</pre>
+        <div class="gotcha"><strong>⚠️ Checkpoint is critical.</strong> Without a checkpoint, a failed stream restarts from the beginning (reprocesses all data). Always configure checkpointLocation.</div>
+      </div>
+    </div>
+
+    <!-- 2.7 RTI -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.7 · Real-Time Intelligence: Eventhouse &amp; KQL Database</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <h4>RTI Structure</h4>
+        <pre>Eventhouse (container)
+ └── KQL Database 1  (data + policies)
+ └── KQL Database 2</pre>
+        <p>An <strong>Eventhouse</strong> is the container. Inside it, you create one or more <strong>KQL Databases</strong>. Each database holds tables, functions, materialized views.</p>
+        <h4>RTI Storage Types</h4>
+        <table class="dt">
+          <tr><th>Storage Type</th><th>How Data Gets There</th><th>Query Performance</th><th>Use When</th></tr>
+          <tr><td><strong>Native (Managed)</strong></td><td>Ingested directly into eventhouse (via Eventstream, Get Data, One-click)</td><td>Fastest — data is stored in eventhouse format</td><td>Real-time streaming ingestion, primary use case</td></tr>
+          <tr><td><strong>Mirrored / Shortcut (Accelerated)</strong></td><td>Shortcut to OneLake Delta table that has been "accelerated" (data is indexed in KQL format)</td><td>Very fast — KQL indexes built on OneLake data</td><td>Query existing lakehouse Delta tables with KQL speed</td></tr>
+          <tr><td><strong>Shortcut (Non-Accelerated)</strong></td><td>Shortcut to external storage (ADLS, S3) — NOT indexed by eventhouse</td><td>Slower — uses <code>external_table()</code>, reads from source on each query</td><td>Occasional queries on external data, no performance requirement</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Accelerated vs Non-Accelerated Shortcut</strong><br>
+          Accelerated shortcut = eventhouse builds its own indexes on the OneLake Delta data → fast KQL queries.<br>
+          Non-accelerated shortcut = no indexes → slow, use <code>external_table('name')</code> to query.
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: A KQL database has a shortcut pointing to ADLS Gen2 external storage. Queries use external_table(). What storage type is this and is it fast?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Non-accelerated shortcut.</strong> It reads from the external source on each query — no KQL indexes are built. Performance is slower than native storage or accelerated shortcuts.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.8 Streaming Decision -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">2.8 · Streaming Decision Guide</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Need</th><th>Use</th></tr>
+          <tr><td>Route streaming data to multiple destinations (no code)</td><td><strong>Eventstream</strong></td></tr>
+          <tr><td>Complex custom transformations on a stream (Python/Scala)</td><td><strong>Spark Structured Streaming</strong></td></tr>
+          <tr><td>Low-latency KQL analytics on streaming data</td><td><strong>Eventstream → Eventhouse</strong></td></tr>
+          <tr><td>Simple streaming ETL for business users (no code)</td><td><strong>Dataflow Gen2 (streaming mode, preview)</strong></td></tr>
+          <tr><td>Process CDC events from SQL databases in real-time</td><td><strong>Eventstream (CDC source connectors)</strong></td></tr>
+          <tr><td>Micro-batch processing with deduplication/watermarking</td><td><strong>Spark Structured Streaming</strong></td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ Exam Trigger Words</strong><br>
+          "No code" + streaming → Eventstream<br>
+          "KQL" + "real-time" → Eventhouse via Eventstream<br>
+          "Custom Python logic" + streaming → Spark Structured Streaming<br>
+          "CDC" source → Eventstream CDC connector
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end d2 -->
+
+  <!-- ═══════════════════════════════════════════════
+       DOMAIN 3: MONITOR & OPTIMIZE
+  ═══════════════════════════════════════════════ -->
+  <div id="domain-d3" class="domain-notes">
+
+    <!-- 3.1 Monitoring Hub -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">3.1 · Monitoring Hub &amp; Fabric Monitoring Tools</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="dt">
+          <tr><th>Tool</th><th>What It Monitors</th><th>Where to Find</th></tr>
+          <tr><td><strong>Monitoring Hub</strong></td><td>All Fabric activities: pipeline runs, notebook runs, dataflow refreshes, Spark jobs — across all items in the workspace</td><td>Left nav in Fabric portal → Monitor icon</td></tr>
+          <tr><td><strong>Capacity Metrics App</strong></td><td>CU (Capacity Unit) consumption, throttling events, smoothing, burst behavior</td><td>Install from AppSource; shows per-workspace, per-item CU usage</td></tr>
+          <tr><td><strong>queryinsights (Warehouse)</strong></td><td>Historical SQL query data — execution time, CPU, data scanned, user, status</td><td>Inside the Warehouse/SQL endpoint under Schemas → queryinsights → Views</td></tr>
+          <tr><td><strong>Spark UI</strong></td><td>Individual Spark job stages, tasks, executor utilization, shuffle operations</td><td>From running notebook → Spark UI link in output panel</td></tr>
+          <tr><td><strong>Delta DESCRIBE HISTORY</strong></td><td>All operations on a Delta table (INSERT, UPDATE, MERGE, OPTIMIZE, VACUUM) with timestamps</td><td><code>DESCRIBE HISTORY table_name</code> in notebook</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3.2 queryinsights -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">3.2 · queryinsights Views — Know All 5</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="priority-box"><strong>🚨 These 5 views appear in exam questions. Know which to use for each scenario.</strong></div>
+        <table class="dt">
+          <tr><th>View</th><th>Returns</th><th>Use For</th></tr>
+          <tr><td><code>queryinsights.exec_requests_history</code></td><td>Each completed SQL request: start time, elapsed time, CPU, data scanned (memory, disk, remote), login name, command text, status</td><td>Find slow queries, CPU hogs, cache misses, queries by user</td></tr>
+          <tr><td><code>queryinsights.exec_sessions_history</code></td><td>Completed session information</td><td>User session analysis, concurrent session counts</td></tr>
+          <tr><td><code>queryinsights.long_running_queries</code></td><td>Aggregated by query shape, ordered by median execution time</td><td>Find <em>consistently</em> slow query patterns</td></tr>
+          <tr><td><code>queryinsights.frequently_run_queries</code></td><td>Aggregated by query shape, ordered by execution count</td><td>Find most common queries to prioritize optimization</td></tr>
+          <tr><td><code>queryinsights.sql_pool_insights</code></td><td>Warehouse pool-level metrics: resource allocation, pressure indicators, capacity changes</td><td>Diagnose capacity pressure, throttling events at pool level</td></tr>
+        </table>
+        <div class="info-box"><strong>ℹ️ Key Facts</strong>
+          • Data retained for <strong>30 days</strong><br>
+          • Queries take up to <strong>15 minutes to appear</strong> after completion (under high load)<br>
+          • Shows only queries from the current user's context (not system queries)<br>
+          • Available on both Warehouse AND SQL analytics endpoint<br>
+          • Need <strong>Contributor or higher</strong> role to view full query text
+        </div>
+        <pre>-- Find top 10 slowest queries in last 30 days
+SELECT TOP 10 distributed_statement_id, allocated_cpu_time_ms,
+  total_elapsed_time_ms, command
+FROM queryinsights.exec_requests_history
+ORDER BY total_elapsed_time_ms DESC;
+
+-- Find queries scanning most remote data (cache misses)
+SELECT distributed_statement_id, data_scanned_remote_storage_mb,
+  data_scanned_memory_mb, command
+FROM queryinsights.exec_requests_history
+ORDER BY data_scanned_remote_storage_mb DESC;
+
+-- Find consistently slow query patterns
+SELECT * FROM queryinsights.long_running_queries
+ORDER BY median_total_elapsed_time_ms DESC;</pre>
+        <div class="qa">
+          <div class="qa-q">Q: A data engineer wants to find all queries that consistently run slowly, not just individual slow runs. Which view?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><code>queryinsights.long_running_queries</code> — it aggregates by query shape and returns median execution time, so it captures consistently slow patterns rather than one-off slow runs.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.3 Error Types -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">3.3 · Error Types: Identify &amp; Resolve</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="priority-box"><strong>🚨 The exam tests both IDENTIFYING the error type AND the correct resolution. Know the pairing.</strong></div>
+        <table class="dt">
+          <tr><th>Error / Symptom</th><th>Type</th><th>Resolution</th></tr>
+          <tr><td>HTTP 429 Too Many Requests</td><td>Throttling</td><td>Implement retry with exponential backoff; reduce concurrency; spread load over time</td></tr>
+          <tr><td>Activity timed out (pipeline activity exceeded timeout setting)</td><td>Timeout</td><td>Increase the activity timeout setting; optimize the query/transform to run faster</td></tr>
+          <tr><td>"Capacity is fully utilized" / CU spikes in Capacity Metrics</td><td>Capacity</td><td>Upgrade SKU; schedule jobs during off-peak hours; use Fabric bursting/smoothing awareness</td></tr>
+          <tr><td>Schema mismatch on lakehouse write (column type doesn't match)</td><td>Schema Error</td><td>Enable schema evolution (<code>mergeSchema</code>) or fix the transform to match the target schema</td></tr>
+          <tr><td>Too many small files, slow reads on Delta table</td><td>Performance / Small File Problem</td><td>Run <code>OPTIMIZE</code> to compact files; enable Optimize Write</td></tr>
+          <tr><td>Delta MERGE conflict (concurrent writes)</td><td>Concurrency Error</td><td>Retry logic; serialize writes; use Delta transaction log to detect conflicts</td></tr>
+          <tr><td>Warehouse query runs out of memory (spills to disk)</td><td>Memory / Spill Error</td><td>Rewrite query to reduce data volume; avoid wide Cartesian joins; break into steps</td></tr>
+          <tr><td>Streaming job fails at restart, reprocesses old data</td><td>Checkpoint Missing</td><td>Add or restore the checkpointLocation in the writeStream config</td></tr>
+          <tr><td>Late arriving events appear after window closes</td><td>Late Data / Watermark</td><td>Add <code>.withWatermark("timestamp", "X minutes")</code> to tolerate late events</td></tr>
+          <tr><td>Streaming schema changes break the job</td><td>Schema Evolution</td><td>Enable <code>mergeSchema</code> option on the Delta write; handle new columns explicitly</td></tr>
+          <tr><td>Pipeline fails: "Source unavailable" / connection refused</td><td>Connection Error</td><td>Check linked service connection; verify network/firewall; rotate credentials if expired</td></tr>
+        </table>
+        <div class="qa">
+          <div class="qa-q">Q: A pipeline receives HTTP 429 errors when writing to a warehouse. What type of error is this and how do you resolve it?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Throttling error.</strong> Resolution: implement retry logic with exponential backoff in the pipeline activity settings, OR reduce the degree of write parallelism, OR stagger the write timing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.4 Optimization -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">3.4 · OPTIMIZE, V-Order &amp; Z-Order</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <h4>OPTIMIZE — Bin Compaction</h4>
+        <p>Consolidates many small Parquet files into fewer larger files. Run in a Fabric notebook or Spark job definition. <span class="red">NOT available in SQL analytics endpoint or Warehouse SQL editor (T-SQL only there).</span></p>
+        <pre>%%sql
+-- Basic compaction
+OPTIMIZE schema_name.table_name;
+
+-- Compact + apply Z-Order on a column
+OPTIMIZE schema_name.table_name WHERE date >= '2025-01-01'
+ZORDER BY (customer_id);
+
+-- Compact + apply V-Order layout
+OPTIMIZE schema_name.table_name VORDER;
+
+-- Compact + Z-Order + V-Order together
+OPTIMIZE schema_name.table_name ZORDER BY (customer_id) VORDER;</pre>
+
+        <h4>V-Order vs Z-Order</h4>
+        <table class="dt">
+          <tr><th></th><th>V-Order</th><th>Z-Order</th></tr>
+          <tr><td><strong>What it does</strong></td><td>Optimizes <em>internal Parquet file layout</em> (row-group encoding, compression) for faster reads across Fabric engines</td><td>Clusters related values for a specific column together in the same files, enabling data skipping for selective filters</td></tr>
+          <tr><td><strong>Benefit</strong></td><td>Broad read performance improvement (dashboarding, repeated scans)</td><td>Filter performance improvement for queries filtering on the Z-ordered column(s)</td></tr>
+          <tr><td><strong>Default</strong></td><td><span class="red">Disabled by default</span> in new Fabric workspaces (<code>spark.sql.parquet.vorder.default=false</code>)</td><td>Not applied by default — must be specified in OPTIMIZE</td></tr>
+          <tr><td><strong>Write overhead</strong></td><td>~15% slower writes on average</td><td>Slower compaction (more data movement)</td></tr>
+          <tr><td><strong>Keyword</strong></td><td><code>VORDER</code></td><td><code>ZORDER BY (col)</code></td></tr>
+        </table>
+        <div class="gotcha"><strong>⚠️ V-Order disabled by default</strong> — V-Order was changed to be OFF by default to improve write performance for ingestion workloads. Enable it explicitly for read-heavy scenarios like dashboarding.</div>
+        <div class="gotcha"><strong>⚠️ After enabling V-Order via table properties</strong>, only FUTURE writes are affected. Existing Parquet files are NOT rewritten. To rewrite existing files with V-Order, run <code>OPTIMIZE ... VORDER</code>.</div>
+        <div class="qa">
+          <div class="qa-q">Q: Queries on a Delta table frequently filter by customer_id. What optimization would most help?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><code>OPTIMIZE table ZORDER BY (customer_id)</code> — Z-Order clusters rows with the same customer_id together, allowing data skipping to skip entire files when filtering by customer_id.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.5 VACUUM -->
+    <div class="acc-card">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        <div class="acc-title">3.5 · VACUUM, Primary Keys &amp; Warehouse Design</div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <h4>VACUUM</h4>
+        <p>Removes Parquet files that are no longer referenced by the Delta transaction log (unreferenced / old version files from updates/deletes).</p>
+        <pre>%%sql
+-- Default: retains 7 days (168 hours) of history
+VACUUM schema_name.table_name;
+
+-- Explicit retention
+VACUUM schema_name.table_name RETAIN 168 HOURS;  -- 7 days
+VACUUM schema_name.table_name RETAIN 336 HOURS;  -- 14 days</pre>
+        <div class="gotcha"><strong>⚠️ VACUUM removes time travel!</strong> After running VACUUM with default 7-day retention, you cannot time-travel to versions older than 7 days. Setting shorter retention breaks time-travel capability.</div>
+        <div class="gotcha"><strong>⚠️ VACUUM runs in notebooks only</strong> — same as OPTIMIZE. Not available in T-SQL SQL analytics endpoint.</div>
+
+        <h4>Primary Keys in Fabric Warehouse — NOT ENFORCED</h4>
+        <div class="priority-box"><strong>🚨 Critical Exam Fact</strong>
+          In Fabric Warehouse, PRIMARY KEY, UNIQUE, and FOREIGN KEY constraints are defined for <strong>documentation purposes only — they are NOT enforced</strong>. Duplicate values on a primary key column will NOT raise an error. The constraint is metadata-only.<br><br>
+          This is because Fabric Warehouse is a distributed MPP system optimized for analytics, not OLTP.
+        </div>
+        <h4>Lakehouse vs Warehouse Decision</h4>
+        <table class="dt">
+          <tr><th>Use Lakehouse When</th><th>Use Warehouse When</th></tr>
+          <tr><td>Storing raw/Bronze/Silver data in Delta format</td><td>Gold layer, serving SQL reports to multiple users</td></tr>
+          <tr><td>Running Spark notebooks / PySpark transforms</td><td>T-SQL stored procedures, views, complex SQL</td></tr>
+          <tr><td>Data scientists / engineers need full Spark access</td><td>BI analysts using SQL, Power BI Direct Lake</td></tr>
+          <tr><td>Schema-on-read, flexible structure</td><td>Schema-on-write, structured, governed</td></tr>
+          <tr><td>Lower cost for raw storage</td><td>DDM, CLS, RLS needed (only in warehouse)</td></tr>
+        </table>
+        <div class="tip-box"><strong>✅ KQL Database decision trigger</strong> → "real-time", "streaming logs", "telemetry", "time-series analysis", "KQL query syntax". If the exam mentions KQL or sub-second query performance on streaming data → KQL Database in an Eventhouse.</div>
+        <div class="qa">
+          <div class="qa-q">Q: A developer defines a PRIMARY KEY on a Fabric warehouse table and inserts duplicate values. What happens?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>The insert succeeds.</strong> Primary key constraints in Fabric Warehouse are NOT ENFORCED — they are metadata hints only, for documentation and query optimizer hints. No error is raised on duplicate inserts.</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Practice Optimization</h4>
+          <ol>
+            <li>Create a Delta table in a Lakehouse with 100k+ rows</li>
+            <li>Run several DELETE/UPDATE operations to generate old version files</li>
+            <li>Run <code>DESCRIBE HISTORY table</code> — observe the version history</li>
+            <li>Run <code>OPTIMIZE table</code> — check file count before/after</li>
+            <li>Run <code>VACUUM table RETAIN 0 HOURS</code> (requires overriding safety check) — watch old files disappear</li>
+            <li>Try time travel: <code>SELECT * FROM table VERSION AS OF 1</code> — see what happens after VACUUM</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end d3 -->
+
+</div><!-- end .page -->
+
+<script>
+function showDomain(d, btn) {
+  document.querySelectorAll('.domain-notes').forEach(el => el.classList.remove('active'));
+  document.getElementById('domain-' + d).classList.add('active');
+  document.querySelectorAll('.nd-btn').forEach(b => {
+    b.classList.remove('active', 'd1', 'd2', 'd3');
+    if (b === btn) b.classList.add('active', d);
+  });
+}
+function toggleAcc(header) {
+  const card = header.closest('.acc-card');
+  card.classList.toggle('open');
+  header.classList.toggle('open');
+}
+function toggleQA(btn) {
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('shown');
+  btn.textContent = ans.classList.contains('shown') ? '▼ Hide Answer' : '▶ Show Answer';
+}
+// Init domain buttons with correct colors
+document.querySelectorAll('.nd-btn').forEach(btn => {
+  if (!btn.classList.contains('active')) {
+    const cls = btn.className.match(/d[123]/)?.[0];
+    if (cls) btn.classList.remove(cls);
+  }
+});
+</script>
+</body>
+</html>

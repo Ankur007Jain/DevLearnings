@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 KQL Lab</title>
+<link rel="stylesheet" href="dp700_styles.css">
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn active">🔷 KQL Lab</a>
+</nav>
+
+<div class="page">
+<div class="kql-wrap">
+
+  <div class="priority-box" style="margin-bottom:20px">
+    <strong>🚨 KQL is Your Weak Area — Focus Here</strong>
+    KQL (Kusto Query Language) is used exclusively in Eventhouse / KQL Database (Real-Time Intelligence). When the exam says "real-time", "streaming logs", "telemetry", "time-series" or "eventhouse" — think KQL.
+  </div>
+
+  <!-- ═══════════════════ SYNTAX REFERENCE ═══════════════════ -->
+  <div class="kql-ref">
+    <h2>🔷 KQL Quick Reference</h2>
+
+    <h4>Core Operators</h4>
+    <table>
+      <tr><th>Operator</th><th>SQL Equivalent</th><th>Example</th></tr>
+      <tr><td><code>| where</code></td><td>WHERE</td><td><code>Events | where Level == "Error"</code></td></tr>
+      <tr><td><code>| project</code></td><td>SELECT col1, col2</td><td><code>Events | project Timestamp, DeviceId, Value</code></td></tr>
+      <tr><td><code>| project-away</code></td><td>SELECT all except...</td><td><code>Events | project-away InternalId, Debug</code></td></tr>
+      <tr><td><code>| extend</code></td><td>SELECT *, computed AS alias</td><td><code>Events | extend ValueKg = Value * 0.001</code></td></tr>
+      <tr><td><code>| summarize</code></td><td>SELECT agg(...) GROUP BY</td><td><code>Events | summarize count() by DeviceId</code></td></tr>
+      <tr><td><code>| sort by / order by</code></td><td>ORDER BY</td><td><code>Events | sort by Timestamp desc</code></td></tr>
+      <tr><td><code>| top N by col</code></td><td>SELECT TOP N ... ORDER BY</td><td><code>Events | top 10 by Value desc</code></td></tr>
+      <tr><td><code>| take N / limit N</code></td><td>SELECT TOP N</td><td><code>Events | take 100</code></td></tr>
+      <tr><td><code>| count</code></td><td>SELECT COUNT(*)</td><td><code>Events | count</code></td></tr>
+      <tr><td><code>| distinct col</code></td><td>SELECT DISTINCT col</td><td><code>Events | distinct DeviceId</code></td></tr>
+      <tr><td><code>| search "text"</code></td><td>WHERE col LIKE '%text%' (all cols)</td><td><code>Events | search "timeout"</code></td></tr>
+    </table>
+
+    <h4 class="mt">Time Functions</h4>
+    <table>
+      <tr><th>Function</th><th>Description</th><th>Example</th></tr>
+      <tr><td><code>ago(timespan)</code></td><td>Current time minus the timespan</td><td><code>| where Timestamp > ago(24h)</code></td></tr>
+      <tr><td><code>now()</code></td><td>Current UTC time</td><td><code>| where Timestamp between (ago(7d) .. now())</code></td></tr>
+      <tr><td><code>between(val .. val)</code></td><td>Inclusive range filter</td><td><code>| where Timestamp between (datetime(2025-01-01) .. datetime(2025-12-31))</code></td></tr>
+      <tr><td><code>bin(col, interval)</code></td><td>Round down to nearest interval (creates time buckets)</td><td><code>| summarize count() by bin(Timestamp, 1h)</code></td></tr>
+      <tr><td><code>datetime(literal)</code></td><td>Datetime literal</td><td><code>| where Timestamp > datetime(2025-06-01)</code></td></tr>
+      <tr><td><code>startofday(d)</code></td><td>Start of the day containing d</td><td><code>| where Timestamp >= startofday(now())</code></td></tr>
+    </table>
+
+    <h4 class="mt">Aggregation Functions</h4>
+    <table>
+      <tr><th>Function</th><th>Description</th><th>Example</th></tr>
+      <tr><td><code>count()</code></td><td>Count of rows</td><td><code>| summarize count() by Region</code></td></tr>
+      <tr><td><code>dcount(col)</code></td><td>Distinct count (approximate)</td><td><code>| summarize dcount(UserId)</code></td></tr>
+      <tr><td><code>sum(col)</code></td><td>Sum of column values</td><td><code>| summarize sum(Revenue) by Product</code></td></tr>
+      <tr><td><code>avg(col)</code></td><td>Average value</td><td><code>| summarize avg(Temperature) by DeviceId</code></td></tr>
+      <tr><td><code>min(col) / max(col)</code></td><td>Minimum / maximum</td><td><code>| summarize min(Temp), max(Temp) by bin(Ts, 1h)</code></td></tr>
+      <tr><td><code>countif(predicate)</code></td><td>Count of rows matching condition</td><td><code>| summarize countif(Level=="Error") by Source</code></td></tr>
+      <tr><td><code>make_list(col)</code></td><td>Collect values into an array</td><td><code>| summarize make_list(EventType) by DeviceId</code></td></tr>
+    </table>
+
+    <h4 class="mt">Joins &amp; Multi-Table</h4>
+    <table>
+      <tr><th>Syntax</th><th>Notes</th></tr>
+      <tr><td><code>T1 | join kind=inner T2 on Col</code></td><td>Inner join — only matching rows from both tables</td></tr>
+      <tr><td><code>T1 | join kind=leftouter T2 on Col</code></td><td>Left outer join — all from T1, matching from T2</td></tr>
+      <tr><td><code>T1 | join kind=anti T2 on Col</code></td><td>Anti join — rows in T1 NOT in T2</td></tr>
+      <tr><td><code>external_table('ShortcutName')</code></td><td>Query a KQL database shortcut (non-accelerated external table)</td></tr>
+      <tr><td><code>union T1, T2</code></td><td>Union of two tables (all rows)</td></tr>
+    </table>
+
+    <h4 class="mt">Windowing &amp; Advanced</h4>
+    <table>
+      <tr><th>Pattern</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Tumbling Window</td><td>Fixed non-overlapping windows using bin()</td><td><code>| summarize count() by bin(Ts, 1h)</code></td></tr>
+      <tr><td>Sliding Window</td><td>Use <code>series_stats</code> or rolling calculations</td><td>Advanced — combine with make-series</td></tr>
+      <tr><td>Session Window</td><td>Group events within X minutes of each other</td><td>Use session_start_window plugin</td></tr>
+      <tr><td><code>mv-expand col</code></td><td>Expand array/dynamic column into multiple rows</td><td><code>| mv-expand Tags</code></td></tr>
+      <tr><td><code>render</code></td><td>Render results as chart (in KQL editor only)</td><td><code>| render timechart</code></td></tr>
+    </table>
+  </div><!-- end kql-ref -->
+
+  <!-- ═══════════════════ EXERCISES ═══════════════════ -->
+  <h2 style="font-size:16px;font-weight:700;color:var(--kql);margin-bottom:14px">🔷 Practice Exercises</h2>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Read the scenario. Write the KQL query mentally or on paper. Then reveal the solution.</p>
+
+  <!-- Exercise 1 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">01</span>
+      <span class="kql-ex-title">Filter events from the last 24 hours with Level = "Error"</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> A KQL database table called <code>AppEvents</code> has columns: Timestamp (datetime), Level (string), Source (string), Message (string). Write a query to return all Error-level events from the last 24 hours.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>AppEvents
+| where Timestamp > ago(24h)
+| where Level == "Error"</pre>
+        <p><strong>Notes:</strong> Use <code>ago(24h)</code> for "last 24 hours". String comparisons in KQL are case-sensitive — <code>"Error"</code> ≠ <code>"error"</code>. Multiple <code>| where</code> clauses are AND'd together.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 2 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">02</span>
+      <span class="kql-ex-title">Count events per Source in the last 7 days</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Using the same <code>AppEvents</code> table, find how many events each Source generated in the last 7 days. Return top 10 sources by count, highest first.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>AppEvents
+| where Timestamp > ago(7d)
+| summarize EventCount = count() by Source
+| top 10 by EventCount desc</pre>
+        <p><strong>Notes:</strong> <code>summarize count() by col</code> groups and counts. The result column is named <code>count_</code> by default, or you can alias with <code>count() as EventCount</code> or <code>EventCount = count()</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 3 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">03</span>
+      <span class="kql-ex-title">Average temperature per device per hour (time bucketing)</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>TelemetryData</code> has columns: EventTime (datetime), DeviceId (string), Temperature (real). Calculate the average temperature per device per 1-hour bucket over the last 48 hours.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>TelemetryData
+| where EventTime > ago(48h)
+| summarize AvgTemp = avg(Temperature) by DeviceId, bin(EventTime, 1h)
+| sort by EventTime asc, DeviceId asc</pre>
+        <p><strong>Notes:</strong> <code>bin(EventTime, 1h)</code> is the KEY concept — it rounds timestamps down to the nearest 1-hour boundary, creating time buckets. This is the KQL equivalent of a tumbling window aggregation. Heavily tested on the exam.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 4 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">04</span>
+      <span class="kql-ex-title">Add a computed column and filter on it</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>SalesData</code> has: OrderId, Quantity (int), UnitPrice (real), Region (string). Find all orders where TotalValue (Quantity × UnitPrice) exceeds 1000, and return OrderId, Region, and TotalValue.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>SalesData
+| extend TotalValue = Quantity * UnitPrice
+| where TotalValue > 1000
+| project OrderId, Region, TotalValue
+| sort by TotalValue desc</pre>
+        <p><strong>Notes:</strong> <code>extend</code> adds a new computed column to the result. You can then filter with <code>where</code> on that extended column. <code>project</code> selects only the columns you want in the output.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 5 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">05</span>
+      <span class="kql-ex-title">Count distinct users and error events by region</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>WebLogs</code> has: Timestamp, UserId, Region, EventType (string: "PageView", "Error", "Purchase"). For the last 30 days, find: distinct user count AND error event count per Region.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>WebLogs
+| where Timestamp > ago(30d)
+| summarize
+    UniqueUsers = dcount(UserId),
+    ErrorCount = countif(EventType == "Error")
+  by Region
+| sort by UniqueUsers desc</pre>
+        <p><strong>Notes:</strong> <code>dcount()</code> gives approximate distinct count (more efficient than exact count). <code>countif(predicate)</code> counts only rows matching a condition. Multiple aggregations in one summarize: separate with commas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 6 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">06</span>
+      <span class="kql-ex-title">Join two tables to enrich events with device metadata</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>Events</code> has: Timestamp, DeviceId, Value. Table <code>Devices</code> has: DeviceId, Location, DeviceType. Return events from the last 24 hours enriched with Location and DeviceType.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>Events
+| where Timestamp > ago(24h)
+| join kind=inner (
+    Devices
+    | project DeviceId, Location, DeviceType
+  ) on DeviceId
+| project Timestamp, DeviceId, Value, Location, DeviceType</pre>
+        <p><strong>Notes:</strong> KQL join syntax: left table | join kind=TYPE (right table) on JoinKey. The right-side table is in parentheses. <code>kind=inner</code> keeps only matching rows. Use <code>kind=leftouter</code> to keep all events even if the device has no metadata.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 7 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">07</span>
+      <span class="kql-ex-title">Query a shortcut (external table) in a KQL database</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> A KQL database has a shortcut named <code>HistoricalSales</code> pointing to an external ADLS Gen2 path (non-accelerated). Write a query to get the count of sales records by Region from this shortcut where Year = 2024.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>external_table('HistoricalSales')
+| where Year == 2024
+| summarize SalesCount = count() by Region
+| sort by SalesCount desc</pre>
+        <p><strong>Notes:</strong> Shortcuts in a KQL database are queried with <code>external_table('name')</code> — NOT just the table name. This is because non-accelerated shortcuts are external tables. If the shortcut were accelerated, it would behave like a native table and could be queried directly by name.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 8 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">08</span>
+      <span class="kql-ex-title">Find events in a specific datetime range</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>SecurityLogs</code> has Timestamp and EventType. Find all events between January 1, 2025 and March 31, 2025 (inclusive) where EventType is "LoginFailure". Return count by day.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>SecurityLogs
+| where Timestamp between (datetime(2025-01-01) .. datetime(2025-03-31))
+| where EventType == "LoginFailure"
+| summarize FailureCount = count() by bin(Timestamp, 1d)
+| sort by Timestamp asc</pre>
+        <p><strong>Notes:</strong> <code>between(a .. b)</code> is inclusive on both ends. <code>datetime(2025-01-01)</code> creates a datetime literal. <code>bin(Timestamp, 1d)</code> creates daily buckets. The combination of between + bin for time-range analysis is a common exam pattern.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 9 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">09</span>
+      <span class="kql-ex-title">Identify devices with average temperature above threshold</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario:</strong> Table <code>SensorData</code> has: Timestamp, SensorId, Temperature. Find all sensors where the average temperature in the last 24 hours exceeded 80 degrees. Return SensorId and AvgTemperature, sorted by highest first.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>SensorData
+| where Timestamp > ago(24h)
+| summarize AvgTemperature = avg(Temperature) by SensorId
+| where AvgTemperature > 80
+| sort by AvgTemperature desc</pre>
+        <p><strong>Notes:</strong> You can filter on the result of a summarize by chaining another <code>| where</code> after summarize. This is like a HAVING clause in SQL. The pattern: summarize first → then filter the aggregated result.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 10 -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">10</span>
+      <span class="kql-ex-title">Full scenario: Multi-step streaming analytics query</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario (exam-style):</strong> An eventhouse receives real-time IoT events in table <code>DeviceEvents</code>: Timestamp (datetime), DeviceId (string), EventType (string), Value (real), Region (string). Write a query that:<br>
+      1. Looks at the last 6 hours<br>
+      2. Counts total events AND error events per Region per 30-minute bucket<br>
+      3. Adds a computed column <code>ErrorRate</code> = ErrorCount / TotalCount * 100<br>
+      4. Returns only buckets where ErrorRate &gt; 5%<br>
+      5. Orders by ErrorRate descending</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>DeviceEvents
+| where Timestamp > ago(6h)
+| summarize
+    TotalCount = count(),
+    ErrorCount = countif(EventType == "Error")
+  by Region, bin(Timestamp, 30m)
+| extend ErrorRate = toreal(ErrorCount) / TotalCount * 100
+| where ErrorRate > 5
+| sort by ErrorRate desc</pre>
+        <p><strong>Notes:</strong> This combines: time filtering (ago), multi-aggregation (count + countif), time bucketing (bin 30m), computed column (extend), post-aggregation filter (where on ErrorRate). The <code>toreal()</code> cast ensures floating-point division. This type of multi-step query is typical in DP-700 exam scenarios.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KQL Quick Cheat Card -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-top:24px">
+    <h3 style="font-size:15px;font-weight:700;color:var(--kql);margin-bottom:12px">🔷 KQL vs SQL — Quick Mapping</h3>
+    <table>
+      <tr><th>SQL</th><th>KQL Equivalent</th></tr>
+      <tr><td><code>SELECT col1, col2</code></td><td><code>| project col1, col2</code></td></tr>
+      <tr><td><code>SELECT *, expr AS alias</code></td><td><code>| extend alias = expr</code></td></tr>
+      <tr><td><code>WHERE condition</code></td><td><code>| where condition</code></td></tr>
+      <tr><td><code>GROUP BY col</code></td><td><code>| summarize ... by col</code></td></tr>
+      <tr><td><code>HAVING agg &gt; val</code></td><td><code>| summarize ... by col | where agg &gt; val</code></td></tr>
+      <tr><td><code>ORDER BY col DESC</code></td><td><code>| sort by col desc</code></td></tr>
+      <tr><td><code>SELECT TOP 10</code></td><td><code>| top 10 by col</code></td></tr>
+      <tr><td><code>SELECT COUNT(*)</code></td><td><code>| count</code> or <code>| summarize count()</code></td></tr>
+      <tr><td><code>SELECT COUNT(DISTINCT col)</code></td><td><code>| summarize dcount(col)</code></td></tr>
+      <tr><td><code>DATEADD(hour, -24, GETDATE())</code></td><td><code>ago(24h)</code></td></tr>
+      <tr><td><code>INNER JOIN t2 ON t1.key = t2.key</code></td><td><code>| join kind=inner (T2) on key</code></td></tr>
+    </table>
+    <div class="tip-box" style="margin-top:12px"><strong>✅ Exam Decision Rule</strong> KQL questions are triggered by: "Eventhouse", "KQL Database", "Real-Time Intelligence", "streaming telemetry", "time-series", "query using KQL". If you see T-SQL like SELECT/FROM/WHERE → that's the Warehouse or SQL analytics endpoint, NOT KQL.</div>
+  </div>
+
+</div><!-- end kql-wrap -->
+</div><!-- end page -->
+
+<script>
+function toggleKQL(hdr) {
+  const ex = hdr.closest('.kql-exercise');
+  ex.classList.toggle('open');
+}
+function toggleSolution(btn) {
+  const sol = btn.nextElementSibling;
+  sol.classList.toggle('shown');
+  btn.textContent = sol.classList.contains('shown') ? '▼ Hide Solution' : '▶ Show Solution';
+}
+</script>
+</body>
+</html>

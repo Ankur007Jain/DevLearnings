@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Mock Exam</title>
+<link rel="stylesheet" href="dp700_styles.css">
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn active">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn">🔷 KQL Lab</a>
+</nav>
+
+<div class="page">
+  <div class="exam-wrap" id="examWrap">
+
+    <!-- Start Screen -->
+    <div id="startScreen" style="text-align:center;padding:40px 20px;">
+      <div style="font-size:48px;margin-bottom:16px">✏️</div>
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam</h2>
+      <p style="color:var(--muted);margin-bottom:24px">25 scenario-based questions · All 3 domains · Timed per your pace</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d1)">9 Qs</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D2 · Ingest</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d2)">9 Qs</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D3 · Monitor</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d3)">7 Qs</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="startExam()" style="font-size:15px;padding:14px 32px;">Start Exam</button>
+    </div>
+
+    <!-- Question Screen (hidden initially) -->
+    <div id="questionScreen" style="display:none;">
+      <div class="exam-meta">
+        <span class="q-counter" id="qCounter">Question 1 of 25</span>
+        <span class="domain-label" id="domainLabel"></span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="q-card" id="qCard">
+        <div class="q-badge" id="qBadge"></div>
+        <div class="q-text" id="qText"></div>
+        <div id="optionsWrap"></div>
+        <div class="expl" id="expl"></div>
+      </div>
+      <div class="exam-nav">
+        <button class="btn btn-secondary" id="prevBtn" onclick="prevQ()" disabled>← Prev</button>
+        <span style="font-size:12px;color:var(--muted)" id="statusHint">Select an answer</span>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQ()" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Score Screen (hidden initially) -->
+    <div id="scoreScreen" style="display:none;" class="score-screen">
+      <div class="score-big" id="scoreBig"></div>
+      <div class="score-verdict" id="scoreVerdict"></div>
+      <div class="domain-breakdown">
+        <div class="db-card"><div class="db-label" style="color:var(--d1)">D1 · Implement &amp; Manage</div><div class="db-value" id="d1score" style="color:var(--d1)"></div><div class="db-total" id="d1total"></div></div>
+        <div class="db-card"><div class="db-label" style="color:var(--d2)">D2 · Ingest &amp; Transform</div><div class="db-value" id="d2score" style="color:var(--d2)"></div><div class="db-total" id="d2total"></div></div>
+        <div class="db-card"><div class="db-label" style="color:var(--d3)">D3 · Monitor &amp; Optimize</div><div class="db-value" id="d3score" style="color:var(--d3)"></div><div class="db-total" id="d3total"></div></div>
+      </div>
+      <button class="btn btn-primary" onclick="restartExam()" style="margin-bottom:12px">Retake Exam</button>
+      &nbsp;
+      <button class="btn btn-secondary" onclick="showReview()">Review Wrong Answers</button>
+      <div class="review-section" id="reviewSection" style="display:none;"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const questions = [
+  // ── DOMAIN 1: Implement & Manage ──
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Spark Config',
+    q: 'A data engineer runs 5 notebooks simultaneously under their own user account. Each notebook waits 3 minutes for a new Spark session to start. What feature should be enabled to eliminate this cold-start delay?',
+    opts:['A. Autoscale — automatically adds Spark executor nodes based on load','B. High Concurrency Mode — shares one running Spark session across the user\'s workloads','C. Custom Pool — provisions a dedicated Spark pool per notebook','D. Starter Pool — pre-warms a shared pool for all workspace users'],
+    ans:1,
+    expl:'<strong>B — High Concurrency Mode.</strong> It shares ONE running Spark session across multiple workloads within a single-user boundary. Each workload gets its own REPL core. Session start can be up to 36× faster. <em>Autoscale adds/removes compute nodes — it does not eliminate startup time.</em>'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Deployment Pipelines',
+    q: 'After deploying a pipeline from the Dev workspace to the Test workspace using Fabric deployment pipelines, the Test pipeline still connects to the Dev SQL database. What must be configured to fix this?',
+    opts:['A. Re-create the pipeline manually in the Test workspace','B. Enable Git integration so the Test workspace pulls the correct connection','C. Configure a deployment rule to override the pipeline\'s data source connection at the Test stage','D. Add the Test workspace to the same deployment pipeline stage as Dev'],
+    ans:2,
+    expl:'<strong>C — Deployment rule.</strong> Deployment rules let you override item properties (connection strings, parameters, data sources) per pipeline stage. Without a rule, the same connection from Dev is used in Test.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Security',
+    q: 'A user needs read access to only the /Tables/Sales/ folder in a lakehouse. They should not see any other tables or items in the workspace. What is the minimum configuration required?',
+    opts:['A. Assign the user a Viewer workspace role','B. Grant the user ReadData item permission on the lakehouse, then create an OneLake data access role scoped to /Tables/Sales/ only','C. Grant the user ReadAll item permission on the lakehouse','D. Configure Row-Level Security (RLS) on the Sales table'],
+    ans:1,
+    expl:'<strong>B.</strong> Two steps: (1) ReadData item permission on the specific lakehouse — this avoids giving workspace-wide access. (2) OneLake data access role scoped to /Tables/Sales/ — limits folder-level access within the lakehouse. A Viewer workspace role would expose ALL items in the workspace.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Dynamic Data Masking',
+    q: 'A column Email varchar(100) in a Fabric warehouse is masked with FUNCTION = \'email()\'. A user assigned the Contributor workspace role queries this table. What does the user see in the Email column?',
+    opts:['A. aXXX@XXXX.com — the masked value','B. The actual unmasked email address — Contributor has CONTROL permission by default','C. NULL — masked columns return NULL for all users','D. An error — Contributor role cannot query masked columns'],
+    ans:1,
+    expl:'<strong>B — Unmasked email.</strong> Users with Admin, Member, or Contributor workspace roles have CONTROL permission on the warehouse, which includes UNMASK rights. They always see the actual data. Only users with SELECT permission but WITHOUT UNMASK see the masked value.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Shortcuts',
+    q: 'A data engineer creates an Amazon S3 shortcut in a Fabric lakehouse. Repeated reads are slow and incur cross-region egress costs. What can be enabled to reduce latency and costs on subsequent reads?',
+    opts:['A. Enable V-Order on the shortcut target files','B. Replace the S3 shortcut with an ADLS Gen2 shortcut — ADLS supports faster caching','C. Enable shortcut caching in Workspace Settings → OneLake (retention 1–28 days)','D. Convert the shortcut to a mirrored database for automatic caching'],
+    ans:2,
+    expl:'<strong>C — Shortcut caching.</strong> Shortcut caching is supported for GCS, S3, S3-compatible, and on-premises data gateway shortcuts. Enable it in Workspace Settings → OneLake. Note: ADLS Gen2 shortcuts do NOT support caching. Files > 1 GB are not cached.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Git Integration',
+    q: 'A developer modifies a notebook in the Fabric UI but does not commit the changes. A colleague then pulls the latest version from GitHub. What does the colleague see in the Fabric workspace?',
+    opts:['A. The latest changes — Fabric auto-syncs to Git every 5 minutes','B. A conflict notification — the colleague must resolve the diff','C. The original notebook from Git — UI changes only sync after an explicit commit','D. An error — pulling from Git is blocked when unsaved changes exist'],
+    ans:2,
+    expl:'<strong>C — Original notebook from Git.</strong> Changes in the Fabric UI do NOT auto-sync to Git. The developer must explicitly commit. Until committed, the changes exist only in that developer\'s workspace view.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Sensitivity Labels',
+    q: 'A sensitivity label "Confidential" is applied to a lakehouse table. A data analyst then builds a Power BI report on top of that table. What happens to the sensitivity label on the report?',
+    opts:['A. The report has no label — labels only apply to storage items, not reports','B. The label propagates automatically to the report','C. The analyst must manually apply the label to the report','D. The label blocks the report from accessing the data'],
+    ans:1,
+    expl:'<strong>B — Auto-propagation.</strong> Sensitivity labels propagate downstream automatically from source items (lakehouses, warehouses, semantic models) to reports and other downstream artifacts.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Orchestration',
+    q: 'A business analyst with no coding skills needs to combine data from Salesforce, SharePoint, and an Azure SQL database, apply simple column transformations, and load the result into a Power BI semantic model — all without writing code. Which tool is most appropriate?',
+    opts:['A. Spark Notebook with PySpark','B. Dataflow Gen2 with Power Query UI','C. Data Pipeline with Copy Activity','D. Apache Airflow with a DAG'],
+    ans:1,
+    expl:'<strong>B — Dataflow Gen2.</strong> It uses the Power Query UI (no code), supports 300+ connectors including Salesforce and SharePoint, allows column-level transformations, and can load directly to semantic models. Ideal for business analysts with no coding skills.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Security Layers',
+    q: 'A company has three requirements: (1) User A should access only Lakehouse X, not the warehouse. (2) User B should access only the Sales table within Lakehouse X. (3) User C should see only rows where Region = "West" in the Sales table. Which security layers (in order) meet these requirements?',
+    opts:['A. Workspace role → OneLake data access role → Row-Level Security','B. Item permission → OneLake data access role → Row-Level Security','C. OneLake data access role → Item permission → Workspace role','D. Workspace role → Item permission → Column-Level Security'],
+    ans:1,
+    expl:'<strong>B.</strong> (1) Item permission grants access to a specific item only (Lakehouse X), not all workspace items. (2) OneLake data access role scoped to /Tables/Sales/ grants access to just that table. (3) Row-Level Security (CREATE SECURITY POLICY) filters rows by Region in the warehouse SQL endpoint.'
+  },
+
+  // ── DOMAIN 2: Ingest & Transform ──
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Incremental Load',
+    q: 'A pipeline loads new records daily from an Azure SQL database into a lakehouse. The source table has a LastModified timestamp column. The pipeline currently does a full table copy each day, causing performance issues. What is the correct incremental load pattern?',
+    opts:['A. Use a full copy with overwrite mode on the destination — let Delta handle deduplication automatically','B. Store a watermark in a control table; copy rows WHERE LastModified > watermark; update the watermark after a successful copy','C. Enable Change Data Capture (CDC) on the lakehouse destination','D. Use a MERGE activity with the pipeline to upsert all records'],
+    ans:1,
+    expl:'<strong>B — Watermark pattern.</strong> The correct sequence: (1) Lookup to read the watermark from a control table. (2) Copy Activity with filter WHERE LastModified > @watermark. (3) Script Activity to UPDATE the watermark to MAX(LastModified) from the loaded batch. This is the standard incremental load pattern.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Metadata-Driven',
+    q: 'A pipeline must ingest data from 60 different source tables, each with a different connection string and schema. Creating 60 separate Copy Activities is impractical. What is the scalable pattern?',
+    opts:['A. Use a single Copy Activity with wildcard source patterns to capture all tables','B. Create a control table with one row per source table; use a Lookup + ForEach to iterate and invoke a parameterized Copy Activity per row','C. Create 60 linked services and 60 pipelines — one per table','D. Use a Spark notebook with a loop over hardcoded table names'],
+    ans:1,
+    expl:'<strong>B — Control table + ForEach (metadata-driven ingestion).</strong> The control table stores source name, connection, table name, destination path per row. Lookup reads all rows; ForEach iterates; a single parameterized Copy Activity handles all tables. Scalable to hundreds of tables with no pipeline changes.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Shortcuts',
+    q: 'A data engineer needs an AWS S3 bucket to appear as a native folder inside a Fabric lakehouse — without moving or copying the data. Which shortcut type achieves this?',
+    opts:['A. OneLake shortcut pointing to another Fabric workspace','B. ADLS Gen2 shortcut','C. Amazon S3 shortcut','D. Mirrored database shortcut'],
+    ans:2,
+    expl:'<strong>C — Amazon S3 shortcut.</strong> S3 shortcuts expose an S3 bucket as a folder inside a lakehouse. No data is copied. Fabric manages the credentials/connections. The shortcut appears in the Files/ or Tables/ folder.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Eventstream',
+    q: 'Real-time IoT sensor data streams into Azure Event Hubs. The data needs to be (1) ingested into an Eventhouse for KQL-based anomaly detection AND (2) stored in a lakehouse in Delta format for batch reporting — with no custom code. What is the best solution?',
+    opts:['A. Two separate Spark Structured Streaming notebooks — one per destination','B. A single Eventstream with two destinations: Eventhouse and Lakehouse','C. A Data Pipeline with a Copy Activity that reads from Event Hubs every 5 minutes','D. An Azure Stream Analytics job that writes to both destinations'],
+    ans:1,
+    expl:'<strong>B — Single Eventstream with two destinations.</strong> Eventstream is a no-code streaming tool that can route to multiple destinations simultaneously (Eventhouse + Lakehouse) from one source. Eventhouse receives live data for KQL queries; Lakehouse stores Delta format for batch. At-least-once delivery.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Spark Streaming',
+    q: 'A Spark Structured Streaming job that aggregates temperature events by device per hour fails and restarts. After restart, it reprocesses all historical data from the beginning. What is missing?',
+    opts:['A. A watermark — withWatermark() was not configured','B. A checkpoint location — checkpointLocation was not set in writeStream','C. An output mode — the output mode defaults to append but should be complete','D. A trigger — the default trigger processes too much data at once'],
+    ans:1,
+    expl:'<strong>B — Missing checkpointLocation.</strong> Without a checkpoint, Spark Structured Streaming has no memory of which offsets were already processed. On restart, it starts from the beginning. Always configure <code>.option("checkpointLocation", "path/")</code> in writeStream.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'RTI Storage',
+    q: 'A KQL database shortcut points to an external ADLS Gen2 path. Queries use the external_table() function. Which RTI storage type is this, and what is the performance implication?',
+    opts:['A. Native storage — fastest query performance','B. Accelerated shortcut — KQL indexes are built on the data','C. Non-accelerated shortcut — no KQL indexes; reads from source on each query','D. Mirrored database — data is replicated into the eventhouse'],
+    ans:2,
+    expl:'<strong>C — Non-accelerated shortcut.</strong> When queried via external_table(), data is read directly from the external source each time — no KQL indexes. This is the slowest option. Accelerated shortcuts build KQL indexes on OneLake Delta data for fast queries.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Eventstream Delivery',
+    q: 'An eventstream delivers events from Azure IoT Hub to an Eventhouse. A brief network interruption occurs. Which delivery guarantee does Eventstream provide?',
+    opts:['A. Exactly-once — each event is delivered precisely once','B. At-least-once — events may be delivered more than once but never lost','C. At-most-once — events are delivered once but may be lost','D. Best-effort — no guarantees on delivery'],
+    ans:1,
+    expl:'<strong>B — At-least-once.</strong> Eventstream guarantees at-least-once delivery. In case of network interruptions or failures, events may be redelivered, but they will not be lost. Design downstream consumers to handle potential duplicates.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'KQL Basics',
+    q: 'In KQL, which operator selects only specific named columns from a result set (equivalent to SELECT col1, col2 in SQL)?',
+    opts:['A. | where','B. | extend','C. | project','D. | summarize'],
+    ans:2,
+    expl:'<strong>C — | project.</strong> The project operator selects, renames, or computes columns to include in the output. Example: <code>Events | project EventTime, DeviceId, Temperature</code>. Use <code>project-away</code> to drop specific columns instead.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'KQL Windowing',
+    q: 'A KQL query must count the number of events per 1-hour time bucket over the last 7 days. Which function creates the time buckets?',
+    opts:['A. ago(7d) — filters to the last 7 days','B. bin(TimeStamp, 1h) — rounds timestamps down to the nearest 1-hour interval','C. between(ago(7d) .. now()) — defines the time range','D. extend duration=1h — adds a computed column'],
+    ans:1,
+    expl:'<strong>B — bin(TimeStamp, 1h).</strong> The bin() function rounds values down to the nearest multiple of the bin size. Combined with summarize: <code>Events | where TimeStamp > ago(7d) | summarize count() by bin(TimeStamp, 1h)</code>.'
+  },
+
+  // ── DOMAIN 3: Monitor & Optimize ──
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'queryinsights',
+    q: 'A data engineer wants to identify which SQL query patterns in a Fabric warehouse are consistently running slowly (not just individual slow runs). Which queryinsights view is most appropriate, and how should it be ordered?',
+    opts:['A. queryinsights.exec_requests_history ORDER BY total_elapsed_time_ms DESC','B. queryinsights.long_running_queries ORDER BY median_total_elapsed_time_ms DESC','C. queryinsights.frequently_run_queries ORDER BY number_of_successful_runs DESC','D. queryinsights.sql_pool_insights ORDER BY pressure_level DESC'],
+    ans:1,
+    expl:'<strong>B — long_running_queries.</strong> This view aggregates by query shape and shows median execution time, making it ideal for identifying patterns that are consistently slow. exec_requests_history shows individual runs; long_running_queries shows the pattern over time.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'queryinsights CPU',
+    q: 'Which column in queryinsights.exec_requests_history identifies the most CPU-intensive queries in a Fabric warehouse?',
+    opts:['A. data_scanned_remote_storage_mb — measures data read from remote storage','B. allocated_cpu_time_ms — measures total CPU time allocated to the query','C. number_of_successful_runs in frequently_run_queries','D. pressure_level in sql_pool_insights'],
+    ans:1,
+    expl:'<strong>B — allocated_cpu_time_ms</strong> in exec_requests_history. Use <code>SELECT TOP 100 distributed_statement_id, allocated_cpu_time_ms, command FROM queryinsights.exec_requests_history ORDER BY allocated_cpu_time_ms DESC</code> to find CPU hogs.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'Primary Keys',
+    q: 'A developer creates a Fabric warehouse table with a PRIMARY KEY constraint and then inserts two rows with the same primary key value. What happens?',
+    opts:['A. The second insert is rejected with a constraint violation error','B. The second insert succeeds — PRIMARY KEY constraints in Fabric Warehouse are NOT enforced','C. The table is automatically deduplicated and only one row is kept','D. A warning is raised but the insert succeeds'],
+    ans:1,
+    expl:'<strong>B — Inserts succeed.</strong> In Fabric Warehouse (an MPP analytics system), PRIMARY KEY, UNIQUE, and FOREIGN KEY constraints are NOT ENFORCED. They are metadata hints for documentation and potential query optimizer use only. Duplicate rows will exist in the table.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'OPTIMIZE',
+    q: 'A Delta table has accumulated thousands of small Parquet files (2–5 MB each) due to frequent streaming micro-batch writes. Queries are slow. What command should be run, and where?',
+    opts:['A. Run VACUUM in the SQL analytics endpoint to consolidate small files','B. Run OPTIMIZE in a Fabric notebook or Spark job definition to perform bin compaction','C. Run MERGE INTO in the warehouse SQL editor to rebuild the table','D. Run DEFRAGMENT TABLE in a Spark notebook'],
+    ans:1,
+    expl:'<strong>B — OPTIMIZE in a notebook.</strong> <code>OPTIMIZE table_name</code> performs bin compaction: merges many small Parquet files into fewer larger files. Must be run in a Spark notebook or Spark job definition — NOT in the SQL analytics endpoint or Warehouse SQL editor (those are T-SQL only).'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'V-Order',
+    q: 'A new Fabric workspace is created and a Delta table is written using a notebook. A developer checks whether V-Order is applied. What is the default state of V-Order for new Fabric workspaces?',
+    opts:['A. V-Order is enabled by default — all new tables use V-Order automatically','B. V-Order is disabled by default — spark.sql.parquet.vorder.default is false in new workspaces','C. V-Order is controlled only at the table level via TBLPROPERTIES, not the session level','D. V-Order is automatically applied during the first OPTIMIZE run'],
+    ans:1,
+    expl:'<strong>B — Disabled by default.</strong> As of current Fabric documentation, V-Order is disabled by default in new workspaces (<code>spark.sql.parquet.vorder.default=false</code>) to optimize write performance for data engineering/ingestion workloads. Enable it explicitly for read-heavy scenarios. Source: Microsoft Fabric documentation March 2026.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'VACUUM',
+    q: 'A developer runs the VACUUM command on a Delta table without specifying a RETAIN period. How many days of time-travel history is retained?',
+    opts:['A. 30 days','B. 14 days','C. 7 days (168 hours)','D. 1 day'],
+    ans:2,
+    expl:'<strong>C — 7 days (168 hours).</strong> The default VACUUM retention is 7 days. Files older than 7 days that are not referenced by the current Delta log are deleted. After VACUUM, time travel to versions older than 7 days is no longer possible.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'Throttling',
+    q: 'A Data Pipeline activity writing to a Fabric warehouse repeatedly fails with HTTP 429 Too Many Requests errors. What type of error is this, and what is the correct resolution approach?',
+    opts:['A. Capacity error — upgrade the workspace to a higher Fabric SKU','B. Schema error — validate that the source schema matches the warehouse table schema','C. Throttling error — implement retry logic with exponential backoff and/or reduce write concurrency','D. Timeout error — increase the pipeline activity timeout setting'],
+    ans:2,
+    expl:'<strong>C — Throttling, resolve with retry backoff.</strong> HTTP 429 = Too Many Requests = throttling. The service is temporarily rate-limiting requests. Correct resolutions: (1) Enable pipeline retry policy with exponential backoff. (2) Reduce concurrent write activities. (3) Spread writes over a longer time window. Do NOT increase timeout — that addresses a different error type.'
+  }
+];
+
+// State
+let currentQ = 0;
+let answers = {};
+let examStarted = false;
+
+function startExam() {
+  examStarted = true;
+  answers = {};
+  currentQ = 0;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('questionScreen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  const pct = ((currentQ) / total) * 100;
+
+  document.getElementById('qCounter').textContent = 'Question ' + (currentQ+1) + ' of ' + total;
+  document.getElementById('domainLabel').textContent = q.domainLabel;
+  document.getElementById('progFill').style.width = pct + '%';
+
+  const badge = document.getElementById('qBadge');
+  badge.textContent = q.domainLabel;
+  badge.className = 'q-badge ' + q.domain;
+
+  document.getElementById('qText').textContent = q.q;
+
+  const optWrap = document.getElementById('optionsWrap');
+  optWrap.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="opt-letter">' + String.fromCharCode(65+i) + '.</span><span>' + opt.substring(3) + '</span>';
+    btn.onclick = () => selectAnswer(i);
+    if (answers[currentQ] !== undefined) {
+      applyAnswerStyles(btn, i, q.ans, answers[currentQ]);
+      btn.disabled = true;
+    }
+    optWrap.appendChild(btn);
+  });
+
+  const expl = document.getElementById('expl');
+  const nextBtn = document.getElementById('nextBtn');
+  const hint = document.getElementById('statusHint');
+
+  if (answers[currentQ] !== undefined) {
+    expl.innerHTML = q.expl;
+    expl.className = 'expl show ' + (answers[currentQ] === q.ans ? 'right' : 'wrong');
+    nextBtn.disabled = false;
+    nextBtn.textContent = currentQ === total - 1 ? 'See Results' : 'Next →';
+    hint.textContent = answers[currentQ] === q.ans ? '✅ Correct!' : '❌ Incorrect';
+    hint.style.color = answers[currentQ] === q.ans ? 'var(--green)' : 'var(--red)';
+  } else {
+    expl.className = 'expl';
+    expl.innerHTML = '';
+    nextBtn.disabled = true;
+    nextBtn.textContent = currentQ === total - 1 ? 'See Results' : 'Next →';
+    hint.textContent = 'Select an answer';
+    hint.style.color = 'var(--muted)';
+  }
+
+  document.getElementById('prevBtn').disabled = currentQ === 0;
+}
+
+function applyAnswerStyles(btn, optIdx, correctIdx, selectedIdx) {
+  if (optIdx === correctIdx) btn.classList.add('correct');
+  else if (optIdx === selectedIdx) btn.classList.add('wrong');
+}
+
+function selectAnswer(optIdx) {
+  if (answers[currentQ] !== undefined) return;
+  answers[currentQ] = optIdx;
+  renderQuestion();
+}
+
+function nextQ() {
+  if (currentQ === questions.length - 1) {
+    showScore();
+    return;
+  }
+  currentQ++;
+  renderQuestion();
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function showScore() {
+  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('scoreScreen').style.display = 'block';
+
+  let correct = 0;
+  const domainCount = { d1: {c:0,t:0}, d2: {c:0,t:0}, d3: {c:0,t:0} };
+
+  questions.forEach((q, i) => {
+    domainCount[q.domain].t++;
+    if (answers[i] === q.ans) { correct++; domainCount[q.domain].c++; }
+  });
+
+  const pct = Math.round((correct / questions.length) * 100);
+  const scaled = Math.round(400 + (pct / 100) * 600); // scale to 400-1000
+
+  document.getElementById('scoreBig').textContent = correct + '/' + questions.length;
+  document.getElementById('scoreBig').style.color = pct >= 70 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('scoreVerdict').textContent = pct >= 70
+    ? '🎉 PASS threshold reached! (≈' + scaled + '/1000 scaled)'
+    : '📚 Keep studying — ≈' + scaled + '/1000 scaled (need 700)';
+
+  ['d1','d2','d3'].forEach(d => {
+    document.getElementById(d+'score').textContent = domainCount[d].c + '/' + domainCount[d].t;
+    document.getElementById(d+'total').textContent = Math.round(domainCount[d].c/domainCount[d].t*100) + '% correct';
+  });
+}
+
+function showReview() {
+  const section = document.getElementById('reviewSection');
+  if (section.style.display === 'block') { section.style.display = 'none'; return; }
+
+  let html = '<h3 style="margin-bottom:12px;font-size:15px">Wrong Answers</h3>';
+  let hasWrong = false;
+  questions.forEach((q, i) => {
+    if (answers[i] !== undefined && answers[i] !== q.ans) {
+      hasWrong = true;
+      html += '<div class="review-item"><div class="ri-q">Q'+(i+1)+': '+q.q+'</div>';
+      html += '<div style="color:var(--red);font-size:12px;margin-top:4px">Your answer: '+q.opts[answers[i]]+'</div>';
+      html += '<div class="ri-correct">✅ Correct: '+q.opts[q.ans]+'</div>';
+      html += '<div style="font-size:12px;margin-top:6px;color:var(--text)">'+q.expl+'</div></div>';
+    }
+  });
+  if (!hasWrong) html += '<p style="color:var(--green)">🎉 No wrong answers! Perfect score.</p>';
+  section.innerHTML = html;
+  section.style.display = 'block';
+}
+
+function restartExam() {
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'block';
+  answers = {};
+  currentQ = 0;
+}
+</script>
+</body>
+</html>
