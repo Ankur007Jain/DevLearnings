@@ -48,6 +48,17 @@
           <tr><td><strong>Data Workflows</strong></td><td>Apache Airflow environment, starter pool for Data Factory</td><td>"Airflow", "orchestrate external workflows", "starter pool"</td></tr>
         </table>
         <div class="gotcha"><strong>⚠️ Gotcha</strong> "Data workflows settings" = Airflow configuration, NOT generic pipeline settings. If the question mentions Airflow or external workflow orchestration → Data Workflows settings.</div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Explore All Workspace Setting Categories</h4>
+          <ol>
+            <li>Open your Fabric Trial workspace → click the <strong>gear icon (Settings)</strong> in the top right</li>
+            <li>Click through all tabs: <strong>Spark</strong>, <strong>Domain</strong>, <strong>OneLake</strong>, <strong>Data workflows</strong></li>
+            <li>In Spark settings: note the default runtime version and toggle "High concurrency mode" — see where it lives</li>
+            <li>In OneLake settings: find the shortcut cache toggle and note which shortcut types it applies to</li>
+            <li>In Data workflows: observe the Airflow environment config — this is only place to configure Airflow starter pool</li>
+            <li><strong>Exam drill:</strong> For each tab, ask yourself: "which exam trigger words map here?"</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -71,6 +82,17 @@
           <div class="qa-q">Q: A data engineer runs 5 notebooks at once. Spark takes 3 min to start each. What to enable?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>High Concurrency Mode.</strong> Shares the existing session — no new startup per notebook. NOT autoscale (that scales nodes, not sessions).</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Enable &amp; Test High Concurrency Mode</h4>
+          <ol>
+            <li>Go to your Fabric workspace → <strong>Settings → Spark</strong></li>
+            <li>Toggle <strong>High Concurrency Mode</strong> ON — note the default max notebooks (5)</li>
+            <li>Open a Lakehouse → create a new notebook. In cell 1 run: <code>print(spark.conf.get("spark.highConcurrency.max"))</code></li>
+            <li>Open a <em>second</em> notebook in the SAME browser tab (without stopping the first). Observe it connects to the <strong>same session</strong> — startup is nearly instant</li>
+            <li>Open a notebook as a different user or in a different browser profile — observe it starts a <strong>separate Spark session</strong> (proves single-user boundary)</li>
+            <li><strong>Exam drill:</strong> What error word tells you to use high concurrency? ("slow startup", "3 minutes to start", "multiple notebooks simultaneously")</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -119,6 +141,17 @@
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer">Create an <strong>internal OneLake shortcut</strong> in Workspace B's lakehouse pointing to the Sales table in Workspace A. No data is copied. Users in B query it through the shortcut.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Create Shortcut Types &amp; Test Caching</h4>
+          <ol>
+            <li>In your Fabric Lakehouse, right-click <strong>Files/</strong> → <strong>New shortcut</strong></li>
+            <li>Create an <strong>Amazon S3</strong> shortcut (or use a sample S3 bucket) — note it appears in Files/ at any depth</li>
+            <li>Go to <strong>Workspace Settings → OneLake</strong> → enable <strong>Shortcut caching</strong> → set retention to 7 days</li>
+            <li>Try creating a shortcut in <strong>Tables/</strong> → observe you can only create it at the top level (not in sub-folders)</li>
+            <li>In a notebook, run: <code>df = spark.read.format("delta").load("Tables/YourShortcut")</code> — this works only if the target is Delta Parquet</li>
+            <li><strong>Exam drill:</strong> Try adding an ADLS Gen2 shortcut and verify caching is NOT available for it in the settings</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -145,6 +178,17 @@
           <div class="qa-q">Q: After deploying from Dev to Test, the Test pipeline still connects to the Dev database. What's missing?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Deployment rule</strong> was not configured. Add a deployment rule for the pipeline that overrides its data source connection to point to the Test database.</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Build a 3-Stage Deployment Pipeline</h4>
+          <ol>
+            <li>In your Fabric workspace, go to <strong>Workspaces → Deployment pipelines</strong> → create a new pipeline with 3 stages: Dev, Test, Production</li>
+            <li>Assign your trial workspace to the <strong>Dev</strong> stage</li>
+            <li>Create two more workspaces (DP700-Test, DP700-Prod) and assign them to Test and Production stages</li>
+            <li>Deploy a simple notebook from Dev → Test — observe that <strong>data stays behind</strong>, only the notebook definition moves</li>
+            <li>Click <strong>Deployment rules</strong> on the Test stage → add a rule overriding a Lakehouse connection to a Test-specific one</li>
+            <li><strong>Exam drill:</strong> After deploying, check the Test workspace — is the notebook there? Is there any data in the tables? (Answer: notebook yes, data no)</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -174,6 +218,17 @@
           <div class="qa-q">Q: A developer adds a stored procedure in the Git repo SQL script. How is it deployed to the warehouse?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Publish the database project</strong> from the Git repo to the Fabric workspace. The publish applies the incremental SQL changes to the warehouse.</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Connect a Workspace to Git</h4>
+          <ol>
+            <li>Go to your workspace → <strong>Settings → Git integration</strong></li>
+            <li>Connect to a GitHub or Azure DevOps repo (create a free one if needed)</li>
+            <li>After connecting, open a notebook and make a change → click <strong>Source control</strong> in the top bar → <strong>Commit</strong></li>
+            <li>Navigate to your Git repo and confirm the notebook's <code>.ipynb</code> file appears</li>
+            <li>Make a change in Git directly → go back to Fabric workspace → click <strong>Update all</strong> to pull changes</li>
+            <li><strong>Exam drill:</strong> Try committing as a Viewer-role user — it should be blocked. Only Admin/Member can commit.</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -214,6 +269,17 @@
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer">1. Grant <strong>ReadData item permission</strong> on the specific lakehouse (not a workspace role — that gives access to all items).<br>2. Create an <strong>OneLake data access role</strong> scoped to /Tables/HR/ and assign the user.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Configure OneLake Data Access Roles</h4>
+          <ol>
+            <li>Open a Lakehouse → click <strong>Manage OneLake data access (preview)</strong> in the ribbon</li>
+            <li>Create a new role, e.g. "SalesOnly"</li>
+            <li>In the role editor, click <strong>+ Add table</strong> → select only the <code>Sales</code> table (path: /Tables/Sales/)</li>
+            <li>Assign a test user (or your own email in another browser) to this role</li>
+            <li>Log in as that user → open the lakehouse → verify they can see Sales but NOT other tables</li>
+            <li><strong>Exam drill:</strong> What's the difference between giving a workspace Viewer role vs. creating an OneLake data access role? (Viewer = all items; OneLake role = specific tables/folders)</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -253,6 +319,22 @@
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer">The <strong>actual unmasked email</strong>. Contributor has CONTROL permission on the warehouse by default, which includes UNMASK rights. Only users with lower permissions (e.g., shared via item permission only) see the masked value.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Apply DDM and Test All 4 Mask Types</h4>
+          <ol>
+            <li>In a Fabric Warehouse, create a table:
+              <code>CREATE TABLE dbo.MaskTest (Name VARCHAR(50), Email VARCHAR(100), Phone VARCHAR(20), Salary INT);</code></li>
+            <li>Apply masks:
+              <code>ALTER TABLE dbo.MaskTest ALTER COLUMN Email ADD MASKED WITH (FUNCTION = 'email()');</code><br>
+              <code>ALTER TABLE dbo.MaskTest ALTER COLUMN Salary ADD MASKED WITH (FUNCTION = 'random(1000, 9999)');</code><br>
+              <code>ALTER TABLE dbo.MaskTest ALTER COLUMN Phone ADD MASKED WITH (FUNCTION = 'partial(0,"XXX-XXX-",4)');</code>
+            </li>
+            <li>Insert a test row, then <code>SELECT * FROM dbo.MaskTest</code> — as Contributor you see unmasked data</li>
+            <li>Share the warehouse with a lower-permission user (item permission only) → have them query — they see masked values</li>
+            <li>Grant UNMASK to that user: <code>GRANT UNMASK ON dbo.MaskTest TO [user@email.com];</code> — retest</li>
+            <li><strong>Exam drill:</strong> Which mask function shows "jXXX@XXXX.com"? (email())</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -284,6 +366,17 @@
           <tr><td>Event-Based</td><td>When a file arrives in storage (blob created/deleted event)</td><td>File-arrival triggered processing</td></tr>
           <tr><td>On Demand (Manual)</td><td>Triggered manually or via API/pipeline call</td><td>On-demand or parent pipeline triggering child</td></tr>
         </table>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Build an Orchestration Decision Scenario</h4>
+          <ol>
+            <li>Create a <strong>Data Pipeline</strong> in your workspace — add a Copy Activity, a Notebook activity, and an If Condition activity chained together</li>
+            <li>Add a <strong>Schedule trigger</strong>: daily at 6am — observe the trigger config options (recurrence, time zone)</li>
+            <li>Add an <strong>Event-based trigger</strong>: "On file arrival in storage" — note you need an Azure Storage account connected</li>
+            <li>Create a <strong>Dataflow Gen2</strong> — open the Power Query editor and load a CSV from OneLake — observe the no-code interface vs. the pipeline</li>
+            <li>Back in the pipeline: add a ForEach activity and put a notebook activity inside it — this is the metadata-driven pattern scaffold</li>
+            <li><strong>Exam drill:</strong> A question says "DAG, external systems, Airflow" — which tool? ("Data Workflows" setting / Apache Airflow in Fabric)</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -323,6 +416,17 @@
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer">Watermark pattern: store last run timestamp in a control table. Each run: (1) read watermark, (2) copy WHERE LastModified > watermark, (3) update watermark = MAX(LastModified) from current batch after success.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Build a Copy Activity with Watermark</h4>
+          <ol>
+            <li>Create a lakehouse table <code>control_wm</code>: <code>CREATE TABLE control_wm (table_name STRING, last_watermark TIMESTAMP)</code></li>
+            <li>Insert seed row: <code>INSERT INTO control_wm VALUES ('orders', '2024-01-01')</code></li>
+            <li>In a Data Pipeline: add <strong>Lookup</strong> activity → source = control_wm, return first row only</li>
+            <li>Add <strong>Copy Activity</strong> → Source query: <code>SELECT * FROM orders WHERE modified_date > '@{activity('Lookup1').output.firstRow.last_watermark}'</code></li>
+            <li>Add <strong>Script activity</strong> after Copy: <code>UPDATE control_wm SET last_watermark = '@{utcNow()}' WHERE table_name = 'orders'</code></li>
+            <li>Run the pipeline twice — verify the second run only picks up rows inserted after the first run's watermark</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -341,6 +445,17 @@
           <tr><td><strong>Git Support</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
           <tr><td><strong>Streaming</strong></td><td>Dataflow Gen2 streaming (preview)</td><td>No</td><td>Spark Structured Streaming</td></tr>
         </table>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Compare Dataflow Gen2 vs Pipeline for the Same ETL Task</h4>
+          <ol>
+            <li>In your workspace, create a <strong>Dataflow Gen2</strong> → Get Data → choose a CSV from OneLake</li>
+            <li>In Power Query editor: rename a column, filter out nulls, change a data type — all with no code</li>
+            <li>Set the output destination to a Lakehouse table → publish and run</li>
+            <li>Now build the SAME transform in a <strong>Data Pipeline</strong> using a Copy Activity + a Notebook for the column rename</li>
+            <li>Compare: Dataflow Gen2 took how many steps? Pipeline took how many? Which would a business analyst prefer?</li>
+            <li><strong>Exam drill:</strong> "Business user, no code, ~300 connectors" → Dataflow Gen2. "Complex branching, conditional logic" → Pipeline.</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -366,6 +481,17 @@
   ForEach (@activity('Lookup').output.value)
     Copy Activity (source = @item().connection, table = @item().table_name)
     Script Activity (UPDATE control_table SET watermark = ...)</pre>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Build a Metadata-Driven Pipeline (Mini)</h4>
+          <ol>
+            <li>Create a lakehouse table <code>ingestion_control</code> with columns: <code>source_table STRING, is_active BOOLEAN, last_watermark TIMESTAMP</code></li>
+            <li>Insert 3 rows for 3 different source tables (or mock table names)</li>
+            <li>In a Data Pipeline: add a <strong>Lookup</strong> activity → select all active rows from ingestion_control</li>
+            <li>Add a <strong>ForEach</strong> activity → set Items to <code>@activity('Lookup1').output.value</code></li>
+            <li>Inside ForEach: add a <strong>Copy Activity</strong> → Source table name = <code>@item().source_table</code></li>
+            <li>Run and observe: one pipeline run processes ALL 3 tables. Add a 4th row to the control table — next run picks it up automatically with no pipeline changes.</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -430,6 +556,18 @@
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Eventstream</strong> with two destinations: Eventhouse (for KQL) and Lakehouse (for Delta/batch). No code needed. Multiple destinations supported simultaneously.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Build an Eventstream with Multiple Destinations</h4>
+          <ol>
+            <li>In your workspace, create a new <strong>Eventstream</strong></li>
+            <li>Add a source: choose <strong>Sample data</strong> (stock market ticker — free, no Azure Event Hub needed)</li>
+            <li>Click <strong>+</strong> after the source → add a <strong>Filter</strong> transformation (e.g., filter where Price &gt; 100)</li>
+            <li>Add a destination: <strong>Lakehouse</strong> → select your lakehouse, create a new table "stock_events"</li>
+            <li>Add a SECOND destination: <strong>KQL Database</strong> (Eventhouse) → create a new table "stock_kql"</li>
+            <li>Start the eventstream → wait 30 seconds → query both destinations and confirm data flows to BOTH simultaneously</li>
+            <li><strong>Exam drill:</strong> What is the delivery guarantee? (At-least-once, NOT exactly-once)</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -461,6 +599,21 @@ df_agg.writeStream
   .option("checkpointLocation", "abfss://container/checkpoint/")
   .start("Tables/DeviceAggregates")</pre>
         <div class="gotcha"><strong>⚠️ Checkpoint is critical.</strong> Without a checkpoint, a failed stream restarts from the beginning (reprocesses all data). Always configure checkpointLocation.</div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Write a Spark Structured Streaming Job</h4>
+          <ol>
+            <li>In a Fabric notebook, create a mock streaming source using rate format:
+              <code>df = spark.readStream.format("rate").option("rowsPerSecond", 5).load()</code></li>
+            <li>Add a watermark and 1-minute window aggregation:
+              <code>from pyspark.sql.functions import window, col<br>
+              agg = df.withWatermark("timestamp","30 seconds").groupBy(window("timestamp","1 minute")).count()</code></li>
+            <li>Write to a Delta table WITH checkpoint:
+              <code>agg.writeStream.format("delta").outputMode("append").option("checkpointLocation","Files/chkpt/stream1").start("Tables/StreamAgg")</code></li>
+            <li>Let it run 2 minutes → stop it → restart the cell. Observe it resumes from checkpoint, not from scratch</li>
+            <li>Now delete the checkpoint folder and restart — observe it reprocesses from the beginning</li>
+            <li><strong>Exam drill:</strong> What does <code>.withWatermark("timestamp","10 minutes")</code> do? (Tolerates events arriving up to 10 min late)</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -492,6 +645,17 @@ df_agg.writeStream
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Non-accelerated shortcut.</strong> It reads from the external source on each query — no KQL indexes are built. Performance is slower than native storage or accelerated shortcuts.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Explore Eventhouse Storage Types</h4>
+          <ol>
+            <li>Create an <strong>Eventhouse</strong> in your workspace → inside it, create a new <strong>KQL Database</strong></li>
+            <li>Ingest sample data: click <strong>Get Data → Sample data</strong> (e.g., Storm Events) — this lands as <strong>Native (managed)</strong> storage</li>
+            <li>Run a KQL query: <code>StormEvents | take 10</code> — observe fast response (native storage)</li>
+            <li>Create a shortcut inside the KQL Database: right-click → New shortcut → point to a lakehouse Delta table. This creates an <strong>accelerated shortcut</strong></li>
+            <li>Run: <code>YourShortcutTable | take 10</code> vs <code>external_table('YourExternalShortcut') | take 10</code> — compare response times</li>
+            <li><strong>Exam drill:</strong> If the question says "queries use external_table()" → it's non-accelerated. If it says "fast KQL on OneLake data" → accelerated shortcut.</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -516,6 +680,22 @@ df_agg.writeStream
           "KQL" + "real-time" → Eventhouse via Eventstream<br>
           "Custom Python logic" + streaming → Spark Structured Streaming<br>
           "CDC" source → Eventstream CDC connector
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Streaming Scenario Decision Practice</h4>
+          <ol>
+            <li>For each scenario below, write which tool BEFORE checking the answer:
+              <ol type="a">
+                <li>"IoT sensor data → KQL analysis in under 1 second, no code"</li>
+                <li>"Python ML model scoring on incoming events, custom watermarking"</li>
+                <li>"CDC from PostgreSQL → lakehouse Delta table in real-time"</li>
+                <li>"Business user wants to filter an Event Hub stream with a UI"</li>
+              </ol>
+            </li>
+            <li>Answers: (a) Eventstream → Eventhouse (b) Spark Structured Streaming (c) Eventstream CDC connector (d) Eventstream</li>
+            <li>Create an Eventstream with the Sample Data source → add a <strong>Group By</strong> transformation → set a 5-minute tumbling window → send to Lakehouse</li>
+            <li><strong>Exam drill:</strong> Can you use Spark Structured Streaming AND Eventstream together? Yes — Eventstream can send to a custom endpoint that a Spark job reads from.</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -542,6 +722,16 @@ df_agg.writeStream
           <tr><td><strong>Spark UI</strong></td><td>Individual Spark job stages, tasks, executor utilization, shuffle operations</td><td>From running notebook → Spark UI link in output panel</td></tr>
           <tr><td><strong>Delta DESCRIBE HISTORY</strong></td><td>All operations on a Delta table (INSERT, UPDATE, MERGE, OPTIMIZE, VACUUM) with timestamps</td><td><code>DESCRIBE HISTORY table_name</code> in notebook</td></tr>
         </table>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Navigate All 4 Monitoring Tools</h4>
+          <ol>
+            <li><strong>Monitoring Hub:</strong> In the Fabric portal left nav, click the <strong>Monitor</strong> icon → run a notebook or pipeline → find its run in the hub. Click the run to see details (duration, status, items triggered)</li>
+            <li><strong>Capacity Metrics App:</strong> Go to AppSource → install <strong>Microsoft Fabric Capacity Metrics</strong> app → open it → select your capacity → observe CU usage over time and identify any throttling spikes</li>
+            <li><strong>Spark UI:</strong> Run a heavy notebook query → click the Spark job link that appears in notebook output → explore Stages tab (see how many tasks, how much shuffle)</li>
+            <li><strong>DESCRIBE HISTORY:</strong> In a notebook run: <code>DESCRIBE HISTORY your_delta_table</code> → see every write operation with timestamps and operation type</li>
+            <li><strong>Exam drill:</strong> "CU throttling, capacity pressure" → Capacity Metrics App. "Failed pipeline run details" → Monitoring Hub. "Slow Spark stage" → Spark UI.</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -588,6 +778,19 @@ ORDER BY median_total_elapsed_time_ms DESC;</pre>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><code>queryinsights.long_running_queries</code> — it aggregates by query shape and returns median execution time, so it captures consistently slow patterns rather than one-off slow runs.</div>
         </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Query All 5 queryinsights Views</h4>
+          <ol>
+            <li>Open a Fabric <strong>Warehouse</strong> → click <strong>New SQL query</strong></li>
+            <li>Run some queries (slow ones with large scans are best): <code>SELECT COUNT(*) FROM your_big_table WHERE 1=1</code></li>
+            <li>Wait up to 15 minutes, then query each view in order:
+              <code>SELECT TOP 5 * FROM queryinsights.exec_requests_history ORDER BY total_elapsed_time_ms DESC;</code></li>
+            <li><code>SELECT * FROM queryinsights.long_running_queries ORDER BY median_total_elapsed_time_ms DESC;</code></li>
+            <li><code>SELECT * FROM queryinsights.frequently_run_queries ORDER BY execution_count DESC;</code></li>
+            <li><code>SELECT * FROM queryinsights.sql_pool_insights;</code></li>
+            <li><strong>Exam drill:</strong> For each view, state one exam scenario it solves. 30-day retention and 15-min delay are tested facts — write them on a sticky note.</li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -617,6 +820,16 @@ ORDER BY median_total_elapsed_time_ms DESC;</pre>
           <div class="qa-q">Q: A pipeline receives HTTP 429 errors when writing to a warehouse. What type of error is this and how do you resolve it?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Throttling error.</strong> Resolution: implement retry logic with exponential backoff in the pipeline activity settings, OR reduce the degree of write parallelism, OR stagger the write timing.</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: Trigger &amp; Resolve 3 Common Error Types</h4>
+          <ol>
+            <li><strong>Schema Error:</strong> Create a Delta table with column <code>amount DECIMAL</code>. Then write a DataFrame with <code>amount</code> as a STRING — observe the error. Fix by adding <code>.option("mergeSchema","true")</code> to the write</li>
+            <li><strong>Checkpoint Missing:</strong> Write a Spark Structured Streaming job WITHOUT a checkpointLocation. Stop it and restart — observe it replays from the beginning. Then add the checkpoint and confirm resume behavior</li>
+            <li><strong>Small File Problem:</strong> Write 50 small DataFrames to the same Delta table in a loop. Run <code>DESCRIBE DETAIL tablename</code> — observe many small files. Run <code>OPTIMIZE tablename</code> — check file count drops</li>
+            <li><strong>Watermark Error:</strong> Create a streaming aggregation without <code>.withWatermark()</code>. Add a late event. Observe it may be included or dropped unpredictably. Add <code>.withWatermark("ts","5 minutes")</code> and retest</li>
+            <li><strong>Exam drill:</strong> HTTP 429 = throttling (backoff). "Capacity fully utilized" = upgrade SKU or off-peak scheduling.</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -659,6 +872,18 @@ OPTIMIZE schema_name.table_name ZORDER BY (customer_id) VORDER;</pre>
           <div class="qa-q">Q: Queries on a Delta table frequently filter by customer_id. What optimization would most help?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><code>OPTIMIZE table ZORDER BY (customer_id)</code> — Z-Order clusters rows with the same customer_id together, allowing data skipping to skip entire files when filtering by customer_id.</div>
+        </div>
+        <div class="exercise">
+          <h4>🖥️ Hands-On: OPTIMIZE with V-Order and Z-Order</h4>
+          <ol>
+            <li>Create a Delta table with 500k+ rows including a <code>customer_id</code> column and a <code>event_date</code> column</li>
+            <li>Check V-Order default: in a notebook run <code>spark.conf.get("spark.sql.parquet.vorder.default")</code> — should return <code>false</code></li>
+            <li>Run a filter query and time it: <code>%%time SELECT * FROM table WHERE customer_id = 'C001'</code></li>
+            <li>Run OPTIMIZE with Z-Order: <code>OPTIMIZE table ZORDER BY (customer_id)</code></li>
+            <li>Re-run the same filter query and compare the execution time — note improvement</li>
+            <li>Now run: <code>OPTIMIZE table VORDER</code> — then run a full-table scan query and compare time</li>
+            <li><strong>Exam drill:</strong> V-Order = broad read speedup. Z-Order = selective filter speedup. V-Order is OFF by default. Neither runs in the T-SQL editor.</li>
+          </ol>
         </div>
       </div>
     </div>
