@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Study Hub — Labs</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+  /* ── Labs-specific styles ── */
+  .labs-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .labs-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .labs-stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .labs-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .labs-progress-bar {
+    background: #e2e8f0;
+    border-radius: 999px;
+    height: 8px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .labs-progress-fill {
+    background: linear-gradient(90deg, var(--accent), var(--d2));
+    height: 8px;
+    border-radius: 999px;
+    transition: width 0.5s ease;
+  }
+  .labs-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  /* ── Lab Items ── */
+  .lab-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .lab-item:hover { border-color: #94a3b8; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .lab-item.done {
+    background: #f0fdf4;
+    border-color: #86efac;
+  }
+  .lab-item.done .lab-title { text-decoration: line-through; color: var(--muted); }
+
+  .lab-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .lab-checkbox:hover { border-color: var(--green); }
+  .lab-item.done .lab-checkbox {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .lab-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .lab-content { flex: 1; min-width: 0; }
+  .lab-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    transition: color 0.2s;
+  }
+  .lab-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    display: none;
+  }
+  .lab-item.expanded .lab-desc { display: block; }
+
+  .lab-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .lab-time {
+    font-size: 11px;
+    color: var(--muted);
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .lab-domain-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .lab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .lab-link:hover { background: var(--accent); color: #fff; }
+
+  .lab-expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 0;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .lab-item.expanded .lab-expand-btn { transform: rotate(180deg); }
+
+  /* ── Section Headers ── */
+  .lab-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0 6px;
+    margin-top: 8px;
+  }
+  .lab-section-header h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .lab-section-count {
+    font-size: 11px;
+    color: var(--muted);
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  /* ── Tips Banner ── */
+  .labs-tip {
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .labs-tip strong { color: var(--d1); }
+
+  @media (max-width: 640px) {
+    .labs-summary { grid-template-columns: repeat(2, 1fr); }
+    .lab-meta { display: none; }
+    .lab-link { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span></div>
+</div>
+
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn">🔷 KQL Lab</a>
+  <a href="dp700_labs.html" class="tab-btn active">🧪 MS Labs</a>
+</nav>
+
+<div class="page">
+
+  <!-- Summary Cards -->
+  <div class="labs-summary">
+    <div class="labs-stat">
+      <div class="labs-stat-value" id="stat-done" style="color:var(--green)">0</div>
+      <div class="labs-stat-label">Labs Done</div>
+    </div>
+    <div class="labs-stat">
+      <div class="labs-stat-value" id="stat-remaining" style="color:var(--accent)">15</div>
+      <div class="labs-stat-label">Remaining</div>
+    </div>
+    <div class="labs-stat">
+      <div class="labs-stat-value" id="stat-time-done" style="color:var(--d3)">0h</div>
+      <div class="labs-stat-label">Time Invested</div>
+    </div>
+    <div class="labs-stat">
+      <div class="labs-stat-value" id="stat-time-left" style="color:var(--amber)">8h 30m</div>
+      <div class="labs-stat-label">Time Left</div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="labs-progress-label">
+    <span id="prog-label">0 of 15 labs completed</span>
+    <span id="prog-pct">0%</span>
+  </div>
+  <div class="labs-progress-bar">
+    <div class="labs-progress-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+
+  <!-- Tips -->
+  <div class="labs-tip">
+    <strong>💡 How to use these labs:</strong> These are the 15 official hands-on labs mapped to DP-700 by Microsoft Learning.
+    Each lab runs in a free Microsoft Fabric trial environment — click <strong>Open Lab ↗</strong> to go directly to the instructions.
+    Check off each lab as you complete it. Your progress is saved automatically.
+  </div>
+
+  <!-- SECTION: Lakehouse & Spark -->
+  <div class="lab-section-header">
+    <h2 style="color:var(--d1)">🏗️ Lakehouse &amp; Apache Spark</h2>
+    <span class="lab-section-count">4 labs · 2h 45m</span>
+  </div>
+
+  <div class="lab-item" data-id="lab01" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab01', this)"></div>
+    <span class="lab-num">01</span>
+    <div class="lab-content">
+      <div class="lab-title">Create a Microsoft Fabric Lakehouse</div>
+      <div class="lab-desc">Create a Fabric lakehouse and import data into it. Explore how lakehouses combine file and table storage in OneLake, and query managed delta tables using SQL.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d1-tag">D1</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab01', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/01-lakehouse.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab02" data-mins="45">
+    <div class="lab-checkbox" onclick="toggleLab('lab02', this)"></div>
+    <span class="lab-num">02</span>
+    <div class="lab-content">
+      <div class="lab-title">Analyze Data with Apache Spark</div>
+      <div class="lab-desc">Ingest data into a Fabric lakehouse and use Apache Spark to read and analyze it. Work with PySpark to load files, explore data, and perform analysis using Spark notebooks.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab02', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/02-analyze-spark.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab03" data-mins="45">
+    <div class="lab-checkbox" onclick="toggleLab('lab03', this)"></div>
+    <span class="lab-num">03</span>
+    <div class="lab-content">
+      <div class="lab-title">Use Delta Tables in Apache Spark</div>
+      <div class="lab-desc">Create and manage Delta tables in a Fabric lakehouse using both PySpark and SQL. Explore managed tables, table versioning, streaming data, and SQL queries against Delta Lake data.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab03', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/03-delta-lake.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab04" data-mins="45">
+    <div class="lab-checkbox" onclick="toggleLab('lab04', this)"></div>
+    <span class="lab-num">04</span>
+    <div class="lab-content">
+      <div class="lab-title">Create a Medallion Architecture in a Fabric Lakehouse</div>
+      <div class="lab-desc">Implement a medallion architecture by transforming raw data through bronze, silver, and gold layers using PySpark and Delta Lake. Create a star schema with dimensions and fact tables.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab04', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/03b-medallion-lakehouse.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <!-- SECTION: Pipelines & Dataflows -->
+  <div class="lab-section-header">
+    <h2 style="color:var(--d2)">🔄 Pipelines &amp; Dataflows</h2>
+    <span class="lab-section-count">2 labs · 1h 15m</span>
+  </div>
+
+  <div class="lab-item" data-id="lab05" data-mins="45">
+    <div class="lab-checkbox" onclick="toggleLab('lab05', this)"></div>
+    <span class="lab-num">05</span>
+    <div class="lab-content">
+      <div class="lab-title">Ingest Data with a Pipeline in Microsoft Fabric</div>
+      <div class="lab-desc">Create data pipelines to ingest data from external sources into a lakehouse, and integrate Spark notebooks to transform and load the data into tables. Combine Copy Data activities with custom Spark transformations.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab05', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/04-ingest-pipeline.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab06" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab06', this)"></div>
+    <span class="lab-num">06</span>
+    <div class="lab-content">
+      <div class="lab-title">Create and Use Dataflows (Gen2) in Microsoft Fabric</div>
+      <div class="lab-desc">Create a Dataflow Gen2 to extract data from a CSV file, perform transformations in Power Query Online, and load the data into a lakehouse. Orchestrate dataflows by integrating them into a data pipeline.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab06', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/05-dataflows-gen2.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <!-- SECTION: Data Warehouse -->
+  <div class="lab-section-header">
+    <h2 style="color:var(--d3)">🏢 Data Warehouse</h2>
+    <span class="lab-section-count">5 labs · 2h 45m</span>
+  </div>
+
+  <div class="lab-item" data-id="lab07" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab07', this)"></div>
+    <span class="lab-num">07</span>
+    <div class="lab-content">
+      <div class="lab-title">Analyze Data in a Data Warehouse</div>
+      <div class="lab-desc">Create tables in a Fabric data warehouse, load data using SQL, and query dimensional models with T-SQL joins and aggregations. Use the visual query designer and define relationships in a data model.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab07', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/06-data-warehouse.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab08" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab08', this)"></div>
+    <span class="lab-num">08</span>
+    <div class="lab-content">
+      <div class="lab-title">Load Data into a Warehouse Using T-SQL</div>
+      <div class="lab-desc">Load data into a Fabric data warehouse using T-SQL. Create fact and dimension tables, build a stored procedure using cross-database queries to load data from a lakehouse into your warehouse.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab08', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/06a-data-warehouse-load.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab09" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab09', this)"></div>
+    <span class="lab-num">09</span>
+    <div class="lab-content">
+      <div class="lab-title">Query a Data Warehouse in Microsoft Fabric</div>
+      <div class="lab-desc">Query a Fabric data warehouse using SQL to analyze data, join tables, and aggregate results. Verify data consistency by identifying and handling anomalies, and create views for reporting.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d3-tag">D3</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab09', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/06b-data-warehouse-query.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab10" data-mins="30">
+    <div class="lab-checkbox" onclick="toggleLab('lab10', this)"></div>
+    <span class="lab-num">10</span>
+    <div class="lab-content">
+      <div class="lab-title">Monitor a Data Warehouse in Microsoft Fabric</div>
+      <div class="lab-desc">Monitor activity and queries in a Fabric data warehouse. Use dynamic management views (DMVs) to track connections, sessions, and running requests. Explore query insights to analyse query history and performance.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d3-tag">D3</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab10', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/06c-monitor-data-warehouse.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab11" data-mins="45" style="border-left:3px solid var(--red)">
+    <div class="lab-checkbox" onclick="toggleLab('lab11', this)"></div>
+    <span class="lab-num">11</span>
+    <div class="lab-content">
+      <div class="lab-title">Secure Data in a Data Warehouse</div>
+      <div class="lab-desc">Secure sensitive data in a Fabric data warehouse using dynamic data masking, row-level and column-level security, and SQL DCL commands (GRANT, DENY, REVOKE). A key weak area from your last attempt.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d1-tag">D1</span>
+      <span class="tag-priority">⚠️ PRIORITY</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab11', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/06d-secure-data-warehouse.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <!-- SECTION: Real-Time Intelligence -->
+  <div class="lab-section-header">
+    <h2 style="color:var(--kql)">⚡ Real-Time Intelligence</h2>
+    <span class="lab-section-count">2 labs · 1h</span>
+  </div>
+
+  <div class="lab-item" data-id="lab12" data-mins="30" style="border-left:3px solid var(--red)">
+    <div class="lab-checkbox" onclick="toggleLab('lab12', this)"></div>
+    <span class="lab-num">12</span>
+    <div class="lab-content">
+      <div class="lab-title">Get Started with Real-Time Intelligence in Microsoft Fabric</div>
+      <div class="lab-desc">Work with real-time data streams by ingesting stock market data using eventstreams, querying it with KQL, and visualizing it on real-time dashboards. Configure alerts using Activator to respond to real-time events.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <span class="tag-priority">⚠️ PRIORITY</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab12', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/07-real-time-Intelligence.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab13" data-mins="30" style="border-left:3px solid var(--red)">
+    <div class="lab-checkbox" onclick="toggleLab('lab13', this)"></div>
+    <span class="lab-num">13</span>
+    <div class="lab-content">
+      <div class="lab-title">Ingest Real-Time Data with Eventstream in Microsoft Fabric</div>
+      <div class="lab-desc">Ingest and analyse real-time data by creating an eventstream that captures sample bicycle data, loads it into an eventhouse database, and transforms it using aggregations. Query both raw and transformed data using KQL.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 30 min</span>
+      <span class="lab-domain-tag d2-tag">D2</span>
+      <span class="tag-priority">⚠️ PRIORITY</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab13', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/09-real-time-analytics-eventstream.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <!-- SECTION: Security & Deployment -->
+  <div class="lab-section-header">
+    <h2 style="color:var(--d1)">🔐 Security &amp; Deployment</h2>
+    <span class="lab-section-count">2 labs · 1h 5m</span>
+  </div>
+
+  <div class="lab-item" data-id="lab14" data-mins="45" style="border-left:3px solid var(--red)">
+    <div class="lab-checkbox" onclick="toggleLab('lab14', this)"></div>
+    <span class="lab-num">14</span>
+    <div class="lab-content">
+      <div class="lab-title">Secure Data Access in Microsoft Fabric</div>
+      <div class="lab-desc">Secure data using a multi-layer approach: apply workspace roles to control access, configure item-level permissions to restrict access to specific Fabric items, and create OneLake security roles to grant granular permissions on specific tables and folders.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 45 min</span>
+      <span class="lab-domain-tag d1-tag">D1</span>
+      <span class="tag-priority">⚠️ PRIORITY</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab14', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/19-secure-data-access.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+  <div class="lab-item" data-id="lab15" data-mins="20">
+    <div class="lab-checkbox" onclick="toggleLab('lab15', this)"></div>
+    <span class="lab-num">15</span>
+    <div class="lab-content">
+      <div class="lab-title">Implement Deployment Pipelines in Microsoft Fabric</div>
+      <div class="lab-desc">Implement CI/CD practices in Fabric using deployment pipelines. Configure a multi-stage pipeline and deploy content across development, test, and production environments, automating content promotion in Fabric.</div>
+    </div>
+    <div class="lab-meta">
+      <span class="lab-time">⏱ 20 min</span>
+      <span class="lab-domain-tag d1-tag">D1</span>
+      <button class="lab-expand-btn" onclick="toggleExpand('lab15', this)">▼</button>
+    </div>
+    <a href="https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/21-implement-cicd.html" target="_blank" class="lab-link">Open Lab ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+const LS_KEY = 'dp700_labs_v1';
+const LABS = [
+  { id: 'lab01', mins: 30 },
+  { id: 'lab02', mins: 45 },
+  { id: 'lab03', mins: 45 },
+  { id: 'lab04', mins: 45 },
+  { id: 'lab05', mins: 45 },
+  { id: 'lab06', mins: 30 },
+  { id: 'lab07', mins: 30 },
+  { id: 'lab08', mins: 30 },
+  { id: 'lab09', mins: 30 },
+  { id: 'lab10', mins: 30 },
+  { id: 'lab11', mins: 45 },
+  { id: 'lab12', mins: 30 },
+  { id: 'lab13', mins: 30 },
+  { id: 'lab14', mins: 45 },
+  { id: 'lab15', mins: 20 }
+];
+const TOTAL_MINS = LABS.reduce((s, l) => s + l.mins, 0); // 510 = 8h30m
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveState(s) { localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+
+function fmtMins(m) {
+  if (m === 0) return '0m';
+  const h = Math.floor(m / 60), min = m % 60;
+  if (h === 0) return min + 'm';
+  if (min === 0) return h + 'h';
+  return h + 'h ' + min + 'm';
+}
+
+function applyState(state) {
+  let doneMins = 0, doneCount = 0;
+  LABS.forEach(lab => {
+    const el = document.querySelector(`[data-id="${lab.id}"]`);
+    const cb = el ? el.querySelector('.lab-checkbox') : null;
+    if (!el || !cb) return;
+    const done = !!state[lab.id];
+    el.classList.toggle('done', done);
+    cb.textContent = done ? '✓' : '';
+    if (done) { doneMins += lab.mins; doneCount++; }
+  });
+
+  const remaining = LABS.length - doneCount;
+  const remainMins = TOTAL_MINS - doneMins;
+  const pct = Math.round((doneCount / LABS.length) * 100);
+
+  document.getElementById('stat-done').textContent = doneCount;
+  document.getElementById('stat-remaining').textContent = remaining;
+  document.getElementById('stat-time-done').textContent = fmtMins(doneMins);
+  document.getElementById('stat-time-left').textContent = fmtMins(remainMins);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = doneCount + ' of ' + LABS.length + ' labs completed';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+function toggleLab(id, cbEl) {
+  const state = loadState();
+  state[id] = !state[id];
+  saveState(state);
+  applyState(state);
+}
+
+function toggleExpand(id, btn) {
+  const item = document.querySelector(`[data-id="${id}"]`);
+  if (item) item.classList.toggle('expanded');
+}
+
+function updateCountdown() {
+  const exam = new Date('2026-06-02T09:00:00');
+  const diff = exam - new Date();
+  const el = document.getElementById('countdown');
+  if (!el) return;
+  if (diff <= 0) { el.textContent = '🎯 Exam Day!'; return; }
+  const days = Math.floor(diff / 86400000);
+  const hrs = Math.floor((diff % 86400000) / 3600000);
+  el.textContent = days + 'd ' + hrs + 'h remaining';
+}
+
+applyState(loadState());
+updateCountdown();
+setInterval(updateCountdown, 60000);
+</script>
+</body>
+</html>
