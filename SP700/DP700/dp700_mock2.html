@@ -53,27 +53,27 @@
   <div id="startScreen" style="text-align:center;padding:40px 20px;">
     <div style="font-size:48px;margin-bottom:16px">📝</div>
     <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Full Length Mock Exam</h2>
-    <p style="color:var(--muted);margin-bottom:6px">50 questions · 100 minutes · All 3 domains · Exam-realistic</p>
+    <p style="color:var(--muted);margin-bottom:6px">65 questions · 130 minutes · All 3 domains · Hands-on + Exam-realistic</p>
     <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d1);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
-        <div style="font-size:22px;font-weight:800;color:var(--d1)">17 Qs</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d1)">22 Qs</div>
         <div style="font-size:11px;color:var(--muted)">30–35%</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d2);font-weight:700;text-transform:uppercase;margin-bottom:4px">D2 · Ingest</div>
-        <div style="font-size:22px;font-weight:800;color:var(--d2)">17 Qs</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d2)">23 Qs</div>
         <div style="font-size:11px;color:var(--muted)">30–35%</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d3);font-weight:700;text-transform:uppercase;margin-bottom:4px">D3 · Monitor</div>
-        <div style="font-size:22px;font-weight:800;color:var(--d3)">16 Qs</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d3)">20 Qs</div>
         <div style="font-size:11px;color:var(--muted)">30–35%</div>
       </div>
     </div>
     <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:24px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
-      <strong>⏱ 100-minute timer starts when you click Start.</strong><br>
+      <strong>⏱ 130-minute timer starts when you click Start.</strong><br>
       You can flag questions and return to them. Microsoft Learn is available during the real exam but costs time — try to answer without it here.
     </div>
     <button class="btn btn-primary" onclick="startExam()" style="font-size:15px;padding:14px 36px;">Start Exam →</button>
@@ -86,7 +86,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <span class="q-counter" id="qCounter">Question 1 of 50</span>
       <div class="timer-wrap">
-        <span>⏱</span><span class="timer-val" id="timerVal">100:00</span>
+        <span>⏱</span><span class="timer-val" id="timerVal">130:00</span>
       </div>
     </div>
 
@@ -640,6 +640,158 @@ const questions = [
           'D. The constraint is enforced only for new rows, not for existing data'],
     ans:1,
     expl:'<strong>B — NOT ENFORCED.</strong> In Fabric data warehouse, PRIMARY KEY and UNIQUE constraints are defined declaratively but are NOT enforced at write time. They serve as hints for the query optimiser. Duplicate values CAN be inserted without error. This is a critical difference from traditional SQL Server behaviour.'
+  },
+
+  // ── HANDS-ON SCENARIOS (Q51–65) ──────────────────
+
+  { domain:'d1', topic:'Portal — Spark Settings Path',
+    q:'You want to enable High Concurrency Mode for a Fabric workspace so multiple notebooks share a single Spark session. In the Fabric portal, where is this setting located?',
+    opts:['A. Workspace Settings → OneLake → Shortcut caching',
+          'B. Workspace Settings → Spark settings → High concurrency',
+          'C. Workspace Settings → Data workflows → Starter pool',
+          'D. Capacity admin portal → Spark → Runtime settings'],
+    ans:1,
+    expl:'<strong>B — Workspace Settings → Spark settings → High concurrency.</strong> This is the exact portal path. Each workspace has its own Spark settings section. "Data workflows" is for Airflow configuration. The capacity admin portal controls capacity-level settings, not per-workspace Spark session configuration.'
+  },
+
+  { domain:'d1', topic:'Portal — Deployment Rule Fix',
+    q:'You deployed a Dataflow Gen2 from the Dev stage to Test using a Fabric deployment pipeline. The Test Dataflow still references the Dev Azure SQL connection. You open the deployment pipeline in the portal. What is the correct sequence of actions to fix this?',
+    opts:['A. Open Test workspace → Dataflow settings → Edit connection manually',
+          'B. In the pipeline, select the Test stage → click Deployment rules → add a rule overriding the dataflow\'s data source connection',
+          'C. Undeploy from Test and re-deploy after modifying the Dev dataflow connection',
+          'D. Edit the dataflow in the Test workspace directly — changes won\'t affect Dev'],
+    ans:1,
+    expl:'<strong>B — Deployment rules on the Test stage.</strong> Deployment rules are configured per-stage in the pipeline UI. Select the Test stage → "Deployment rules" → add a rule targeting the specific Dataflow item → override its connection property. This is the designed workflow — editing the item directly in Test (D) would create an unmanaged divergence from the pipeline.'
+  },
+
+  { domain:'d1', topic:'Workspace Roles vs Item Permissions',
+    q:'A business analyst needs to read a single Power BI report in your workspace. They should not see the warehouse, lakehouses, or other reports. Your manager asks you to grant the minimum permission. What do you do?',
+    opts:['A. Add the analyst as a Workspace Viewer — they can only read items',
+          'B. Share the specific Power BI report with the analyst using "Manage permissions" on that report only',
+          'C. Add the analyst as a Workspace Member — Members have full edit rights',
+          'D. Grant the analyst ReadAll on the workspace via OneLake data access roles'],
+    ans:1,
+    expl:'<strong>B — Share the specific report only.</strong> Workspace Viewer (A) grants access to ALL items in the workspace — a direct violation of least privilege. Sharing a single item (report, lakehouse, etc.) via "Manage permissions" exposes ONLY that item. This is the correct least-privilege pattern for single-item access. Workspace roles always apply to all workspace items.'
+  },
+
+  { domain:'d1', topic:'Git Integration — Commit Workflow',
+    q:'A junior data engineer modifies a notebook in the Fabric portal workspace view. Their team lead checks GitHub 10 minutes later and cannot see the changes. What is the most likely reason?',
+    opts:['A. Fabric auto-syncs every 15 minutes — the changes will appear shortly',
+          'B. The changes exist only in the workspace UI until explicitly committed and pushed to Git',
+          'C. The engineer does not have Contributor permissions on the workspace',
+          'D. GitHub is showing a cached version — a hard refresh will display the changes'],
+    ans:1,
+    expl:'<strong>B — Changes are only in the workspace until committed.</strong> Fabric Git integration is NOT automatic. A developer must: (1) Open the Source control pane. (2) Stage changes. (3) Click "Commit". Only then are changes reflected in the connected Git branch. This is one of the most tested concepts around Fabric Git — the portal is a development environment, not a live Git push.'
+  },
+
+  { domain:'d2', topic:'COPY INTO — SAS Token Auth',
+    q:'You are writing a COPY INTO statement in a Fabric warehouse to load data from an ADLS Gen2 account protected by a SAS token. Which CREDENTIAL syntax is correct?',
+    opts:["A. WITH (CREDENTIAL = (IDENTITY = 'Storage Account Key', SECRET = '<key>'))",
+          "B. WITH (CREDENTIAL = (IDENTITY = 'Shared Access Signature', SECRET = '<sas_token>'))",
+          "C. WITH (CREDENTIAL = (IDENTITY = 'Managed Identity', SECRET = '<client_id>'))",
+          "D. WITH (CREDENTIAL = (IDENTITY = 'Service Principal', SECRET = '<tenant_id>'))"],
+    ans:1,
+    expl:"<strong>B — IDENTITY = 'Shared Access Signature', SECRET = SAS token.</strong> This is the exact COPY INTO credential syntax for SAS-based authentication. The SAS token string (starting with '?sv=...') goes in SECRET. Storage Account Key uses IDENTITY = 'Storage Account Key'. Managed Identity doesn't require a SECRET. This is a portal/code hands-on question about the literal syntax."
+  },
+
+  { domain:'d2', topic:'Pipeline — @json() Array Conversion',
+    q:'A pipeline Lookup activity returns a dataset of 50 rows. A ForEach activity must iterate over each row. The pipeline fails with "ForEach input must be an array". What expression in the ForEach Settings → Items field converts the Lookup output correctly?',
+    opts:["A. @activity('Lookup1').output.value",
+          "B. @json(activity('Lookup1').output.value)",
+          "C. @array(activity('Lookup1').output.firstRow)",
+          "D. @activity('Lookup1').output.firstRow"],
+    ans:0,
+    expl:"<strong>A — @activity('Lookup1').output.value.</strong> The Lookup activity's .output.value property is already a JSON array of row objects — no conversion needed. ForEach's Items field accepts this directly. @json() (B) would fail because .value is already an object/array, not a string. .firstRow (D) returns only one row, not the full dataset."
+  },
+
+  { domain:'d2', topic:'Eventstream — Multiple Destinations',
+    q:'Real-time clickstream events arrive via Azure Event Hubs. You need to: (1) store events in an Eventhouse for KQL analysis, and (2) write events to a Lakehouse Delta table for batch reporting — all without writing code. What is the most efficient solution?',
+    opts:['A. Two separate Spark Structured Streaming notebooks — one writing to Eventhouse, one to Lakehouse',
+          'B. A single Eventstream with two output destinations: Eventhouse and Lakehouse',
+          'C. A Data Pipeline with a ForEach activity routing to both destinations',
+          'D. An Azure Stream Analytics job outputting to both Eventhouse and Lakehouse'],
+    ans:1,
+    expl:'<strong>B — Single Eventstream with two destinations.</strong> Eventstream (a no-code Fabric tool) supports fan-out: one Event Hub source can stream simultaneously to multiple destinations (Eventhouse, Lakehouse, KQL database, etc.). No code required. Spark Streaming (A) requires code and two separate jobs. Azure Stream Analytics (D) is an external Azure service, not a native Fabric no-code tool.'
+  },
+
+  { domain:'d2', topic:'Delta MERGE — SCD Type 2',
+    q:'You are implementing a Slowly Changing Dimension Type 2 (SCD2) for a Customer dimension. A new row must be inserted with a new surrogate key each time any customer attribute changes. The old row must remain with its end date set. Which PySpark/Delta operation achieves this?',
+    opts:['A. df.write.format("delta").mode("overwrite").save(path) — overwrite the whole table',
+          'B. DeltaTable.merge() with WHEN MATCHED UPDATE (close old row) and WHEN NOT MATCHED INSERT (add new row) plus an additional INSERT for the new version',
+          'C. df.write.format("delta").mode("append").save(path) — append only new rows',
+          'D. COPY INTO with REJECTED_ROW_LOCATION to capture changed records'],
+    ans:1,
+    expl:'<strong>B — DeltaTable.merge() with matched update + two inserts.</strong> SCD2 requires: (1) WHEN MATCHED AND changed → UPDATE old row (set EndDate, IsActive=False). (2) WHEN NOT MATCHED → INSERT entirely new rows. A second INSERT for the new version of changed records completes the pattern. Overwrite (A) destroys history. Append (C) creates new rows but doesn\'t close old ones. COPY INTO (D) is for bulk loading from files, not SCD logic.'
+  },
+
+  { domain:'d2', topic:'KQL — Dynamic Column Query',
+    q:'A KQL table called Telemetry has a column Payload of type dynamic containing JSON: {"sensor":"T1","value":22.5}. You want to return only rows where value > 20, showing just the DeviceId and the extracted value. Which query is correct?',
+    opts:["A. Telemetry | where Payload.value > 20 | project DeviceId, Payload.value",
+          "B. Telemetry | extend SensorValue = todouble(Payload.value) | where SensorValue > 20 | project DeviceId, SensorValue",
+          "C. Telemetry | project DeviceId, SensorValue = Payload.value | where SensorValue > 20",
+          "D. Telemetry | where todouble(Payload['value']) > 20 | project DeviceId, Payload['value']"],
+    ans:1,
+    expl:'<strong>B — extend first, then where, then project.</strong> You MUST cast the dynamic field with todouble() in an extend before filtering on it. Option A tries to filter directly on a dynamic type — KQL cannot compare dynamic to a number without casting. Option C does project before where — the where then runs on an already-projected set but the cast was not done, causing a type error. Option D may work in some KQL flavors but is not the canonical Fabric KQL pattern. Always: extend → where on extended → project.'
+  },
+
+  { domain:'d3', topic:'Monitoring Hub — Pipeline Debug',
+    q:'A scheduled Fabric Data Pipeline failed silently — no error notification was sent. You need to identify WHICH activity in the pipeline failed and see its error message. Where do you look in the Fabric portal?',
+    opts:['A. Workspace Settings → Pipelines → Run history',
+          'B. Monitoring hub → Data pipelines → click the failed run → view activity-level details',
+          'C. queryinsights.exec_requests_history → filter by pipeline name',
+          'D. OneLake → Pipeline logs → filter by status = Failed'],
+    ans:1,
+    expl:'<strong>B — Monitoring hub → Data pipelines → failed run details.</strong> The Monitoring hub is the primary operational view for all Fabric items. Clicking into a pipeline run shows each activity, its status, duration, and full error message. queryinsights (C) is only for Warehouse SQL queries. OneLake (D) stores data, not pipeline logs. Workspace settings don\'t show run history.'
+  },
+
+  { domain:'d3', topic:'Activator — Alert Setup',
+    q:'You want to send an automatic Teams message whenever the total sales amount in a Power BI report drops below $100,000. No custom code should be required. What Fabric feature do you configure?',
+    opts:['A. Power BI data-driven alert — triggers based on a KPI tile value threshold',
+          'B. Activator — detect conditions in changing data and trigger Teams notifications automatically',
+          'C. Monitoring hub alert — set a threshold on the semantic model refresh',
+          'D. Azure Logic Apps — connect to the Power BI API and poll the metric every hour'],
+    ans:1,
+    expl:'<strong>B — Activator.</strong> Activator is Fabric\'s no-code tool for rule-based alerts on changing data. You connect it to a Power BI semantic model, define the condition (sales < 100,000), and configure the action (Teams message, email, Power Automate flow). Power BI data-driven alerts (A) exist but are limited in action capability and don\'t natively send Teams messages. Activator is the modern, integrated Fabric answer.'
+  },
+
+  { domain:'d3', topic:'OPTIMIZE + ZORDER — When to Use',
+    q:'A Fabric lakehouse Delta table has 200 million rows and is queried almost exclusively with WHERE EventDate BETWEEN ... AND ... filters. Full-table scans are occurring despite OPTIMIZE being run weekly. What additional step will enable file-level data skipping for EventDate?',
+    opts:['A. Run VACUUM RETAIN 0 HOURS to force a full compaction',
+          'B. Run OPTIMIZE my_table ZORDER BY (EventDate) to cluster data by EventDate within files',
+          'C. Enable V-Order — it indexes all columns automatically for data skipping',
+          'D. Create a partition on EventDate using ALTER TABLE ... ADD PARTITION'],
+    ans:1,
+    expl:'<strong>B — OPTIMIZE ZORDER BY (EventDate).</strong> Z-Order clusters rows by EventDate WITHIN each Parquet file, enabling the Delta reader to check each file\'s min/max stats and skip files whose range doesn\'t include the query\'s date range. VACUUM (A) removes old files but doesn\'t cluster. V-Order (C) improves compression/encoding but doesn\'t create column-level data skipping stats. Partitioning (D) creates folder-level skipping but with high-cardinality dates causes small file problems.'
+  },
+
+  { domain:'d3', topic:'Checkpoint — Hands-On',
+    q:'You are writing a Spark Structured Streaming job in a Fabric notebook. The stream reads from Event Hub and writes to a Delta table in your lakehouse. Complete the correct writeStream configuration to ensure fault tolerance and exactly-once delivery:\n\ndf.writeStream\n  .format("delta")\n  .outputMode("append")\n  ._______("checkpointLocation", "Files/checkpoints/mystream")\n  .start("Tables/events")',
+    opts:['A. .config()',
+          'B. .option()',
+          'C. .trigger()',
+          'D. .queryName()'],
+    ans:1,
+    expl:'<strong>B — .option("checkpointLocation", ...)</strong> is the correct method. The checkpointLocation is passed as a writeStream option, not a Spark config. The full line is: <code>.option("checkpointLocation", "Files/checkpoints/mystream")</code>. .trigger() sets the processing interval (e.g., processingTime="1 minute"). .queryName() sets a display name. .config() is a SparkSession-level method, not a writeStream method.'
+  },
+
+  { domain:'d1', topic:'Sensitivity Label Propagation',
+    q:'A data engineer applies a "Highly Confidential" Microsoft Purview sensitivity label to a Lakehouse table. A business analyst then creates a Power BI report by connecting to that lakehouse table. What happens to the sensitivity label on the new report — without any manual action from the analyst?',
+    opts:['A. The report has no label — labels are not inherited by Power BI reports from lakehouse tables',
+          'B. The report receives the "Highly Confidential" label automatically through downstream label propagation',
+          'C. The report receives a default "General" label from the Fabric tenant policy',
+          'D. The analyst is blocked from creating the report until they manually apply the label'],
+    ans:1,
+    expl:'<strong>B — Automatic downstream label propagation.</strong> Microsoft Purview sensitivity labels in Fabric propagate automatically to downstream artifacts. When a report is built on a labeled lakehouse or semantic model, the label propagates to the report without manual action. This ensures end-to-end data protection across the Fabric ecosystem. The analyst is never blocked — propagation is transparent.'
+  },
+
+  { domain:'d2', topic:'Incremental Load — Watermark Pattern Steps',
+    q:'You are configuring a metadata-driven incremental pipeline in Fabric. The source is an Azure SQL table with a ModifiedDate column. Which sequence of pipeline activities correctly implements the watermark pattern?',
+    opts:['A. Copy Activity (full load) → Script Activity (update watermark) → Lookup (read watermark)',
+          'B. Lookup (read current watermark) → Copy Activity (WHERE ModifiedDate > watermark) → Script Activity (update watermark to max value)',
+          'C. Script Activity (reset watermark) → ForEach → Copy Activity per table',
+          'D. Copy Activity (full load) → If Condition (check row count) → Lookup (read watermark)'],
+    ans:1,
+    expl:'<strong>B — Lookup → Copy → Script.</strong> The watermark pattern is always: (1) Lookup: read the last watermark from a control table. (2) Copy Activity: filter WHERE ModifiedDate > @{activity(\'Lookup1\').output.firstRow.Watermark}. (3) Script Activity: UPDATE the control table SET Watermark = MAX(ModifiedDate) of the just-loaded batch. This is the standard incremental ingestion pattern — also tested as a multi-step configuration question.'
   }
 
 ];
@@ -651,7 +803,7 @@ let current = 0;
 let answers = new Array(questions.length).fill(null); // null=unanswered, value=index or array
 let flags = new Array(questions.length).fill(false);
 let submitted = new Array(questions.length).fill(false);
-let timerInterval, secondsLeft = 100 * 60;
+let timerInterval, secondsLeft = 130 * 60;
 let startTime;
 
 function startExam() {
@@ -669,7 +821,7 @@ function tickTimer() {
   const s = secondsLeft % 60;
   const el = document.getElementById('timerVal');
   el.textContent = m + ':' + String(s).padStart(2,'0');
-  el.className = 'timer-val' + (secondsLeft < 600 ? ' danger' : secondsLeft < 1200 ? ' warn' : '');
+  el.className = 'timer-val' + (secondsLeft < 780 ? ' danger' : secondsLeft < 1560 ? ' warn' : '');
   if (secondsLeft <= 0) { clearInterval(timerInterval); finishExam(); }
 }
 

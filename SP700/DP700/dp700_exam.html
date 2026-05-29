@@ -30,19 +30,19 @@
     <div id="startScreen" style="text-align:center;padding:40px 20px;">
       <div style="font-size:48px;margin-bottom:16px">✏️</div>
       <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam</h2>
-      <p style="color:var(--muted);margin-bottom:24px">25 scenario-based questions · All 3 domains · Timed per your pace</p>
+      <p style="color:var(--muted);margin-bottom:24px">35 scenario-based questions · All 3 domains · Hands-on focus</p>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;">
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
           <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
-          <div style="font-size:20px;font-weight:800;color:var(--d1)">9 Qs</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d1)">13 Qs</div>
         </div>
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
           <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D2 · Ingest</div>
-          <div style="font-size:20px;font-weight:800;color:var(--d2)">9 Qs</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d2)">14 Qs</div>
         </div>
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
           <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D3 · Monitor</div>
-          <div style="font-size:20px;font-weight:800;color:var(--d3)">7 Qs</div>
+          <div style="font-size:20px;font-weight:800;color:var(--d3)">8 Qs</div>
         </div>
       </div>
       <button class="btn btn-primary" onclick="startExam()" style="font-size:15px;padding:14px 32px;">Start Exam</button>
@@ -267,6 +267,78 @@ const questions = [
     opts:['A. Capacity error — upgrade the workspace to a higher Fabric SKU','B. Schema error — validate that the source schema matches the warehouse table schema','C. Throttling error — implement retry logic with exponential backoff and/or reduce write concurrency','D. Timeout error — increase the pipeline activity timeout setting'],
     ans:2,
     expl:'<strong>C — Throttling, resolve with retry backoff.</strong> HTTP 429 = Too Many Requests = throttling. The service is temporarily rate-limiting requests. Correct resolutions: (1) Enable pipeline retry policy with exponential backoff. (2) Reduce concurrent write activities. (3) Spread writes over a longer time window. Do NOT increase timeout — that addresses a different error type.'
+  },
+
+  // ── HANDS-ON SCENARIOS ──
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'High Concurrency — Portal Steps',
+    q: 'You are in the Fabric portal and want to enable High Concurrency Mode for notebooks in a workspace. Where do you navigate to find this setting?',
+    opts:['A. Workspace Settings → OneLake → Shortcut caching','B. Workspace Settings → Spark settings → High concurrency','C. Workspace Settings → Data workflows → Starter pool','D. Workspace Settings → Power BI → Capacity settings'],
+    ans:1,
+    expl:'<strong>B — Workspace Settings → Spark settings → High concurrency.</strong> This is the exact portal path. Within Spark settings you toggle "High concurrency mode" and configure session behaviour. OneLake settings control shortcut caching. Data workflows controls Airflow. This is a common portal-navigation question on the exam.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Deployment Rules — Portal Steps',
+    q: 'You deployed a Data Pipeline from Dev to Test. In the Test workspace the pipeline still targets the Dev SQL database connection. You open the Deployment Pipeline in the portal. What do you click to fix this?',
+    opts:['A. Deployment history → Roll back to previous deployment','B. Pipeline stage (Test) → Deployment rules → Add a rule for the pipeline\'s connection property','C. Test workspace → Settings → Data sources → Override connection','D. Pipeline stage (Dev) → Properties → Set connection override'],
+    ans:1,
+    expl:'<strong>B — Deployment rules on the Test stage.</strong> In the pipeline UI, click the Test stage → "Deployment rules" → add a rule that overrides the pipeline\'s connection string for that specific item. Rules are configured per-stage, per-item. This is the exact portal workflow for fixing cross-stage connection issues.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'COPY INTO — Wildcards in Practice',
+    q: 'You need to load all .parquet files from an ADLS Gen2 folder called /raw/ and all its subfolders using COPY INTO in a Fabric warehouse. Which source path pattern is correct?',
+    opts:['A. \'https://account.dfs.core.windows.net/container/raw/*.parquet\'','B. \'https://account.dfs.core.windows.net/container/raw/**/*.parquet\'','C. \'https://account.dfs.core.windows.net/container/raw/...parquet\'','D. \'https://account.dfs.core.windows.net/container/raw/\' WITH (FORMAT=\'PARQUET\', RECURSIVE=TRUE)'],
+    ans:1,
+    expl:'<strong>B — **/*.parquet for recursive subfolder matching.</strong> Single wildcard <code>*.parquet</code> matches files at the top level only. Double wildcard <code>**/*.parquet</code> matches files recursively across all subfolders. Option D uses a fictional RECURSIVE=TRUE syntax that doesn\'t exist in Fabric COPY INTO.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Pipeline Trigger — File Arrival',
+    q: 'A Fabric Data Pipeline must automatically run each time a new CSV file lands in a specific ADLS Gen2 folder. You are configuring the pipeline trigger in the portal. Which trigger type do you select?',
+    opts:['A. Schedule trigger — runs the pipeline on a fixed time interval','B. Tumbling window trigger — runs on a fixed time window with data backfill','C. Storage event trigger — fires when a blob is created or deleted in a storage container','D. Manual trigger — runs only when explicitly invoked from the portal'],
+    ans:2,
+    expl:'<strong>C — Storage event trigger.</strong> Storage event triggers fire automatically when a blob is created or deleted in an ADLS Gen2 or Azure Blob Storage container. You can filter by path prefix and suffix (e.g., .csv) to match specific files. Schedule triggers run on time — not on file arrival. Tumbling window is for time-partitioned historical backfills.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'PySpark Write — Schema Evolution',
+    q: 'You add a new column to your source DataFrame and run df.write.format("delta").mode("append").save(path). The write fails with "AnalysisException: schema mismatch". What is the minimal fix?',
+    opts:['A. Change mode from "append" to "overwrite" — overwrite always accepts new schemas','B. Add .option("mergeSchema", "true") to the write operation','C. Drop and recreate the Delta table before writing','D. Add .option("overwriteSchema", "true") to the write operation'],
+    ans:1,
+    expl:'<strong>B — .option("mergeSchema", "true").</strong> This tells Delta Lake to automatically add the new column to the table schema on write. <code>overwriteSchema=true</code> (D) also adds new columns but additionally removes columns not in the new schema — it\'s more destructive. <code>mode("overwrite")</code> replaces all data. <code>mergeSchema</code> is the safe, additive option.'
+  },
+  {
+    domain:'d2', domainLabel:'D2 · Ingest & Transform', topic:'Cross-Source Query — CTAS',
+    q: 'You need to join a Fabric warehouse table (dbo.Orders) with a lakehouse table (sales.Customers) in a single query and store the result as a new warehouse table. What is the most efficient low-code approach?',
+    opts:['A. Export both to ADLS Gen2 then use a notebook to join and reload','B. Use CREATE TABLE AS SELECT (CTAS) in the warehouse — it supports cross-source joins via shortcuts','C. Use a Dataflow Gen2 to merge both sources and output to a warehouse table','D. Copy the lakehouse table into the warehouse first, then run the join'],
+    ans:1,
+    expl:'<strong>B — CTAS in the warehouse.</strong> Fabric warehouse CTAS supports joining across the warehouse AND lakehouse SQL analytics endpoint in a single SELECT. No data movement needed upfront. Example: <code>CREATE TABLE dbo.Result AS SELECT o.*, c.Name FROM dbo.Orders o JOIN sales.Customers c ON o.CustId = c.Id</code>. Copying the lakehouse table first (D) adds an unnecessary extra step.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'V-Order — Portal Steps',
+    q: 'You want to apply V-Order to future Delta table writes in a Fabric Spark notebook session. Which PySpark configuration do you set at the top of the notebook?',
+    opts:['A. spark.conf.set("spark.sql.parquet.compression.codec", "snappy")','B. spark.conf.set("spark.sql.parquet.vorder.default", "true")','C. spark.conf.set("delta.vorder.enabled", "true")','D. spark.conf.set("spark.databricks.delta.optimizeWrite.enabled", "true")'],
+    ans:1,
+    expl:'<strong>B — spark.sql.parquet.vorder.default = true.</strong> This enables V-Order for all Parquet/Delta writes in the current Spark session. V-Order applies columnar sorting and compression optimised for Fabric\'s execution engine. Option D enables Delta\'s auto-compaction feature (different from V-Order). Option C is not a valid Fabric config key.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'queryinsights — Patterns vs Individual',
+    q: 'A Fabric warehouse analyst says certain SQL queries feel slow every day around 9am. You want to identify the actual query text and aggregate metrics (avg duration, run count) across many executions — not just individual slow runs. Which queryinsights view do you query?',
+    opts:['A. queryinsights.exec_requests_history — individual query execution rows','B. queryinsights.long_running_queries — aggregated by query shape with median duration','C. queryinsights.frequently_run_queries — ordered by execution count','D. queryinsights.sql_pool_insights — shows concurrency pressure'],
+    ans:1,
+    expl:'<strong>B — long_running_queries.</strong> This view aggregates query executions by normalized shape and exposes median/avg elapsed time — perfect for spotting patterns that are "consistently slow". exec_requests_history (A) has one row per execution — great for individual debugging but not patterns. frequently_run_queries (C) ranks by run count, not slowness.'
+  },
+  {
+    domain:'d3', domainLabel:'D3 · Monitor & Optimize', topic:'Streaming — Exactly-Once Delivery',
+    q: 'A Spark Structured Streaming job writes to a Delta Lake table. After a job failure and restart, duplicate records appear in the Delta table. What configuration change ensures exactly-once semantics?',
+    opts:['A. Set outputMode("complete") — complete mode overwrites on each batch to prevent duplicates','B. Configure a checkpoint location AND use Delta as the sink — Delta + checkpoint provides exactly-once','C. Add .option("ignoreChanges", "true") to skip duplicate detection','D. Use foreachBatch with a manual deduplication query'],
+    ans:1,
+    expl:'<strong>B — Checkpoint + Delta sink = exactly-once.</strong> Delta Lake\'s transactional write log combined with Spark\'s checkpoint (which tracks source offsets) provides exactly-once delivery: on restart, Spark replays only unprocessed offsets and Delta\'s ACID guarantees prevent partial writes. Without a checkpoint, offsets are not tracked and events are reprocessed. "ignoreChanges" (C) suppresses certain errors but doesn\'t prevent duplicates.'
+  },
+  {
+    domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Least Privilege — External Auditor',
+    q: 'An external auditor needs SELECT access to only the dbo.FinancialSummary table in a Fabric warehouse. They must not be able to see any other tables, lakehouses, or workspace items. What is the minimum configuration?',
+    opts:['A. Add the auditor as a Workspace Viewer — Viewers can only read, not modify','B. Grant the auditor Item permission (Read + ReadData) on the warehouse, then GRANT SELECT on dbo.FinancialSummary only in the SQL endpoint','C. Grant the auditor Workspace Contributor role then use Column-Level Security to block other columns','D. Share the warehouse with the auditor using the "Share" button — they get read-only access to all tables'],
+    ans:1,
+    expl:'<strong>B — Item permission + granular SQL GRANT.</strong> Workspace Viewer (A) gives access to ALL items in the workspace — violates least-privilege. Item permission (Read + ReadData) scopes access to just the warehouse. Then in the SQL analytics endpoint: <code>GRANT SELECT ON dbo.FinancialSummary TO [auditor@domain.com]</code> — this limits them to exactly one table. Share button (D) grants ReadAll, exposing all tables.'
   }
 ];
 
