@@ -14,6 +14,8 @@ Personal reference notes — things I learned while building, organized by topic
 | [claude-agents/](claude-agents/) | Agentic loops, multi-agent orchestration, slash commands |
 | [claude-code/](claude-code/) | Claude Code tips, subscriptions, GitHub App setup |
 | [frontend/](frontend/) | Next.js/React UI patterns, animations, event handling |
+| [backend/](backend/) | FastAPI, Python, auth patterns |
+| [general/](general/) | Cross-stack patterns, tooling, AI workflow |
 | [templates/](templates/) | Copy-paste starter files for new projects |
 
 ---
@@ -34,6 +36,13 @@ Personal reference notes — things I learned while building, organized by topic
 
 ### Frontend
 - [Sign-in page UI patterns — immersive lanes, marquee, photo carousel, event bubbling](frontend/sign-in-page-ui-patterns.md)
+- [React hydration errors — locale formatters + pre-hydration DOM mutations](frontend/react-hydration-errors.md)
+
+### Backend
+- [Admin role: env var bootstrap + DB fallback pattern](backend/admin-dual-check-pattern.md)
+
+### General
+- [AI-readable project map — PROJECT_MAP.md pattern](general/ai-readable-project-map.md)
 
 ### Templates
 - [.test-agent.yml](templates/test-agent.yml)
