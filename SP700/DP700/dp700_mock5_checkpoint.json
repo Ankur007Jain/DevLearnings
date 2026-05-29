@@ -1,0 +1,247 @@
+{
+  "source": "Phillip Burton — DP-700 Fabric Practice Test 1 (Udemy Business, updated April 2026)",
+  "quiz_id": "6645719",
+  "total": 34,
+  "extracted": "2026-05-29",
+  "note": "Use this file to build dp700_mock5.html — all 34 questions with correct answers and explanations",
+  "questions": [
+    {
+      "n": 1,
+      "q": "Which of these is not a data destination for a Dataflow Gen2?",
+      "a": ["Dataverse", "Lakehouse", "Azure SQL Database", "Warehouse"],
+      "c": ["a"],
+      "e": "Dataverse is NOT a destination for Dataflow Gen2 — it can be a source but not a destination. Valid destinations: Lakehouse, Warehouse, Azure SQL Database, Azure Data Explorer, Fabric Eventhouse, and more."
+    },
+    {
+      "n": 2,
+      "q": "How do I add parameters to a notebook activity in a pipeline?",
+      "a": ["In the notebook activity, go to the Settings tab and open 'Base parameters'.", "In the notebook activity, go to the General tab and open 'Base parameters'.", "In the notebook activity, go to the Settings tab and open 'Input parameters'.", "In the notebook activity, go to the General tab and open 'Input parameters'."],
+      "c": ["a"],
+      "e": "Settings tab → Base parameters. This is where you pass parameter values to a notebook when running it from a pipeline activity."
+    },
+    {
+      "n": 3,
+      "q": "I want to create a Spark Job Definition to process data from a folder. New files are continuously added to that folder. Which Spark function should I use to create a streaming dataframe from this folder?",
+      "a": ["spark.readStream.format('delta').load(folder)", "spark.read.format('delta').load(folder)", "spark.readStream.format('cloudFiles').option('cloudFiles.format','parquet').load(folder)", "spark.read.format('cloudFiles').option('cloudFiles.format','parquet').load(folder)"],
+      "c": ["c"],
+      "e": "spark.readStream with cloudFiles (Auto Loader) is used for continuously ingesting new files added to a folder. cloudFiles.format specifies the file format. spark.read is batch (not streaming)."
+    },
+    {
+      "n": 4,
+      "q": "I want to 'Block users from reassigning personal workspaces' in Admin portal - Tenant settings. Which of these administrators cannot do this?",
+      "a": ["Fabric Administrator", "Microsoft 365 Global Administrator", "Power Platform Administrator", "Capacity Administrator"],
+      "c": ["d"],
+      "e": "Capacity Administrators manage capacity (SKU) settings but cannot configure tenant-level settings like blocking personal workspace reassignment. That requires Fabric Admin, M365 Global Admin, or Power Platform Admin."
+    },
+    {
+      "n": 5,
+      "q": "I am creating an incremental data load using a Dataflow Gen2. I want to access the Incremental refresh settings. What do I select to access these settings?",
+      "a": ["Home > Options", "Right-click on the query", "Query Settings panel", "Transform tab"],
+      "c": ["b"],
+      "e": "Right-click on the query in Dataflow Gen2 to access Incremental refresh settings. This allows configuring date/time range-based incremental loads."
+    },
+    {
+      "n": 6,
+      "q": "I have a Data Warehouse with an Employee and Department table. One Employee gets assigned to a different Department every month. I want all of these changes to be tracked. By adding a Start Date and End Date, I can retrieve an Employee's Department at a particular point in time. What type of Slowly Changing Dimensions (SCD) is this?",
+      "a": ["Type 1", "Type 2", "Type 3", "Type 4"],
+      "c": ["b"],
+      "e": "SCD Type 2 adds new rows for each change, with Start Date and End Date to track the full history. Type 1 overwrites. Type 3 adds a 'previous value' column. Type 4 uses a history table."
+    },
+    {
+      "n": 7,
+      "q": "I am using the 'Microsoft Fabric Capacity Metrics' app. Please select TWO tabs which are included in this app.",
+      "a": ["Compute", "Storage", "Networking", "Workspaces"],
+      "c": ["a", "b"],
+      "e": "The Fabric Capacity Metrics app has two main tabs: Compute (showing CU usage over time, throttling, smoothing) and Storage (showing OneLake storage consumption). Networking and Workspaces are not tabs in this app."
+    },
+    {
+      "n": 8,
+      "q": "I want to run a notebook. What is the MINIMUM role that I need to do this?",
+      "a": ["Contributor", "Viewer", "Member", "Admin"],
+      "c": ["a"],
+      "e": "Contributor is the minimum workspace role to RUN a notebook. Viewer can read notebooks and view execution outputs but cannot run them. Contributor can create, edit, and run items."
+    },
+    {
+      "n": 9,
+      "q": "I want to copy a large amount of data to a lakehouse. I do not want to use any data transformations. What is the most appropriate method for copying this data?",
+      "a": ["The Copy tool in a pipeline", "Notebook code", "A dataflow", "The OneLake File Explorer app"],
+      "c": ["a"],
+      "e": "The Copy Activity in a Data Pipeline is the most efficient and appropriate method for bulk data movement without transformations. It supports hundreds of connectors and is optimised for throughput. Dataflow adds transformation overhead. Notebooks work but are less optimal for pure copy scenarios."
+    },
+    {
+      "n": 10,
+      "q": "I have a data warehouse. For one of the dimensions, I am going to create a Type 2 Slowly Changing Dimension (SCD). What happens in a Type 2 SCD?",
+      "a": ["It retains original and current data, together with any updates.", "It shows original data only.", "It shows the latest data only.", "It shows the current and previous versions."],
+      "c": ["a"],
+      "e": "SCD Type 2 retains full history — original rows plus all updates — each as a separate row with date ranges. You can add Start Date, End Date, and IsCurrent columns to query any point-in-time state."
+    },
+    {
+      "n": 11,
+      "q": "I want to copy files from an Azure SQL Database in a Dataflow Gen2 using the 'Fast copy' option. It currently does not use the 'Fast copy' option. What do I need to do so I can check the 'Allow use of fast copy connectors' option?",
+      "a": ["Go to Home → Options, and go to the 'Scale' tab", "Click on the wheel next to the first Applied step", "Right-hand click on the query name", "Go to the Transform tab"],
+      "c": ["a"],
+      "e": "Fast Copy is enabled via Home → Options → Scale tab → 'Allow use of fast copy connectors'. This enables the staging/Fast Copy path for supported connectors like Azure SQL Database."
+    },
+    {
+      "n": 12,
+      "q": "I am investigating using V-Order to my Delta Lake table. Please select TWO statements which are true about V-Order.",
+      "a": ["V-Order improves read speed.", "V-Order decreases write speed.", "V-Order decreases read speed.", "V-Order improves write speed."],
+      "c": ["a", "b"],
+      "e": "V-Order improves read speed (10-50% faster reads by Power BI/SQL/Spark) but decreases write speed slightly (due to sorting and encoding during write). It is ON by default in Fabric. Disabling it speeds writes but slows reads."
+    },
+    {
+      "n": 13,
+      "q": "This question is about a Dataflow in Fabric. I have two queries called Sales and SalesPeople. Sales has: IDSales, SalesTotal, IDSalesPeople. SalesPeople has: IDSalesPeople, PersonName, Position. I want to create a third query where each row from the Sales table is matched with its corresponding SalesPeople details, resulting in IDSales, SalesTotal, IDSalesPeople, PersonName, Position. Which merge type should I use?",
+      "a": ["Inner join", "Left outer join", "Right outer join", "Full outer join"],
+      "c": ["a"],
+      "e": "Inner join returns only matching rows from both tables — every Sales row matched with its SalesPeople row. Since every sale has a salesperson, Inner join gives exactly IDSales, SalesTotal, IDSalesPeople, PersonName, Position with no nulls. Left outer would include unmatched Sales rows."
+    },
+    {
+      "n": 14,
+      "q": "I have a Fabric Eventhouse. I want to enable a continuous export of data from a KQL database table to an external Azure Data Lake Storage Gen2 (ADLS Gen2) account. What KQL command should I use?",
+      "a": [".create-or-alter continuous-export", ".export to storage", ".create external table", ".ingest into table"],
+      "c": ["a"],
+      "e": ".create-or-alter continuous-export is the KQL command for setting up continuous data export from a KQL database to external storage (ADLS Gen2, Azure Blob). It runs automatically and exports new data as it arrives."
+    },
+    {
+      "n": 15,
+      "q": "I have a Fabric workspace connected to a Git repository. I make changes to a notebook locally. What do I need to do to save these changes to the Git repository?",
+      "a": ["Commit the changes from the Source control panel in the workspace", "Push changes from the Git repository directly", "Use the Sync button in the workspace header", "Changes are automatically committed to Git"],
+      "c": ["a"],
+      "e": "In Fabric Git integration, you commit changes via the Source control panel (Commit button) in the workspace. This pushes your local workspace changes to the connected Git branch. Changes are NOT automatic — you must explicitly commit them."
+    },
+    {
+      "n": 16,
+      "q": "I want to monitor all the activities in a Fabric workspace — who created, modified, or deleted items. Which feature should I use?",
+      "a": ["Workspace logging", "Fabric Monitor", "queryinsights schema", "Azure Monitor"],
+      "c": ["a"],
+      "e": "Workspace logging (new Jan 2026 exam objective) captures all item-level activity in a workspace as structured logs stored in a lakehouse. It is the correct feature for compliance and audit trails of workspace item activity."
+    },
+    {
+      "n": 17,
+      "q": "I have a Fabric Lakehouse with a Delta table. I run an UPDATE statement that changes 1,000 rows. After the update, I notice the storage used by the table has increased significantly. What is the most likely reason?",
+      "a": ["Delta Lake writes new files for changed data and marks old files as deleted — the old files remain until VACUUM is run", "The UPDATE statement created a full copy of the table", "Delta Lake compresses data after UPDATE which temporarily increases size", "The lakehouse automatically creates backups on UPDATE"],
+      "c": ["a"],
+      "e": "Delta Lake uses copy-on-write: UPDATE writes new Parquet files for changed rows and marks old files as logically deleted (tombstoned) in the transaction log. The old files remain on disk until VACUUM removes them (after the retention period, default 7 days). Run OPTIMIZE + VACUUM to reclaim storage."
+    },
+    {
+      "n": 18,
+      "q": "I want to implement Row-Level Security (RLS) in a Fabric Data Warehouse. Which approach is correct?",
+      "a": ["Create a security policy with a filter predicate function in T-SQL", "Use OneLake Data Access Roles on the warehouse Delta files", "Apply a sensitivity label to restrict row access", "Configure RLS in the Power BI semantic model only"],
+      "c": ["a"],
+      "e": "RLS in Fabric Warehouse uses T-SQL: create an inline table-valued function as the filter predicate, then CREATE SECURITY POLICY binding it to the table with ADD FILTER PREDICATE. This is identical to SQL Server RLS syntax."
+    },
+    {
+      "n": 19,
+      "q": "I want to deploy items from a Development workspace to a Test workspace using a Fabric deployment pipeline. After deployment, users in Test report that the semantic model cannot refresh. What is the most likely reason?",
+      "a": ["Data source credentials are not copied during deployment — they must be reconfigured in the Test stage", "The deployment pipeline only copies metadata, not the semantic model itself", "The Test workspace does not have a Premium/Fabric capacity assigned", "Deployment pipelines cannot deploy semantic models — only lakehouses and warehouses"],
+      "c": ["a"],
+      "e": "Credentials are NEVER copied by deployment pipelines. After deploying a semantic model to Test, you must manually reconfigure the data source credentials in the Test stage dataset settings. This is a very common exam trap."
+    },
+    {
+      "n": 20,
+      "q": "I want to use the Activator (Reflex) feature in Microsoft Fabric. What does Activator do?",
+      "a": ["It monitors data and triggers automated actions (alerts, emails, pipeline runs) when conditions are met", "It schedules data pipeline runs at specific times", "It monitors Spark job performance and alerts on failures", "It automatically optimises Delta table files when storage thresholds are exceeded"],
+      "c": ["a"],
+      "e": "Fabric Activator (Reflex) is an event-driven automation tool. It monitors events from semantic models, lakehouses, eventstreams, and KQL databases — and triggers actions (Teams messages, emails, Power Automate flows, pipeline runs) when defined conditions are met. Not a scheduler — it is event/condition-driven."
+    },
+    {
+      "n": 21,
+      "q": "I want to read data from a Fabric Lakehouse using Apache Spark in a notebook. The lakehouse is in a different workspace to my notebook. What do I need to do?",
+      "a": ["Add the lakehouse as a data source to the notebook via the notebook's lakehouse explorer", "Grant the notebook Contributor access to the other workspace", "Create a shortcut from the current workspace lakehouse to the other workspace lakehouse", "Lakehouses cannot be accessed cross-workspace in notebooks"],
+      "c": ["a"],
+      "e": "You can add a lakehouse from a different workspace as a data source directly in the notebook UI (Lakehouse explorer → Add → Existing lakehouse → browse other workspaces). This gives the notebook read access to that lakehouse's data without requiring workspace role changes."
+    },
+    {
+      "n": 22,
+      "q": "I have a Fabric Data Warehouse. I want to see the queries that are currently running right now. Which view should I use?",
+      "a": ["sys.dm_exec_requests", "queryinsights.exec_requests_history", "queryinsights.long_running_queries", "sys.dm_exec_sessions"],
+      "c": ["a"],
+      "e": "sys.dm_exec_requests shows currently executing requests in real-time. queryinsights views show HISTORICAL completed queries (up to 30 days, ~15 min delay). sys.dm_exec_sessions shows active connections but not the specific query text as comprehensively as dm_exec_requests."
+    },
+    {
+      "n": 23,
+      "q": "I want to implement Object-Level Security (OLS) in a Fabric Data Warehouse to hide an entire table from certain users. Which T-SQL approach is correct?",
+      "a": ["DENY SELECT ON SCHEMA::dbo TO [role] — deny access to all objects in the schema", "REVOKE SELECT ON dbo.TableName FROM [role] — remove the SELECT grant", "Do not GRANT SELECT on the table to the role — OLS is implemented by not granting permissions", "CREATE SECURITY POLICY with BLOCK predicate on the table"],
+      "c": ["c"],
+      "e": "Object-Level Security in Fabric Warehouse is implemented by simply NOT granting SELECT permission on the table to the role. Users without explicit permission cannot see or query the table. This is different from RLS (filter predicate) and CLS (column-level grants). The principle: grant only what is needed."
+    },
+    {
+      "n": 24,
+      "q": "I have a Fabric Lakehouse. I want to give a user access to only a specific folder within the Files section of the lakehouse (not the Tables section). Which feature allows folder-level access control?",
+      "a": ["OneLake Data Access Roles with path-based folder rules", "Workspace Viewer role scoped to the folder", "Sensitivity labels applied to the folder", "Item permissions with ReadAll scoped to the folder path"],
+      "c": ["a"],
+      "e": "OneLake Data Access Roles (OLDAR) support path-based access control — you can define rules that grant access to specific folders (e.g., Files/raw/ or Files/processed/) within a lakehouse. This is the correct feature for folder-level access. Workspace roles apply to all items, not specific folders."
+    },
+    {
+      "n": 25,
+      "q": "I have a Fabric workspace. I want to endorse a dataset as 'Certified'. Which role is required to certify an item?",
+      "a": ["Any workspace Member or Admin", "A Fabric administrator or a delegated certifier", "Any workspace Contributor", "The item owner only"],
+      "c": ["b"],
+      "e": "Certified endorsement requires a Fabric administrator OR a user explicitly delegated as a certifier by the Fabric admin in tenant settings. Promoted endorsement (the other type) can be set by any workspace Member or Admin. This distinction is heavily tested."
+    },
+    {
+      "n": 26,
+      "q": "I am creating a KQL query to find all events in the last 30 minutes. Which KQL filter is correct?",
+      "a": ["| where Timestamp > ago(30m)", "| where Timestamp >= now() - 30m", "| where Timestamp > datetime_add('minute', -30, now())", "| filter Timestamp > ago(30m)"],
+      "c": ["a"],
+      "e": "ago(30m) returns the datetime 30 minutes ago. '| where Timestamp > ago(30m)' is the idiomatic KQL way. Option B works too but is less common. Option C uses datetime_add which works but is verbose. Option D uses 'filter' which is not standard KQL — use 'where'."
+    },
+    {
+      "n": 27,
+      "q": "I have a Fabric Data Pipeline. I want it to run every weekday (Monday to Friday) at 7:00 AM UTC. Which cron expression is correct?",
+      "a": ["0 7 * * 1-5", "0 7 * * MON-FRI", "7 0 * * 1-5", "0 0 7 * 1-5"],
+      "c": ["a"],
+      "e": "Cron format: minute hour day month weekday. '0 7 * * 1-5' = minute 0, hour 7, any day, any month, weekdays 1-5 (Mon-Fri). This runs at 7:00 AM UTC every weekday. '7 0 * * 1-5' would be 12:07 AM. '0 0 7 * 1-5' would be midnight on the 7th of each month."
+    },
+    {
+      "n": 28,
+      "q": "I have a Fabric Eventstream. I want to filter events before they reach the destination — only passing events where Status = 'Error'. Where should I add the filter?",
+      "a": ["Add a Filter processor node between the source and the destination in the Eventstream editor", "Configure the filter in the destination settings", "Apply a WHERE clause in the destination lakehouse", "Use Activator to filter events before they reach Eventstream"],
+      "c": ["a"],
+      "e": "Eventstream supports processor nodes (Filter, Aggregate, Group By, Manage Fields, etc.) that transform or filter events IN FLIGHT between source and destination. Add a Filter processor node between the source node and destination node — only matching events pass through to the destination."
+    },
+    {
+      "n": 29,
+      "q": "I have a KQL table called SensorData with columns: DeviceId (string), Temperature (real), Timestamp (datetime). I want to find the average temperature per device for the last 1 hour. Which KQL query is correct?",
+      "a": ["SensorData | where Timestamp > ago(1h) | summarize avg(Temperature) by DeviceId", "SensorData | filter Timestamp > ago(1h) | group by DeviceId | avg(Temperature)", "SensorData | where Timestamp > ago(1h) | groupby DeviceId | summarize avg(Temperature)", "SensorData | summarize avg(Temperature) by DeviceId | where Timestamp > ago(1h)"],
+      "c": ["a"],
+      "e": "Correct KQL: where (not filter) → summarize avg() by. The pipeline: filter time range first, then aggregate. Option D puts where after summarize — Timestamp is no longer available after aggregation. Option B uses SQL syntax. Option C uses 'groupby' which is not a KQL operator."
+    },
+    {
+      "n": 30,
+      "q": "I have a Fabric Lakehouse. I use OPTIMIZE on a Delta table. What does OPTIMIZE do?",
+      "a": ["Compacts many small files into fewer, larger optimally-sized files", "Removes old unreferenced file versions from the Delta table", "Sorts the data within the table by a specified column", "Creates a secondary index on the table for faster lookups"],
+      "c": ["a"],
+      "e": "OPTIMIZE compacts small Parquet files into larger optimally-sized files (~128MB). This fixes the 'small files problem' from frequent streaming writes. VACUUM removes old/deleted files. ZORDER (used with OPTIMIZE ZORDER BY col) sorts data within files for better predicate pushdown — but basic OPTIMIZE without ZORDER just compacts."
+    },
+    {
+      "n": 31,
+      "q": "I want to configure Fabric Git integration for my workspace. I decide to use GitHub. What are the THREE steps required to set this up?",
+      "a": ["Connect the workspace to the GitHub repo in workspace Git settings", "Install the Microsoft Fabric GitHub App on the GitHub organisation", "Authenticate Fabric to GitHub using a PAT or OAuth", "Enable Git integration in the Microsoft 365 admin centre", "Create a GitHub Actions workflow file"],
+      "c": ["a", "b", "c"],
+      "e": "Three required steps: (1) Connect workspace to GitHub repo via workspace Settings → Git integration, (2) Install the Microsoft Fabric GitHub App on your GitHub org/repo, (3) Authenticate with a PAT or OAuth. M365 admin centre and GitHub Actions are not required setup steps."
+    },
+    {
+      "n": 32,
+      "q": "I have a Direct Lake semantic model in Power BI connected to a Fabric Lakehouse. The model is falling back to DirectQuery mode unexpectedly. What is the most likely cause?",
+      "a": ["The data volume exceeds the frame limit for the Fabric capacity SKU", "V-Order is disabled on the Delta table", "The lakehouse is in a different workspace from the semantic model", "The Delta table has too many partitions"],
+      "c": ["a"],
+      "e": "Direct Lake falls back to DirectQuery when the frame limit for the capacity SKU is exceeded (too many rows/columns for the SKU's memory limit). Solution: upgrade to higher SKU (F8, F16, F32, etc.) or reduce data volume. V-Order affects read speed but not fallback behaviour. Cross-workspace is supported."
+    },
+    {
+      "n": 33,
+      "q": "I have a Fabric Data Pipeline with a Copy Activity. I want to load data from an on-premises SQL Server (no Azure ExpressRoute). Which connectivity option allows this?",
+      "a": ["Self-Hosted Integration Runtime (SHIR) installed on-premises", "Azure Integration Runtime (public endpoint)", "Managed Virtual Network Integration Runtime", "VPN Gateway with site-to-site connection"],
+      "c": ["a"],
+      "e": "Self-Hosted Integration Runtime (SHIR) is installed on-premises and creates a secure outbound tunnel to Fabric — no inbound firewall rules needed. It supports on-premises SQL Server, Oracle, SAP, and other local data sources. Azure IR only works with cloud/public endpoints. Managed VNet IR is for Azure private endpoints."
+    },
+    {
+      "n": 34,
+      "q": "I want to use sensitivity labels in Microsoft Fabric. I apply a 'Confidential' label to a Lakehouse table. A colleague then creates a new report using that table as a source. What happens to the report's sensitivity label?",
+      "a": ["The report automatically inherits the 'Confidential' label (downstream label inheritance)", "The report has no label — labels must be manually applied to each item", "The report gets a lower label ('General') because reports are less sensitive than data", "The label is applied only if the colleague is a Fabric Admin"],
+      "c": ["a"],
+      "e": "Microsoft Purview sensitivity labels support downstream inheritance in Fabric. When a downstream item (report, dataset, copy) is created from a labelled source, it automatically inherits the same or higher sensitivity label. This enforces the most restrictive label in the data lineage automatically."
+    }
+  ]
+}

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Mock Exam 4 — Udemy Practice Test</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+  .timer-wrap { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
+  .timer-val { font-weight:800; font-size:16px; color:var(--text); font-variant-numeric:tabular-nums; }
+  .timer-val.warn { color:var(--amber); }
+  .timer-val.danger { color:var(--red); animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .multi-hint { font-size:11px; font-weight:700; color:var(--d2); background:#ede9fe; padding:2px 8px; border-radius:4px; display:inline-block; margin-bottom:12px; }
+  .opt-btn.selected { border-color:var(--d2); background:#ede9fe; }
+  .opt-btn.correct { border-color:var(--green)!important; background:#f0fdf4!important; }
+  .opt-btn.wrong { border-color:var(--red)!important; background:#fef2f2!important; }
+  .opt-btn.missed { border-color:var(--green)!important; background:#f0fdf4!important; opacity:0.7; }
+  .flag-btn { background:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px; color:var(--muted); }
+  .flag-btn.flagged { background:#fef3c7; border-color:var(--amber); color:var(--amber); font-weight:700; }
+  .q-nav-grid { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:20px; }
+  .q-nav-dot { width:30px; height:30px; border-radius:6px; border:1px solid var(--border); background:var(--card); cursor:pointer; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:var(--muted); }
+  .q-nav-dot.answered { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .q-nav-dot.flagged { background:#fef3c7; border-color:var(--amber); color:var(--amber); }
+  .q-nav-dot.current { outline:2px solid var(--text); outline-offset:2px; }
+  .review-item { background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:14px; margin-bottom:10px; font-size:13px; }
+  .review-item.correct { background:#f0fdf4; border-color:#bbf7d0; }
+  .score-bar { height:10px; border-radius:999px; background:#e2e8f0; margin:6px 0 12px; overflow:hidden; }
+  .score-bar-fill { height:10px; border-radius:999px; transition:width 1s ease; }
+  .source-badge { font-size:10px; background:#fdf4ff; border:1px solid #e9d5ff; color:#7e22ce; border-radius:4px; padding:1px 6px; display:inline-block; margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn">🔷 KQL Lab</a>
+  <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+  <a href="dp700_mock2.html" class="tab-btn">📝 Full Mock</a>
+  <a href="dp700_mock3.html" class="tab-btn">🔬 Mock 3</a>
+  <a href="dp700_mock4.html" class="tab-btn active">🎓 Mock 4</a>
+</nav>
+
+<div class="page">
+<div class="exam-wrap" id="examWrap">
+
+  <!-- ═══════════ START SCREEN ═══════════ -->
+  <div id="startScreen" style="text-align:center;padding:40px 20px;">
+    <div style="font-size:48px;margin-bottom:16px">🎓</div>
+    <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam 4</h2>
+    <p style="color:var(--muted);margin-bottom:6px">45 questions · 90 minutes · Udemy Practice Test patterns</p>
+    <p style="font-size:12px;color:#7e22ce;margin-bottom:6px">📚 Source: Ravikiran Srinivasulu — DP-700 Practice Test 2025 (Udemy Business, ★4.7)</p>
+    <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+        <div style="font-size:11px;color:var(--d1);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d1)">16 Qs</div>
+        <div style="font-size:11px;color:var(--muted)">30–35%</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+        <div style="font-size:11px;color:var(--d2);font-weight:700;text-transform:uppercase;margin-bottom:4px">D2 · Ingest</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d2)">17 Qs</div>
+        <div style="font-size:11px;color:var(--muted)">30–35%</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
+        <div style="font-size:11px;color:var(--d3);font-weight:700;text-transform:uppercase;margin-bottom:4px">D3 · Monitor</div>
+        <div style="font-size:22px;font-weight:800;color:var(--d3)">12 Qs</div>
+        <div style="font-size:11px;color:var(--muted)">30–35%</div>
+      </div>
+    </div>
+    <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:24px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
+      <strong>🆕 New topics from Udemy (not in Mocks 1–3):</strong> Shortcut caching (which types), Endorsed items drag-drop, sys.dm_exec_requests, DDM T-SQL syntax (email + salary), Eventhouse OneLake + PySpark no-data trap, KQL uuid type, Sliding vs Tumbling window, CDC not enabled trap, V-Order &amp; warehouse load perf, Column-level security steps, GitHub 3-step integration, ROLLUP vs CUBE, OneLake Data Access Roles for partial table access, Star schema FactSales design, queryinsights frequently_run_queries.
+    </div>
+    <button class="btn btn-primary" onclick="startExam()" style="font-size:15px;padding:14px 36px;">Start Exam →</button>
+  </div>
+
+  <!-- ═══════════ QUESTION SCREEN ═══════════ -->
+  <div id="questionScreen" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span class="q-counter" id="qCounter">Question 1 of 45</span>
+      <div class="timer-wrap">
+        <span>⏱</span><span class="timer-val" id="timerVal">90:00</span>
+      </div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="q-nav-grid" id="qNavGrid"></div>
+    <div class="q-card" id="qCard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div class="q-badge" id="qBadge"></div>
+        <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag</button>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div id="multiHint" style="display:none"><span class="multi-hint" id="multiHintText"></span></div>
+      <div id="optionsWrap"></div>
+      <div class="expl" id="expl"></div>
+    </div>
+    <div class="exam-nav">
+      <button class="btn btn-secondary" id="prevBtn" onclick="navigate(-1)" disabled>← Prev</button>
+      <span style="font-size:12px;color:var(--muted)" id="statusHint">Select an answer</span>
+      <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-secondary" onclick="finishExam()" style="font-size:12px;">Submit Exam</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ SCORE SCREEN ═══════════ -->
+  <div id="scoreScreen" style="display:none;" class="score-screen">
+    <div class="score-big" id="scoreBig"></div>
+    <div class="score-verdict" id="scoreVerdict"></div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px" id="scoreTime"></p>
+    <div class="domain-breakdown">
+      <div class="db-card">
+        <div class="db-label" style="color:var(--d1)">D1 · Implement &amp; Manage</div>
+        <div class="db-value" id="d1score" style="color:var(--d1)"></div>
+        <div class="score-bar"><div class="score-bar-fill" id="d1bar" style="background:var(--d1);width:0%"></div></div>
+        <div class="db-total" id="d1total"></div>
+      </div>
+      <div class="db-card">
+        <div class="db-label" style="color:var(--d2)">D2 · Ingest &amp; Transform</div>
+        <div class="db-value" id="d2score" style="color:var(--d2)"></div>
+        <div class="score-bar"><div class="score-bar-fill" id="d2bar" style="background:var(--d2);width:0%"></div></div>
+        <div class="db-total" id="d2total"></div>
+      </div>
+      <div class="db-card">
+        <div class="db-label" style="color:var(--d3)">D3 · Monitor &amp; Optimize</div>
+        <div class="db-value" id="d3score" style="color:var(--d3)"></div>
+        <div class="score-bar"><div class="score-bar-fill" id="d3bar" style="background:var(--d3);width:0%"></div></div>
+        <div class="db-total" id="d3total"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;">
+      <button class="btn btn-primary" onclick="restartExam()">🔄 Retake</button>
+      <button class="btn btn-secondary" onclick="showReview()">📋 Review All</button>
+    </div>
+    <div class="review-section" id="reviewSection" style="display:none;text-align:left;"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// QUESTION BANK — 45 Questions
+// Primary Source: Ravikiran Srinivasulu, DP-700 Practice Test 2025 (Udemy Business)
+// ★4.7 stars · 91 ratings · 1,080 students
+// ═══════════════════════════════════════════════
+const questions = [
+
+  // ── DOMAIN 1 (Q1–16) ──────────────────────────
+
+  { domain:'d1', topic:'Shortcut Caching — Supported Sources',
+    q:'Your organisation uses Microsoft Fabric shortcuts to connect to external storage. A performance review shows that repeated reads to the same shortcut are causing unnecessary egress charges and latency. You want to enable shortcut caching to reduce egress.\n\nFor which shortcut sources does Fabric support shortcut caching? (Select all that apply)',
+    opts:['A. Amazon S3','B. Azure Data Lake Storage Gen2 (ADLS Gen2)','C. Google Cloud Storage (GCS)','D. S3-compatible storage (e.g. MinIO)','E. On-premises Data Gateway (OPDG)'],
+    ans:[0,2,3,4],
+    expl:'<strong>A, C, D, E — S3, GCS, S3-compatible, and OPDG.</strong> Fabric shortcut caching is supported for Amazon S3, Google Cloud Storage, S3-compatible storage (like MinIO or Cloudflare R2), and On-premises Data Gateway shortcuts. <strong>ADLS Gen2 shortcuts do NOT support caching</strong> — this is a common exam trap. ADLS Gen2 is already on Azure infrastructure so Microsoft chose not to add a separate caching tier for it.'
+  },
+
+  { domain:'d1', topic:'Endorsed Items — Promoted vs Certified',
+    q:'Match each endorsement type with the correct description.\n\n① Promoted\n② Certified\n\nDescriptions:\nX. Any workspace Member or Admin can grant this status to flag reliable content\nY. Requires approval from a Fabric admin or a delegated certifier designated by the admin',
+    opts:['A. ① = X, ② = Y (Promoted = any Member/Admin; Certified = admin-delegated only)','B. ① = Y, ② = X (Promoted = admin-delegated; Certified = any Member/Admin)','C. Both require Fabric admin approval','D. Both can be granted by any workspace member'],
+    ans:0,
+    expl:'<strong>A — Promoted = any Member/Admin; Certified = admin-delegated certifier only.</strong> Promoted endorsement can be set by any workspace Member or Admin — it is a self-service signal that the content is reliable. Certified endorsement requires a Fabric administrator (or a certifier explicitly delegated by the admin in tenant settings). This distinction is heavily tested: do not confuse Promoted (self-service) with Certified (admin-controlled).'
+  },
+
+  { domain:'d1', topic:'Data Store for KQL-Only Writes',
+    q:'You are designing a Fabric solution. The requirements state:\n• Data must be readable using T-SQL AND KQL\n• All writes must use KQL (Kusto Query Language) exclusively\n• The data includes time-series telemetry logs\n\nWhich Fabric data store should you use?',
+    opts:['A. Fabric Lakehouse — supports T-SQL (SQL endpoint), KQL (shortcut), and Spark writes','B. Fabric Warehouse — supports T-SQL and KQL reads; data written by KQL ingest','C. Fabric Eventhouse (KQL Database) — natively supports KQL writes and reads; T-SQL available via shortcut or SQL analytics endpoint','D. Fabric Datamart — lightweight SQL store with Power BI integration'],
+    ans:2,
+    expl:'<strong>C — Fabric Eventhouse / KQL Database.</strong> When writes must use KQL (e.g., .ingest commands, streaming ingest, update policies), the Eventhouse is the correct choice. KQL Databases natively support KQL-based ingest (streaming, queued, etc.) and read via KQL. T-SQL access is available via the SQL analytics endpoint. The Lakehouse supports Spark writes (not KQL writes). The Warehouse is T-SQL write/read. For time-series telemetry with KQL ingest, Eventhouse is the designed store.'
+  },
+
+  { domain:'d1', topic:'Domain Assignment — Effect on Permissions',
+    q:'A Fabric administrator assigns a workspace to a domain named "Finance". A colleague tells the team that all workspace members now automatically get Finance domain access permissions.\n\nIs this correct? What does domain assignment actually control?',
+    opts:['A. Correct — domain assignment propagates the domain\'s access policies to all workspace members','B. Incorrect — domain assignment only affects organisation/discovery metadata; it does NOT change or grant access permissions','C. Correct — only workspace Admins gain new permissions; Contributors and Members are unaffected','D. Incorrect — domain assignment disables all existing workspace role assignments'],
+    ans:1,
+    expl:'<strong>B — Domain assignment only affects metadata/discoverability, NOT access permissions.</strong> Assigning a workspace to a domain organises it within the data catalogue and governance structure — it lets domain admins apply domain-level policies (like who can certify content). It does NOT change who can access the workspace, read items, or run queries. Workspace roles (Admin, Member, Contributor, Viewer) and item permissions remain the only access control mechanism. This is a common exam distractor.'
+  },
+
+  { domain:'d1', topic:'OneLake Data Access Roles — Partial Table Access',
+    q:'You have a Fabric Lakehouse with a table named CustomerOrders. A business analyst team should be able to read only the rows where Region = \'Europe\'. They should have no access to other regions.\n\nWhat is the correct sequence of steps to implement this using OneLake Data Access Roles?',
+    opts:['A. 1. Enable OneLake Data Access Roles on the lakehouse → 2. Create a new role → 3. Define a row filter (Region = \'Europe\') → 4. Add the analyst security group to the role','B. 1. Assign Viewer workspace role → 2. Enable RLS on the SQL analytics endpoint → 3. Add users to the SQL role','C. 1. Create a sensitivity label → 2. Apply it to the CustomerOrders table → 3. Add analysts to the label policy','D. 1. Share the lakehouse with analysts via item permissions → 2. Use column-level security in T-SQL to filter rows'],
+    ans:0,
+    expl:'<strong>A — Enable OneLake Data Access Roles → Create role → Define row filter → Add security group.</strong> OneLake Data Access Roles (OLDAR) enable row-level access control directly at the OneLake storage layer — before any query engine is involved. The process: (1) Enable the feature on the lakehouse, (2) Create a named role, (3) Define path/row filters (table + WHERE clause), (4) Assign users or security groups. This is more fundamental than SQL endpoint RLS — it works across Spark, T-SQL, and shortcuts because it operates at the Delta table level.'
+  },
+
+  { domain:'d1', topic:'Lakehouse Permission — PySpark Read-Only',
+    q:'A data scientist (Client1) needs to read data from a Fabric Lakehouse using PySpark notebooks. They should NOT be able to use the SQL analytics endpoint or modify any workspace items.\n\nWhat is the minimum set of permissions to grant?',
+    opts:['A. Workspace Contributor role','B. Workspace Viewer role only','C. Lakehouse item permission: Read + ReadAll (OneLake); no workspace role required','D. Workspace Member role + lakehouse Owner permission'],
+    ans:2,
+    expl:'<strong>C — Lakehouse item permissions: Read + ReadAll (no workspace role needed).</strong> To grant read-only PySpark access to a lakehouse without giving any workspace role: share the lakehouse item with "Read" (can discover/open the item) and "ReadAll" (can read all Delta table data via OneLake/Spark). This grants Spark notebook access to the data. Without ReadAll, Spark can see the item but cannot read table files. Workspace Viewer would also give access to ALL workspace items — violating minimum privilege.'
+  },
+
+  { domain:'d1', topic:'Lakehouse Permission — SQL Endpoint Only',
+    q:'A reporting analyst (Client2) needs SQL query access to a Fabric Lakehouse using the SQL analytics endpoint. They must NOT access raw files or use Spark.\n\nWhich permission set achieves this with minimum privilege?',
+    opts:['A. Workspace Viewer role','B. Lakehouse item permission: Read + ReadAll (OneLake) + SQL Analytics Endpoint access','C. Lakehouse item permission: Read only (no ReadAll); plus grant SELECT on specific tables via SQL endpoint','D. Share the whole workspace with Contributor role'],
+    ans:2,
+    expl:'<strong>C — Read item permission + SQL table-level SELECT grants (no ReadAll).</strong> For SQL-endpoint-only access: share the lakehouse item with "Read" (allows the analyst to connect to the SQL analytics endpoint). Then use T-SQL GRANT SELECT ON dbo.TableName TO [user] to give access only to specific tables. Critically, do NOT grant ReadAll — that would also give Spark/OneLake file access. SQL endpoint permissions can be scoped more granularly using standard T-SQL GRANT statements.'
+  },
+
+  { domain:'d1', topic:'Deployment Pipeline — Empty Stage Behaviour',
+    q:'A Fabric deployment pipeline has three stages: Dev, Test, and Production. The Test and Production stages have workspaces assigned but they are empty. You click "Deploy" from Dev to Test.\n\nWhat content will the Test workspace contain immediately after deployment?',
+    opts:['A. All items including their data — tables and files are copied to Test','B. Metadata and schema definitions only — no data is transferred; semantic models must be refreshed separately','C. Only the workspace permissions and sensitivity labels are copied','D. Nothing — deployment fails if the target workspace is empty'],
+    ans:1,
+    expl:'<strong>B — Metadata/schema only; data is NOT copied; semantic models need refresh.</strong> Deployment pipelines copy item definitions (schema, code, config, connection settings structure) — NOT data. After deploying a semantic model, you must trigger a dataset refresh against the Test data source for the model to have data. Deployment to an empty workspace is valid — items are created from scratch using the Dev definitions. Data source credentials must also be reconfigured per stage (credentials are never copied).'
+  },
+
+  { domain:'d1', topic:'Column-Level Security — Implementation Steps',
+    q:'You manage a Fabric Warehouse. A table named EmployeeData has columns: EmployeeID, Name, Salary, Email. An external auditor needs to query the table but must NOT see the Salary or Email columns.\n\nWhat is the correct sequence of steps to implement Column-Level Security?',
+    opts:['A. 1. Create a database role → 2. GRANT SELECT on specific columns (EmployeeID, Name) to the role → 3. Add auditor to the role → 4. DENY SELECT on table to the role (to block defaults)','B. 1. Create a database role → 2. GRANT SELECT on the full table to the role → 3. Use DDM masks on Salary and Email → 4. Add auditor to the role','C. 1. Create a database role → 2. GRANT SELECT on EmployeeID, Name columns to the role → 3. Add auditor to the role','D. 1. Apply sensitivity labels to Salary and Email columns → 2. Create a role → 3. Assign the auditor'],
+    ans:2,
+    expl:'<strong>C — Create role → GRANT SELECT on specific columns only → Add user to role.</strong> Column-Level Security in Fabric Warehouse uses T-SQL column-level GRANT: <code>GRANT SELECT ON dbo.EmployeeData (EmployeeID, Name) TO [AuditorRole]</code>. By granting SELECT only on named columns (not the whole table), users in that role can query those columns but will receive an error if they try to SELECT Salary or Email. Dynamic Data Masking (DDM) is different — it shows masked values, not a permissions error. CLS completely blocks access; DDM shows obfuscated data.'
+  },
+
+  { domain:'d1', topic:'GitHub Integration — Three Steps',
+    q:'A data engineering team wants to connect a Fabric workspace to a GitHub repository for version control. Which THREE actions are required to configure GitHub integration for a Fabric workspace?',
+    opts:['A. Connect the Fabric workspace to the GitHub repository in workspace Git settings','B. Install the Microsoft Fabric GitHub App on the GitHub repository or organisation','C. Create a personal access token (PAT) or use OAuth to authenticate Fabric to GitHub','D. Enable Fabric Git integration in the Microsoft 365 admin centre','E. Configure a GitHub Actions workflow to push changes to Fabric'],
+    ans:[0,1,2],
+    expl:'<strong>A, B, C — Connect workspace, install Fabric GitHub App, authenticate with PAT/OAuth.</strong> To integrate a Fabric workspace with GitHub: (1) Go to workspace Settings → Git integration → select GitHub as provider, (2) Install the Microsoft Fabric GitHub App on your GitHub org/repo so Fabric can access it, (3) Authenticate using a GitHub PAT or OAuth to authorise Fabric. The Microsoft 365 admin centre is not involved in Git integration. GitHub Actions workflows are optional automation — not a required setup step.'
+  },
+
+  { domain:'d1', topic:'Star Schema — FactSales Design',
+    q:'You are designing a star schema in a Fabric Warehouse. The fact table FactSales needs to track individual sales transactions. Each transaction has: SaleID, Date, CustomerID, ProductID, Quantity, UnitPrice, TotalAmount.\n\nWhich columns should be foreign keys in FactSales?',
+    opts:['A. SaleID only — it\'s the primary key','B. SaleID, Date, CustomerID, ProductID — all identifiers are foreign keys','C. CustomerID and ProductID — they reference dimension tables (DimCustomer, DimProduct); Date references DimDate','D. Quantity, UnitPrice, TotalAmount — these are the measurable facts'],
+    ans:2,
+    expl:'<strong>C — CustomerID, ProductID, and Date reference dimension tables.</strong> In a star schema: <strong>foreign keys</strong> are the dimension references (CustomerID → DimCustomer, ProductID → DimProduct, Date → DimDate). <strong>SaleID</strong> is the surrogate primary key of the fact table itself. <strong>Quantity, UnitPrice, TotalAmount</strong> are measures (additive numeric facts). Understanding which columns are dimensions vs measures is tested in both design and optimisation questions.'
+  },
+
+  { domain:'d1', topic:'V-Order and Warehouse Load Performance',
+    q:'A data engineering team loads data into a Fabric Warehouse daily. They notice that query performance after loading is significantly better when V-Order is enabled on the Delta tables compared to when it is disabled.\n\nWhy does V-Order improve query performance in this scenario?',
+    opts:['A. V-Order compresses data using ZIP compression, reducing file sizes by 80%','B. V-Order applies sorting and encoding optimisations during write that enable faster read performance — Power BI and SQL engines read V-Order files more efficiently','C. V-Order creates additional index files alongside Delta tables for faster lookup','D. V-Order moves data to SSD-backed storage automatically during the load process'],
+    ans:1,
+    expl:'<strong>B — V-Order applies write-time sorting and encoding for faster reads.</strong> V-Order is a write optimisation applied during Delta table writes that enables Microsoft\'s columnar engines (Power BI DirectLake, Fabric SQL, Spark) to read data significantly faster. It applies RLE encoding, dictionary compression, and data layout optimisation so that read operations require fewer I/O operations. V-Order is ON by default in Fabric. Disabling it speeds up writes slightly but degrades read performance. This is why disabling V-Order causes observable performance regression on query-heavy workloads.'
+  },
+
+  { domain:'d1', topic:'ROLLUP vs CUBE in T-SQL',
+    q:'A warehouse analyst needs to generate a sales report showing:\n• Subtotals for each Product within each Region\n• Subtotals for each Region across all Products\n• A grand total across all Regions and Products\n\nThe analyst does NOT need cross-dimensional subtotals (e.g., Product-only subtotals).\n\nWhich T-SQL clause should be used?',
+    opts:['A. GROUP BY CUBE(Region, Product) — generates all possible combinations','B. GROUP BY ROLLUP(Region, Product) — generates a hierarchy of subtotals from right to left','C. GROUP BY GROUPING SETS((Region, Product),(Region),()) — only the specified groupings','D. GROUP BY Region, Product WITH ROLLUP — deprecated T-SQL syntax'],
+    ans:1,
+    expl:'<strong>B — GROUP BY ROLLUP(Region, Product).</strong> ROLLUP generates a hierarchy: (Region, Product) → (Region) → (). This gives: individual product-in-region rows, region subtotals, and a grand total — exactly the requirement. CUBE generates ALL combinations including (Product) alone and (Region, Product), (Region), (Product), () — that\'s more than needed and generates cross-dimensional subtotals the analyst does NOT want. GROUPING SETS is most flexible but more verbose. ROLLUP is the right fit for hierarchical aggregation (like geographic: Country > Region > City).'
+  },
+
+  { domain:'d1', topic:'Sensitivity Label Propagation',
+    q:'A Fabric Lakehouse table has a sensitivity label of "Confidential" applied. A data engineer creates a new Fabric Warehouse table by querying the lakehouse table using a Data Pipeline Copy Activity.\n\nWhat happens to the sensitivity label on the new warehouse table?',
+    opts:['A. The label is not copied — warehouse tables start with no label','B. The label is automatically propagated to the new warehouse table (downstream label inheritance)','C. The label is applied only if the pipeline is run by a Fabric Admin','D. The label is downgraded to "General" because pipeline outputs are less sensitive'],
+    ans:1,
+    expl:'<strong>B — Sensitivity labels propagate downstream automatically.</strong> Microsoft Purview sensitivity labels in Fabric support downstream inheritance: when a "Confidential" lakehouse table is used as a source, the output item (warehouse table, report, etc.) inherits the same or higher sensitivity label. This happens automatically based on the label\'s protection settings. Fabric enforces the most restrictive label encountered in the data lineage. This is important for compliance and data governance scenarios.'
+  },
+
+  { domain:'d1', topic:'Mirroring — Continuous Replication',
+    q:'Your team needs to replicate an Azure SQL Database into Microsoft Fabric for analytics. The solution must:\n• Replicate changes continuously (near real-time)\n• Require no custom code or ETL pipelines\n• Store data as Delta tables in OneLake\n\nWhich Fabric feature should you use?',
+    opts:['A. Data Pipeline with Copy Activity on a 5-minute schedule','B. Fabric Mirroring — continuously replicates changes from external databases into OneLake as Delta tables with no code','C. Eventstream with Azure SQL CDC as source','D. Shortcut to the Azure SQL Database'],
+    ans:1,
+    expl:'<strong>B — Fabric Mirroring.</strong> Fabric Mirroring is designed exactly for this: it continuously replicates supported databases (Azure SQL DB, Azure Cosmos DB, Snowflake, etc.) into OneLake as Delta tables with zero custom code. Changes are captured and propagated near-real-time. The pipeline approach would introduce latency and require scheduling. Eventstream supports CDC but requires more configuration and is designed for event streaming rather than database replication. Shortcuts to Azure SQL would require DirectQuery — no Delta table in OneLake.'
+  },
+
+  { domain:'d1', topic:'Workspace Logging — Compliance',
+    q:'A compliance officer requires that all item-level activity within a Fabric workspace (who created, modified, or deleted notebooks, dataflows, lakehouses) is captured for audit purposes.\n\nWhich Fabric feature should you enable?',
+    opts:['A. Microsoft Purview audit logs — captures all Microsoft 365 activity including Fabric','B. Workspace logging — captures all workspace item activity as structured logs in a lakehouse','C. Fabric Monitor — shows real-time activity for currently running items','D. queryinsights schema — stores query execution history in the warehouse'],
+    ans:1,
+    expl:'<strong>B — Workspace logging.</strong> Workspace logging (introduced as an exam objective in Jan 2026) is a Fabric-native feature that captures all item-level workspace activity — creates, updates, deletes, runs — as structured logs stored in a designated lakehouse. This provides compliance-friendly audit trails. Microsoft Purview audit logs capture broader Microsoft 365 signals but Workspace logging is the specific Fabric feature for item-level workspace activity. Fabric Monitor is for real-time job monitoring, not audit logging. queryinsights is SQL-only query history.'
+  },
+
+  // ── DOMAIN 2 (Q17–33) ──────────────────────────
+
+  { domain:'d2', topic:'Shortcut Types — No Data Copy',
+    q:'A data engineer creates a shortcut from a Fabric Lakehouse to an Amazon S3 bucket. Data in the S3 bucket is queried using the lakehouse SQL analytics endpoint.\n\nIs the S3 data copied into OneLake when the shortcut is created?',
+    opts:['A. Yes — all S3 data is copied to OneLake Delta format when the shortcut is created','B. No — shortcuts create a virtual reference; data stays in S3 and is read in-place when queried','C. Yes — data is copied but only for tables explicitly listed in the shortcut definition','D. No — shortcuts only work for metadata, not data files'],
+    ans:1,
+    expl:'<strong>B — No data is copied; shortcuts are virtual references.</strong> A Fabric shortcut creates a pointer to external data (S3, ADLS Gen2, GCS, etc.). The data remains in its original location — no copy is made. When you query via the SQL endpoint or Spark, Fabric reads directly from the external source through the shortcut. This is the key value proposition: zero data duplication, no storage cost for the copy. The caching feature (for S3/GCS) adds a temporary local cache for performance, but the authoritative data stays in S3.'
+  },
+
+  { domain:'d2', topic:'DMV for Currently Running Queries',
+    q:'A data engineer notices that a Fabric Warehouse seems slow. They want to identify which queries are CURRENTLY running (in real-time, right now) and consuming the most resources.\n\nWhich view or DMV should they query?',
+    opts:['A. queryinsights.exec_requests_history — stores all completed queries for the past 30 days','B. queryinsights.long_running_queries — lists queries that exceeded a duration threshold','C. sys.dm_exec_requests — shows currently executing requests in the warehouse session','D. queryinsights.frequently_run_queries — shows the most frequently executed queries'],
+    ans:2,
+    expl:'<strong>C — sys.dm_exec_requests.</strong> <code>sys.dm_exec_requests</code> is a Dynamic Management View (DMV) that shows queries and requests CURRENTLY executing in the warehouse. It is the right tool for real-time diagnosis. The queryinsights schema (exec_requests_history, long_running_queries, frequently_run_queries) stores HISTORICAL data — completed queries with up to 15-minute delay and 30-day retention. If you want to see what is running right NOW, use sys.dm_exec_requests. If you want history, use queryinsights.'
+  },
+
+  { domain:'d2', topic:'queryinsights — Frequently Run Queries',
+    q:'A data engineer wants to identify which queries are being run most frequently and may be contributing to performance degradation in a Fabric Warehouse.\n\nWhich queryinsights view should they query?',
+    opts:['A. queryinsights.exec_requests_history','B. queryinsights.long_running_queries','C. queryinsights.frequently_run_queries','D. sys.dm_exec_requests'],
+    ans:2,
+    expl:'<strong>C — queryinsights.frequently_run_queries.</strong> This view aggregates query patterns and shows which queries execute most often — useful for identifying repeated expensive patterns that accumulate load over time. Know the 5 queryinsights views: <strong>exec_requests_history</strong> (all completed queries), <strong>long_running_queries</strong> (queries exceeding duration threshold), <strong>frequently_run_queries</strong> (most executed), <strong>exec_sessions_history</strong> (session activity), <strong>wait_statistics</strong> (wait types). 30-day retention, ~15-minute data delay.'
+  },
+
+  { domain:'d2', topic:'Dynamic Data Masking — Email and Salary',
+    q:'You manage a Fabric Warehouse with a table EmployeeData (EmployeeID int, Email nvarchar(100), Salary decimal(10,2)). You need to:\n• Mask Email to show only the first 2 characters and last 4 (e.g. "an****@****.com")\n• Mask Salary to show a random value (not the real value)\n\nWhich T-SQL masking functions should you use?',
+    opts:['A. Email: default() — masks entire value; Salary: random(1, 100)','B. Email: partial(2, "****@****.com", 0) — shows first 2 then fixed; Salary: random(1, 10000)','C. Email: email() — built-in email masking function; Salary: random(1, 100)','D. Email: partial(2, "@", 4) — shows first 2 and last 4; Salary: random(1, 10000)'],
+    ans:3,
+    expl:'<strong>D — partial(2, "@", 4) for email; random(1, 10000) for salary.</strong> Dynamic Data Masking functions: <code>partial(prefixSize, padding, suffixSize)</code> — shows first N and last M characters with padding in between. For email "ankur07jain@gmail.com": partial(2,"@",4) shows "an@...com" (first 2, then padding, last 4). <code>random(low, high)</code> replaces numeric values with a random number in the range. Other functions: <code>default()</code> fully masks the value type, <code>email()</code> shows first letter + XXX@XXXX.com. Partial and random are the most commonly tested DDM functions.'
+  },
+
+  { domain:'d2', topic:'Eventhouse OneLake — PySpark Returns No Data',
+    q:'A team enables OneLake availability on a Fabric Eventhouse. A data engineer then tries to read the Eventhouse data using a PySpark notebook via a lakehouse shortcut.\n\nThe PySpark query returns no data. What is the most likely reason, and what should the data engineer do?',
+    opts:['A. PySpark cannot read Eventhouse data — only KQL queries are supported','B. The shortcut was created before OneLake availability was enabled — recreate the shortcut','C. Eventhouse data is stored in Parquet format by default; use spark.read.parquet() instead of Delta format','D. OneLake availability stores data in KQL internal format — it must first be converted to Delta format via an explicit conversion step or materialized view'],
+    ans:3,
+    expl:'<strong>D — Eventhouse OneLake data must be converted to Delta format before PySpark can read it.</strong> When you enable OneLake availability on an Eventhouse, the data is exposed in OneLake — but in Kusto\'s internal columnar storage format, not Delta. To read via PySpark (which expects Delta or Parquet), you must convert or materialise the data to Delta format first (e.g., using an update policy or explicitly converting tables). This is a real exam trap: "OneLake availability enabled" ≠ "immediately readable by Spark as Delta."'
+  },
+
+  { domain:'d2', topic:'KQL — uuid Data Type',
+    q:'A KQL database table needs to store universally unique identifiers (UUIDs) for job tracking. A data engineer runs:\n\n.create table Jobs (JobId: ???, StartTime: datetime, Status: string)\n\nWhich KQL data type should replace ??? to store UUID values?',
+    opts:['A. string','B. guid','C. uuid','D. uniqueidentifier'],
+    ans:1,
+    expl:'<strong>B — guid.</strong> In KQL (Kusto Query Language), the data type for storing universally unique identifiers (UUIDs / GUIDs) is <code>guid</code>. KQL uses its own type system different from T-SQL: <code>string</code>, <code>int</code>, <code>long</code>, <code>real</code>, <code>bool</code>, <code>datetime</code>, <code>timespan</code>, <code>guid</code>, <code>dynamic</code>. T-SQL uses <code>uniqueidentifier</code>, but KQL uses <code>guid</code>. This distinction is tested in KQL schema design questions.'
+  },
+
+  { domain:'d2', topic:'Eventstream — Sliding vs Tumbling Window',
+    q:'An Eventstream is processing click events from a website. The business requirement is:\n• Count clicks in every 30-second window\n• The window should slide every 10 seconds (so windows overlap)\n• Example: window 0:00–0:30, window 0:10–0:40, etc.\n\nWhich windowing type should you configure in the Eventstream processor?',
+    opts:['A. Tumbling window — fixed-size, non-overlapping 30-second buckets','B. Sliding window — fixed-size windows that slide on a configurable step interval (30-sec window, 10-sec slide)','C. Hopping window — same as tumbling but hops forward by the step size','D. Session window — groups events by inactivity gap'],
+    ans:1,
+    expl:'<strong>B — Sliding window.</strong> Window types in Eventstream (Stream Analytics): <strong>Tumbling</strong>: fixed, non-overlapping buckets (e.g., 0:00–0:30, 0:30–1:00). <strong>Sliding</strong>: overlapping windows that slide by a step — events can belong to multiple windows (e.g., 0:00–0:30, 0:10–0:40). <strong>Hopping</strong>: similar to sliding but the hop size defines how often results are emitted. <strong>Session</strong>: based on activity gaps, not fixed time. For "every 30 seconds, slide every 10 seconds" with overlapping windows, Sliding is the correct type. Note: some Microsoft docs use "hopping" and "sliding" interchangeably — the key is overlapping windows with a slide interval.'
+  },
+
+  { domain:'d2', topic:'CDC Not Enabled — Eventstream Trap',
+    q:'A data engineer configures an Eventstream to capture change data (INSERT, UPDATE, DELETE) from an Azure SQL Database. After running for 30 minutes, no events arrive in the destination.\n\nWhat is the most likely cause?',
+    opts:['A. Azure SQL Database is not a supported Eventstream source — use Mirroring instead','B. Change Data Capture (CDC) is not enabled on the Azure SQL Database source tables','C. The Eventstream connector requires an Event Hub as intermediate — direct SQL connection is not supported','D. The destination lakehouse needs to be in the same region as the Azure SQL Database'],
+    ans:1,
+    expl:'<strong>B — CDC is not enabled on the source Azure SQL Database tables.</strong> When using Azure SQL Database as an Eventstream source for change data capture, CDC must be explicitly enabled on both the database AND the specific tables you want to capture. Without CDC enabled, the Eventstream connector has no change log to read from and receives no events. This is a common configuration mistake. Enable CDC with: <code>EXEC sys.sp_cdc_enable_db</code> (database level) and <code>EXEC sys.sp_cdc_enable_table</code> (table level).'
+  },
+
+  { domain:'d2', topic:'Eventstream Fan-Out — Multiple Destinations',
+    q:'You need to process IoT sensor data in Eventstream. The data must simultaneously be:\n• Written to a KQL Database (Eventhouse) for real-time analytics\n• Written to a Lakehouse Delta table for historical analysis\n• Filtered (only critical alerts, severity = "HIGH") before writing to a separate alert table\n\nHow should you design this in Eventstream?',
+    opts:['A. Create three separate Eventstreams — one per destination','B. Use a single Eventstream with multiple output nodes (fan-out): one to Eventhouse, one to Lakehouse, and one with a filter processor before the alert table','C. Use one Eventstream to write to Eventhouse, then set up mirroring from Eventhouse to Lakehouse','D. Eventstream supports only one destination per stream — use Event Hub to fan out'],
+    ans:1,
+    expl:'<strong>B — Single Eventstream with multiple output nodes (fan-out).</strong> Fabric Eventstream supports fan-out: a single input source can be routed to multiple destinations simultaneously by adding multiple output nodes in the Eventstream editor. You can also insert processor nodes (Filter, Aggregate, Group By, etc.) between the source and specific destinations — so the filter for severity = "HIGH" is a processor node placed before the alert table destination only. Other paths get unfiltered data. This is efficient and avoids creating multiple redundant streams.'
+  },
+
+  { domain:'d2', topic:'Delta MERGE — SCD Type 2',
+    q:'You are implementing a Slowly Changing Dimension (SCD) Type 2 in a Fabric Lakehouse using PySpark and Delta Lake MERGE. The DimCustomer table has columns: CustomerID, Name, City, ValidFrom, ValidTo, IsCurrent.\n\nWhat should the MERGE statement do when a matching CustomerID is found with changed City?',
+    opts:['A. UPDATE the existing row with the new City — SCD2 requires updating in-place','B. DELETE the old row and INSERT a new row with the updated City','C. UPDATE the existing row: set ValidTo = today, IsCurrent = False; then INSERT a new row: new City, ValidFrom = today, ValidTo = NULL, IsCurrent = True','D. INSERT a new row with the new City; leave the old row unchanged'],
+    ans:2,
+    expl:'<strong>C — UPDATE old row (close it) + INSERT new row (open it).</strong> SCD Type 2 maintains full history. When a change is detected: (1) UPDATE the existing active row: set ValidTo = current date, IsCurrent = False — this "closes" the old record. (2) INSERT a new row: ValidFrom = current date, ValidTo = NULL (or 9999-12-31), IsCurrent = True — this is the "current" record. This preserves history and allows time-travel queries. Delta Lake MERGE supports this pattern with WHEN MATCHED THEN UPDATE and WHEN NOT MATCHED THEN INSERT clauses.'
+  },
+
+  { domain:'d2', topic:'KQL — Dynamic Column Query',
+    q:'A KQL table Events has a column Properties of type dynamic. Each row has a nested field named "Category". You want to find all rows where Category = "Security" and return only EventId and the Category value.\n\nWhich KQL query is correct?',
+    opts:['A. Events | where Properties["Category"] == "Security" | project EventId, Properties["Category"]','B. Events | extend Category = Properties.Category | where Category == "Security" | project EventId, Category','C. Events | where Properties.Category = "Security" | select EventId, Category','D. Events | filter Properties.Category == "Security" | project EventId, Properties.Category'],
+    ans:1,
+    expl:'<strong>B — extend to materialise the dynamic field, then where and project.</strong> In KQL, accessing dynamic fields: <code>Properties.Category</code> or <code>Properties["Category"]</code> work for extraction. Best practice is to use <code>extend</code> to create a named column first, then filter and project: <code>Events | extend Category = Properties.Category | where Category == "Security" | project EventId, Category</code>. Option A would work syntactically but is less readable and repeats the expression. Option C uses SQL syntax (= instead of ==, select instead of project). Option D uses "filter" (not standard KQL — use "where").'
+  },
+
+  { domain:'d2', topic:'On-Premises SQL to Lakehouse — Two Methods',
+    q:'A company has an on-premises SQL Server with no Azure ExpressRoute. They want to load data into a Fabric Lakehouse. Which TWO methods support this scenario?',
+    opts:['A. Fabric Data Pipeline with Copy Activity using Self-Hosted Integration Runtime (SHIR)','B. Fabric Dataflow Gen2 with an On-Premises Data Gateway (OPDG)','C. Fabric Mirroring — direct connector to on-premises SQL Server','D. Azure Data Factory copy pipeline using public endpoints only'],
+    ans:[0,1],
+    expl:'<strong>A and B — Data Pipeline with SHIR, and Dataflow Gen2 with OPDG.</strong> For on-premises SQL Server (no ExpressRoute): <strong>SHIR (Self-Hosted Integration Runtime)</strong> is installed on-premises and allows Data Pipeline Copy Activity to securely reach the on-premises SQL Server. <strong>OPDG (On-Premises Data Gateway)</strong> serves the same purpose for Dataflow Gen2 connections. Both create a secure tunnel without requiring inbound firewall rules. Fabric Mirroring does not currently support on-premises SQL Server — it supports Azure SQL DB, Cosmos DB, Snowflake, etc. ADF would work but is not a Fabric-native solution.'
+  },
+
+  { domain:'d2', topic:'Dataflow Gen2 — No-Code ETL for Analysts',
+    q:'A business analyst team (no PySpark or SQL skills) needs to load, clean, and transform data from multiple Excel files in SharePoint into a Fabric Lakehouse. The solution must not require writing code.\n\nWhat Fabric tool should they use?',
+    opts:['A. Fabric Notebook with PySpark — most flexible transformation tool','B. Fabric Data Pipeline with ForEach and Copy Activity','C. Fabric Dataflow Gen2 — low-code/no-code tool using Power Query for ETL, accessible to analysts without code skills','D. Fabric Warehouse with CTAS statements'],
+    ans:2,
+    expl:'<strong>C — Fabric Dataflow Gen2.</strong> Dataflow Gen2 uses Power Query (the same technology behind Excel and Power BI) for no-code/low-code data transformation. It has a visual UI, 150+ connectors (including SharePoint/Excel), and can output directly to a Fabric Lakehouse. It is specifically designed for analysts and non-coders. Notebooks require PySpark/Python knowledge. Data Pipelines orchestrate but don\'t transform. Warehouse CTAS requires SQL knowledge.'
+  },
+
+  { domain:'d2', topic:'COPY INTO — Idempotent Behaviour',
+    q:'A data engineer uses COPY INTO in a Fabric Warehouse to load Parquet files from Azure Data Lake Storage. They run the same COPY INTO statement twice.\n\nWhat happens on the second run?',
+    opts:['A. Duplicate rows are inserted — COPY INTO inserts all files every time','B. The second run fails with a "file already loaded" error','C. COPY INTO tracks which files have already been loaded and skips them — it is idempotent by default','D. COPY INTO overwrites the existing data with the same files'],
+    ans:2,
+    expl:'<strong>C — COPY INTO is idempotent; already-loaded files are tracked and skipped.</strong> Fabric Warehouse COPY INTO maintains an internal load history. If you run the same COPY INTO statement on the same files again, it detects the files have already been loaded and skips them — no duplicate rows are inserted. This makes COPY INTO safe to re-run without custom deduplication logic. Note: if you use wildcards like *.parquet, new files added since the last run WILL be picked up; only previously-loaded files are skipped.'
+  },
+
+  { domain:'d2', topic:'Pipeline ForEach — Output Reference',
+    q:'A Data Pipeline uses a Lookup activity (named "GetOrders") to retrieve a list of order IDs. A ForEach activity then iterates over the results to process each order.\n\nWhich expression references the Lookup output correctly in the ForEach "Items" field?',
+    opts:['A. @activity(\'Lookup1\').output','B. @activity(\'GetOrders\').output.value','C. @pipeline().output.GetOrders','D. @variables(\'GetOrders\').output'],
+    ans:1,
+    expl:'<strong>B — @activity(\'GetOrders\').output.value</strong> The Lookup activity returns an object with a <code>value</code> array. In the ForEach "Items" field, you reference <code>@activity(\'LookupActivityName\').output.value</code> — this gives you the array of rows. Inside the ForEach, use <code>@item()</code> to reference each row. Common mistake: using <code>.output</code> alone (returns the whole object, not the array) or the wrong activity name. Always match the exact activity name from your pipeline.'
+  },
+
+  // ── DOMAIN 3 (Q34–45) ──────────────────────────
+
+  { domain:'d3', topic:'Monitoring Hub — Dataflow Errors',
+    q:'A Fabric Dataflow Gen2 job fails during execution. A data engineer wants to see the detailed error message and identify which transformation step caused the failure.\n\nWhere should they look first?',
+    opts:['A. Fabric Monitoring Hub — shows all item run history including dataflow runs with status and error details','B. Azure Monitor Logs — Fabric dataflow errors are forwarded to Azure Monitor','C. queryinsights schema — stores dataflow execution logs','D. The lakehouse transaction log — shows all failed writes from dataflows'],
+    ans:0,
+    expl:'<strong>A — Fabric Monitoring Hub.</strong> The Monitoring Hub is the central location in Fabric for tracking all item activities: pipeline runs, dataflow runs, notebook jobs, Spark jobs, etc. For a failed Dataflow Gen2, the Monitoring Hub shows the run record, failure status, and error details. You can drill into the specific failed step in the dataflow editor from the run record. Azure Monitor would require additional diagnostic configuration. queryinsights is warehouse-only. The transaction log shows committed writes, not application errors.'
+  },
+
+  { domain:'d3', topic:'OPTIMIZE — Compacting Small Files',
+    q:'A PySpark streaming job writes to a Delta table in a Fabric Lakehouse every 30 seconds. After one week, the Delta table has thousands of small Parquet files (each <1MB). Query performance has degraded significantly.\n\nWhich Spark notebook command should you run to improve performance?',
+    opts:['A. VACUUM delta.`/Tables/events` RETAIN 0 HOURS — removes all old files','B. OPTIMIZE delta.`/Tables/events` — compacts small files into larger optimally-sized files','C. MERGE INTO events USING source ON ... — merges duplicate rows','D. ALTER TABLE events SET TBLPROPERTIES (delta.autoOptimize.autoCompact = true) — enables auto-compaction for future writes'],
+    ans:1,
+    expl:'<strong>B — OPTIMIZE compacts small files.</strong> The OPTIMIZE command rewrites small Delta files into larger, optimally-sized files (typically ~128MB each). This directly addresses the "small files problem" caused by frequent small writes (like 30-second micro-batch streaming). After OPTIMIZE, queries read far fewer files and performance improves significantly. VACUUM removes old/deleted files but doesn\'t help small file fragmentation. Auto-compaction (Option D) helps future writes but doesn\'t fix existing fragmentation. Run OPTIMIZE as a maintenance job (e.g., daily).'
+  },
+
+  { domain:'d3', topic:'VACUUM — Removing Old Unreferenced Files',
+    q:'A Fabric Lakehouse Delta table has accumulated many old file versions from frequent MERGE and UPDATE operations. The table is consuming 10x more storage than the current data size.\n\nWhich command removes the old unreferenced files and reduces storage consumption?',
+    opts:['A. OPTIMIZE delta.`/Tables/sales` ZORDER BY (date)','B. DELETE FROM sales WHERE _change_type = \'update_preimage\'','C. VACUUM delta.`/Tables/sales` RETAIN 168 HOURS — removes files not referenced by current snapshot and older than 7 days','D. ALTER TABLE sales DROP UNUSED COLUMNS'],
+    ans:2,
+    expl:'<strong>C — VACUUM removes unreferenced old files.</strong> VACUUM deletes files from the Delta table directory that are no longer referenced by the current table snapshot AND are older than the retention threshold (default: 168 hours = 7 days). This reclaims storage from old update/delete versions. Important: running VACUUM with less than 7 days retention disables time-travel for that period (use with caution). OPTIMIZE compacts files but does not delete old versions. The retention period in RETAIN must be ≥ 0 (RETAIN 0 HOURS removes everything not in current snapshot — dangerous but sometimes used for immediate cleanup in dev).'
+  },
+
+  { domain:'d3', topic:'Direct Lake — Fallback to DirectQuery',
+    q:'A Power BI report uses Direct Lake mode to connect to a Fabric Lakehouse. During a presentation, the report slows down significantly and a tooltip shows "DirectQuery" mode is being used instead of Direct Lake.\n\nWhat is the most likely reason Direct Lake fell back to DirectQuery?',
+    opts:['A. The report has too many visuals on one page','B. V-Order is disabled on the Delta table being queried','C. The number of rows or columns loaded exceeded the frame limit for the Fabric capacity SKU (e.g., F2 has lower limits than F64)','D. The lakehouse is in a different workspace than the semantic model'],
+    ans:2,
+    expl:'<strong>C — Frame limit exceeded for the capacity SKU.</strong> Direct Lake operates by loading data frames (columnar chunks) into memory. Each Fabric capacity SKU has a maximum frame size/row limit. When a query requires more data than the frame limit allows (e.g., too many rows for an F2), Direct Lake automatically falls back to DirectQuery mode to avoid errors — this is by design. The solution is to increase the capacity SKU (F4 → F8 → F16 etc.) or reduce data volume. Disabling V-Order slows reads but does not cause DirectQuery fallback. Cross-workspace models are supported.'
+  },
+
+  { domain:'d3', topic:'Pipeline Error Handling — Fail Activity',
+    q:'A Data Pipeline Lookup activity returns a count of rows. If the count is 0, the pipeline should stop with a clear custom error message: "No data found for today\'s date."\n\nWhat is the correct pattern?',
+    opts:['A. Add an If Condition activity: if count == 0, connect to a Fail activity with the custom message','B. Add a Set Variable activity to store the error message, then connect to a Web activity','C. Configure the Lookup activity Retry policy to fail with a custom message on empty results','D. Use a Filter activity with the condition count > 0 — it automatically stops the pipeline if false'],
+    ans:0,
+    expl:'<strong>A — If Condition → Fail activity.</strong> The pattern for custom pipeline failures: (1) If Condition activity: true branch = proceed, false branch (count == 0) = connect to Fail activity. (2) Fail activity: set "Error message" to "No data found for today\'s date." and a failure code. The pipeline stops immediately and marks the run as Failed with your custom message visible in Monitoring Hub. This is the correct and exam-tested pattern for zero-row early termination in Fabric Data Pipelines.'
+  },
+
+  { domain:'d3', topic:'Activator — Alert on Semantic Model Refresh Failure',
+    q:'A business-critical Power BI semantic model refreshes daily at 6 AM. When the refresh fails, the on-call engineer must be notified via Microsoft Teams within 5 minutes.\n\nWhich Fabric feature should you use to set up this alert?',
+    opts:['A. Schedule a Fabric notebook to check refresh status every 5 minutes and send a Teams webhook','B. Configure Azure Monitor alert on the Power BI workspace','C. Use Fabric Activator (Reflex) — connect it to the semantic model refresh event and configure a Teams notification action','D. Set up a Logic App with a Power BI connector to monitor refresh failures'],
+    ans:2,
+    expl:'<strong>C — Fabric Activator (Reflex).</strong> Fabric Activator is the event-driven alerting system in Fabric. It can monitor events from semantic models, lakehouses, eventstreams, and other Fabric items and trigger actions (Teams messages, emails, Power Automate flows, pipeline runs) when conditions are met. For semantic model refresh failures, Activator detects the failure event and immediately sends a Teams notification — no polling required. This is faster and more reliable than scheduling a notebook to check status.'
+  },
+
+  { domain:'d3', topic:'Schema Evolution — mergeSchema',
+    q:'A PySpark notebook writes a DataFrame to a Delta table in a Fabric Lakehouse. The DataFrame now includes a new column "DiscountCode" that does not exist in the current table schema.\n\nWhich write option allows the table to automatically accept the new column without an error?',
+    opts:['A. .option("overwriteSchema", "true") — replaces the full schema with the new DataFrame schema','B. .option("mergeSchema", "true") — adds the new column to the existing schema (no data loss)','C. .option("ignoreNewColumns", "true") — skips new columns silently','D. No option needed — Delta Lake automatically adds new columns by default'],
+    ans:1,
+    expl:'<strong>B — mergeSchema = true.</strong> When set on a Delta write, <code>mergeSchema</code> allows new columns in the incoming DataFrame to be added to the existing table schema — existing columns and data are preserved. Existing rows get NULL for the new column. <code>overwriteSchema</code> replaces the entire schema (dangerous — can cause data loss if columns are dropped). There is no "ignoreNewColumns" option. By default, writing a DataFrame with extra columns causes a schema mismatch error without mergeSchema.'
+  },
+
+  { domain:'d3', topic:'HTTP Throttling — 429 Retry Pattern',
+    q:'A Fabric Data Pipeline uses a Web Activity to call an external REST API. The pipeline intermittently fails with HTTP 429 (Too Many Requests) errors.\n\nWhat is the recommended solution within Fabric Data Pipelines?',
+    opts:['A. Reduce the pipeline trigger frequency to run once per hour instead of every 15 minutes','B. Configure the Web Activity retry policy: set Retry count (e.g., 3) and Retry interval (e.g., 30 seconds) to implement automatic retry with delay','C. Add an If Condition after the Web Activity to catch 429 and re-run the whole pipeline','D. Switch from Web Activity to a Copy Activity — it handles throttling automatically'],
+    ans:1,
+    expl:'<strong>B — Web Activity retry policy: set Retry count and Retry interval.</strong> Fabric Data Pipeline activities have a built-in Retry policy in their Settings tab: "Retry" (number of attempts) and "Retry interval in seconds" (wait between attempts). For HTTP 429 throttling, set Retry = 3 and interval = 30s — the activity will automatically wait and retry. This is the correct native Fabric pattern. Adding an If Condition is overly complex. Copy Activity handles storage/connector retries but not arbitrary REST API throttling. Reducing frequency may help but doesn\'t fix existing failures.'
+  },
+
+  { domain:'d3', topic:'Spark Monitoring — Delta Table Versions',
+    q:'A data engineer runs a PySpark notebook that writes to a Delta table using multiple operations. They want to see a history of all Delta table versions (commits) including timestamps and operation types (WRITE, MERGE, OPTIMIZE).\n\nWhich command shows the Delta table version history?',
+    opts:['A. DESCRIBE HISTORY delta.`/Tables/sales` — shows all commits, timestamps, and operations','B. SELECT * FROM queryinsights.exec_requests_history WHERE query LIKE \'%sales%\'','C. SHOW PARTITIONS delta.`/Tables/sales` — lists partition history','D. delta.forEachBatch(printSchema)'],
+    ans:0,
+    expl:'<strong>A — DESCRIBE HISTORY.</strong> In Spark SQL or PySpark, <code>DESCRIBE HISTORY delta.`/path/to/table`</code> returns the full Delta table commit history: version number, timestamp, user, operation (WRITE, MERGE, OPTIMIZE, VACUUM, DELETE, etc.), operation parameters, and metrics. This is how you audit what happened to a Delta table over time. queryinsights tracks SQL warehouse queries, not Spark Delta operations. SHOW PARTITIONS shows current partition values, not version history.'
+  },
+
+  { domain:'d3', topic:'Eventstream — Editor Node Health',
+    q:'Events from an IoT hub stop arriving at an Eventstream destination. The data engineer suspects an issue with the Eventstream processor configuration.\n\nWhere in Fabric should they look to identify the specific failing node in the Eventstream?',
+    opts:['A. Fabric Monitoring Hub → filter by Eventstream items','B. The Eventstream editor canvas — each node shows a health indicator (green/red/yellow) and error details on the failing node','C. Azure Event Hubs Metrics in Azure Portal','D. The destination lakehouse\'s transaction log'],
+    ans:1,
+    expl:'<strong>B — Eventstream editor canvas node health indicators.</strong> The Fabric Eventstream editor shows each node (source, processor, destination) with a real-time health/status indicator. A red or warning indicator on a specific node reveals where in the pipeline data flow has stopped. Clicking the node provides error details. This is the quickest way to diagnose Eventstream issues at the node level. The Monitoring Hub shows overall run history but the editor provides node-level granularity. Azure Portal metrics show Event Hub metrics, not Fabric Eventstream processing errors.'
+  },
+
+  { domain:'d3', topic:'Direct Lake — Increasing Capacity for Performance',
+    q:'A Direct Lake semantic model on Fabric F4 capacity is experiencing slow query performance on a lakehouse table with 600 million rows. Investigation shows the model is frequently falling back to DirectQuery mode.\n\nWhat is the recommended solution?',
+    opts:['A. Enable V-Order on the Delta table — this removes the frame limit','B. Partition the lakehouse table by date — partitioning removes frame limits in Direct Lake','C. Upgrade to a higher Fabric capacity SKU (e.g., F8 or F16) — higher SKUs have larger frame limits supporting more rows in Direct Lake','D. Switch from Direct Lake to Import mode — Import mode has no row limits'],
+    ans:2,
+    expl:'<strong>C — Upgrade Fabric capacity SKU.</strong> Each Fabric capacity SKU has a maximum number of rows/columns that Direct Lake can hold in memory (the "frame limit"). F2 supports fewer rows than F4, F8, F16, F32, etc. When a query exceeds the frame limit, Direct Lake falls back to DirectQuery. Upgrading the capacity SKU increases the frame limit, allowing Direct Lake to operate without fallback on larger tables. V-Order improves read performance but does not change frame limits. Partitioning helps filter pushdown but doesn\'t increase frame limits. Import mode works but loses real-time freshness.'
+  }
+
+];
+
+// ═══════════════════════════════════════════════
+// EXAM ENGINE
+// ═══════════════════════════════════════════════
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+let flags = new Array(questions.length).fill(false);
+let submitted = new Array(questions.length).fill(false);
+let secondsLeft = 90 * 60;
+let timerInterval = null;
+let startTime = null;
+
+function startExam() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('questionScreen').style.display = 'block';
+  startTime = Date.now();
+  buildNavGrid();
+  renderQ(0);
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const tv = document.getElementById('timerVal');
+    tv.textContent = m + ':' + String(s).padStart(2,'0');
+    tv.className = 'timer-val' + (secondsLeft < 600 ? ' danger' : secondsLeft < 1200 ? ' warn' : '');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); finishExam(); }
+  }, 1000);
+}
+
+function buildNavGrid() {
+  const grid = document.getElementById('qNavGrid');
+  grid.innerHTML = '';
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q-nav-dot';
+    d.textContent = i + 1;
+    d.onclick = () => goTo(i);
+    d.id = 'nav' + i;
+    grid.appendChild(d);
+  });
+}
+
+function updateNavGrid() {
+  questions.forEach((q, i) => {
+    const d = document.getElementById('nav' + i);
+    if (!d) return;
+    d.className = 'q-nav-dot' +
+      (i === current ? ' current' : '') +
+      (flags[i] ? ' flagged' : '') +
+      (answers[i] !== null && !flags[i] ? ' answered' : '');
+  });
+}
+
+function renderQ(idx) {
+  current = idx;
+  const q = questions[idx];
+  const isMulti = Array.isArray(q.ans);
+  const isSubmitted = submitted[idx];
+
+  document.getElementById('qCounter').textContent = 'Question ' + (idx+1) + ' of ' + questions.length;
+  document.getElementById('progFill').style.width = ((idx+1)/questions.length*100) + '%';
+
+  const badge = document.getElementById('qBadge');
+  badge.textContent = q.domain === 'd1' ? 'D1 · Implement & Manage' : q.domain === 'd2' ? 'D2 · Ingest & Transform' : 'D3 · Monitor & Optimize';
+  badge.className = 'q-badge ' + q.domain;
+
+  document.getElementById('qText').innerHTML = q.q.replace(/\n/g,'<br>');
+
+  const mh = document.getElementById('multiHint');
+  const mhText = document.getElementById('multiHintText');
+  if (isMulti) { mh.style.display='block'; mhText.textContent = 'SELECT ' + q.ans.length + ' ANSWERS'; }
+  else { mh.style.display='none'; }
+
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  q.opts.forEach((opt, oi) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="opt-letter">' + opt[0] + '.</span><span>' + opt.substring(3) + '</span>';
+    btn.disabled = isSubmitted;
+
+    if (isSubmitted) {
+      const correctArr = Array.isArray(q.ans) ? q.ans : [q.ans];
+      const userArr = answers[idx] === null ? [] : (Array.isArray(answers[idx]) ? answers[idx] : [answers[idx]]);
+      if (correctArr.includes(oi)) btn.classList.add(userArr.includes(oi) ? 'correct' : 'missed');
+      else if (userArr.includes(oi)) btn.classList.add('wrong');
+    } else {
+      const userArr = answers[idx] === null ? [] : (Array.isArray(answers[idx]) ? answers[idx] : [answers[idx]]);
+      if (userArr.includes(oi)) btn.classList.add('selected');
+      btn.onclick = () => selectOpt(oi);
+    }
+    wrap.appendChild(btn);
+  });
+
+  const expl = document.getElementById('expl');
+  if (isSubmitted && q.expl) {
+    expl.innerHTML = q.expl;
+    expl.className = 'expl show ' + (isCorrect(idx) ? 'right' : 'wrong');
+  } else { expl.className = 'expl'; }
+
+  document.getElementById('flagBtn').className = 'flag-btn' + (flags[idx] ? ' flagged' : '');
+
+  const hint = document.getElementById('statusHint');
+  if (isSubmitted) hint.textContent = isCorrect(idx) ? '✅ Correct' : '❌ Incorrect';
+  else if (answers[idx] !== null) hint.textContent = 'Answer selected — click Next or Submit';
+  else hint.textContent = isMulti ? 'Select ' + q.ans.length + ' answers' : 'Select an answer';
+
+  document.getElementById('prevBtn').disabled = idx === 0;
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (idx === questions.length - 1) { nextBtn.textContent = 'Submit Exam'; nextBtn.onclick = finishExam; }
+  else { nextBtn.textContent = 'Next →'; nextBtn.onclick = () => navigate(1); }
+
+  updateNavGrid();
+}
+
+function selectOpt(oi) {
+  const q = questions[current];
+  const isMulti = Array.isArray(q.ans);
+  if (submitted[current]) return;
+
+  if (isMulti) {
+    let arr = answers[current] === null ? [] : [...answers[current]];
+    const idx2 = arr.indexOf(oi);
+    if (idx2 >= 0) arr.splice(idx2, 1); else arr.push(oi);
+    answers[current] = arr.length > 0 ? arr : null;
+    if (arr.length === q.ans.length) { submitCurrent(); return; }
+  } else {
+    answers[current] = oi;
+    submitCurrent();
+    return;
+  }
+  renderQ(current);
+}
+
+function submitCurrent() {
+  submitted[current] = true;
+  renderQ(current);
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next >= 0 && next < questions.length) renderQ(next);
+}
+
+function goTo(idx) { renderQ(idx); }
+
+function toggleFlag() {
+  flags[current] = !flags[current];
+  renderQ(current);
+}
+
+function isCorrect(idx) {
+  const q = questions[idx];
+  const a = answers[idx];
+  if (a === null) return false;
+  if (Array.isArray(q.ans)) {
+    if (!Array.isArray(a)) return false;
+    if (a.length !== q.ans.length) return false;
+    return q.ans.every(x => a.includes(x));
+  }
+  return a === q.ans;
+}
+
+function finishExam() {
+  clearInterval(timerInterval);
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const em = Math.floor(elapsed / 60), es = elapsed % 60;
+
+  let total = 0, d1c = 0, d1t = 0, d2c = 0, d2t = 0, d3c = 0, d3t = 0;
+  questions.forEach((q, i) => {
+    const correct = isCorrect(i);
+    if (correct) total++;
+    if (q.domain === 'd1') { d1t++; if (correct) d1c++; }
+    else if (q.domain === 'd2') { d2t++; if (correct) d2c++; }
+    else { d3t++; if (correct) d3c++; }
+  });
+
+  const pct = Math.round(total / questions.length * 100);
+
+  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('scoreScreen').style.display = 'block';
+
+  document.getElementById('scoreBig').textContent = pct + '%';
+  document.getElementById('scoreBig').style.color = pct >= 70 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('scoreVerdict').textContent = pct >= 70
+    ? '✅ PASS — ' + total + ' / ' + questions.length + ' correct'
+    : '❌ NOT YET — ' + total + ' / ' + questions.length + ' correct (need 70%)';
+  document.getElementById('scoreTime').textContent = 'Completed in ' + em + 'm ' + es + 's';
+
+  [['d1', d1c, d1t, 'var(--d1)'], ['d2', d2c, d2t, 'var(--d2)'], ['d3', d3c, d3t, 'var(--d3)']].forEach(([d, c, t, col]) => {
+    const p = t > 0 ? Math.round(c/t*100) : 0;
+    document.getElementById(d+'score').textContent = p + '%';
+    document.getElementById(d+'total').textContent = c + ' / ' + t + ' correct';
+    setTimeout(() => { document.getElementById(d+'bar').style.width = p + '%'; }, 200);
+  });
+}
+
+function showReview() {
+  const sec = document.getElementById('reviewSection');
+  sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+  if (sec.innerHTML) return;
+
+  let html = '<h3 style="font-size:16px;font-weight:700;margin-bottom:16px">All Questions Review</h3>';
+  questions.forEach((q, i) => {
+    const correct = isCorrect(i);
+    const a = answers[i];
+    const userArr = a === null ? [] : (Array.isArray(a) ? a : [a]);
+    const corrArr = Array.isArray(q.ans) ? q.ans : [q.ans];
+    html += '<div class="review-item ' + (correct ? 'correct' : '') + '">';
+    html += '<div style="font-weight:700;margin-bottom:6px">Q' + (i+1) + ' · ' + q.topic + (correct ? ' ✅' : ' ❌') + '</div>';
+    html += '<div style="margin-bottom:6px;font-size:12px">' + q.q.substring(0,120) + '...</div>';
+    if (!correct) {
+      html += '<div style="font-size:12px;color:var(--red)">Your answer: ' + (userArr.length ? userArr.map(x => q.opts[x][0]).join(', ') : 'Not answered') + '</div>';
+      html += '<div style="font-size:12px;color:var(--green)">Correct: ' + corrArr.map(x => q.opts[x][0]).join(', ') + '</div>';
+      html += '<div style="font-size:12px;color:var(--muted);margin-top:6px">' + q.expl + '</div>';
+    }
+    html += '</div>';
+  });
+  sec.innerHTML = html;
+}
+
+function restartExam() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  flags = new Array(questions.length).fill(false);
+  submitted = new Array(questions.length).fill(false);
+  secondsLeft = 90 * 60;
+  clearInterval(timerInterval);
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('reviewSection').innerHTML = '';
+  document.getElementById('reviewSection').style.display = 'none';
+  startExam();
+}
+</script>
+</body>
+</html>
