@@ -92,6 +92,33 @@
       <tr><td><code>mv-expand col</code></td><td>Expand array/dynamic column into multiple rows</td><td><code>| mv-expand Tags</code></td></tr>
       <tr><td><code>render</code></td><td>Render results as chart (in KQL editor only)</td><td><code>| render timechart</code></td></tr>
     </table>
+
+    <h4 class="mt">Dynamic Columns (JSON nested fields)</h4>
+    <table>
+      <tr><th>Function</th><th>Use When</th><th>Example</th></tr>
+      <tr><td><code>tostring(col.field)</code></td><td>Extract string from dynamic/JSON column</td><td><code>| extend DeviceId = tostring(AdditionalContext.DeviceId)</code></td></tr>
+      <tr><td><code>toint(col.field)</code></td><td>Extract integer from dynamic/JSON column</td><td><code>| extend Level = toint(AdditionalContext.Level)</code></td></tr>
+      <tr><td><code>todouble(col.field)</code></td><td>Extract float/double from dynamic column</td><td><code>| extend Score = todouble(Data.score)</code></td></tr>
+      <tr><td><code>tobool(col.field)</code></td><td>Extract boolean from dynamic column</td><td><code>| extend IsActive = tobool(Meta.active)</code></td></tr>
+    </table>
+
+    <div class="priority-box" style="margin-top:12px"><strong>🚨 Exam Gotcha — Dynamic Column Query Order (CRITICAL)</strong>
+      When a question involves a dynamic/JSON column, the correct operator order is:<br><br>
+      <code>Table | where TimeGenerated &gt; ago(5m) | extend Field = tostring(DynCol.field) | where Field == "value" | project Col1, Col2, Field</code><br><br>
+      <strong>Why order matters:</strong>
+      <table style="margin-top:8px">
+        <tr><th>Mistake</th><th>What Goes Wrong</th></tr>
+        <tr><td><code>| project</code> before <code>| extend</code></td><td>project drops the dynamic column — extend can't find it anymore → error</td></tr>
+        <tr><td><code>| where Field == "x"</code> before <code>| extend Field = ...</code></td><td>Field doesn't exist yet — filter fails</td></tr>
+        <tr><td>Add <code>| count</code> at end</td><td>Returns a single row with a count — NOT the actual rows the question asks for</td></tr>
+        <tr><td>Use <code>between(ago(5m) .. now())</code> instead of <code>&gt; ago(5m)</code></td><td>Both work, but <code>&gt; ago(5m)</code> is simpler and preferred in exam answers</td></tr>
+      </table>
+      <p style="margin-top:8px"><strong>Correct pattern for dynamic column queries:</strong><br>
+      1. <code>| where</code> on native columns (time filter first — always)<br>
+      2. <code>| extend</code> to extract from dynamic column<br>
+      3. <code>| where</code> on the newly extended field<br>
+      4. <code>| project</code> to select final columns (last step)</p>
+    </div>
   </div><!-- end kql-ref -->
 
   <!-- ═══════════════════ EXERCISES ═══════════════════ -->
@@ -312,6 +339,43 @@
 | where ErrorRate > 5
 | sort by ErrorRate desc</pre>
         <p><strong>Notes:</strong> This combines: time filtering (ago), multi-aggregation (count + countif), time bucketing (bin 30m), computed column (extend), post-aggregation filter (where on ErrorRate). The <code>toreal()</code> cast ensures floating-point division. This type of multi-step query is typical in DP-700 exam scenarios.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise 11 — Dynamic column (from real exam Q35) -->
+  <div class="kql-exercise">
+    <div class="kql-ex-hdr" onclick="toggleKQL(this)">
+      <span class="kql-num">11</span>
+      <span class="kql-ex-title">⚠️ EXAM Q: Dynamic JSON column — extract, filter, project (correct order)</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="kql-ex-body">
+      <div class="kql-scenario"><strong>Scenario (real exam question):</strong> A KQL database table <code>RawTelemetry</code> has columns:<br>
+      • <code>TimeGenerated</code> (datetime)<br>
+      • <code>Message</code> (string)<br>
+      • <code>AdditionalContext</code> (dynamic) — contains JSON with <code>Level</code> (int) and <code>DeviceId</code> (string)<br><br>
+      Return rows from the last 5 minutes for DeviceId = "device1". Include only TimeGenerated, Message, Level, DeviceId.</div>
+      <button class="kql-reveal-btn" onclick="toggleSolution(this)">▶ Show Solution</button>
+      <div class="kql-solution">
+        <pre>RawTelemetry
+| where TimeGenerated > ago(5m)
+| extend Level = toint(AdditionalContext.Level),
+         DeviceId = tostring(AdditionalContext.DeviceId)
+| where DeviceId == "device1"
+| project TimeGenerated, Message, Level, DeviceId</pre>
+        <p><strong>Why this order is critical:</strong></p>
+        <table>
+          <tr><th>Step</th><th>Why</th></tr>
+          <tr><td>1. <code>| where TimeGenerated > ago(5m)</code></td><td>Filter on native column first — fast, reduces rows</td></tr>
+          <tr><td>2. <code>| extend</code> Level and DeviceId from AdditionalContext</td><td>Extract from dynamic column BEFORE filtering or projecting on it</td></tr>
+          <tr><td>3. <code>| where DeviceId == "device1"</code></td><td>Now filter on the extended field — it exists now</td></tr>
+          <tr><td>4. <code>| project</code> final columns</td><td>Select last — so all needed columns are still available</td></tr>
+        </table>
+        <p style="margin-top:8px"><strong>Common wrong answers:</strong><br>
+        ❌ <code>| project</code> before <code>| extend</code> — drops AdditionalContext, extend fails<br>
+        ❌ <code>| count</code> at end — returns aggregate count, not the rows<br>
+        ❌ <code>| where DeviceId == "device1"</code> before extend — DeviceId doesn't exist yet</p>
       </div>
     </div>
   </div>

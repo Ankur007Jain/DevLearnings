@@ -79,10 +79,30 @@
           High Concurrency Mode is <strong>single-user boundary</strong> — it does NOT share sessions between different users. Default max: 5 notebooks per session. Can increase to 50 via <code>spark.highConcurrency.max</code> in Environment settings.
         </div>
         <div class="gotcha"><strong>⚠️ Gotcha</strong> Session sharing requires: same user + same default Lakehouse + same Spark compute settings. If ANY differs, a separate Spark session starts.</div>
+
+        <h4>Native Execution Engine vs Traditional Spark Engine</h4>
+        <table class="dt">
+          <tr><th>Engine</th><th>Performance</th><th>UDF Support</th><th>When Used</th></tr>
+          <tr><td><strong>Native Execution Engine</strong> (default)</td><td>Faster — vectorized, columnar processing</td><td class="red">❌ No UDF support</td><td>Standard SQL / DataFrame ops — OPTIMIZE, V-Order, general queries</td></tr>
+          <tr><td><strong>Traditional Spark Engine</strong></td><td>Slower — row-based processing</td><td class="green">✅ Full UDF support</td><td>When UDFs are required — triggered via Spark config adjustment</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — UDFs + Poor Performance → Adjust Spark Configuration</strong>
+          When queries using <strong>UDFs (User-Defined Functions)</strong> perform poorly in a Fabric Lakehouse, the root cause is that the <strong>native execution engine does not support UDFs</strong>. The fix is to <strong>adjust Spark configuration</strong> to disable the native engine for those queries, falling back to the traditional Spark engine.<br><br>
+          <strong>Why the other options are wrong:</strong><br>
+          • <strong>High Concurrency Mode</strong> — reduces startup time / session sharing. Does NOT help UDF performance.<br>
+          • <strong>Query caching</strong> — caches results, but doesn't fix UDF compatibility with the native engine.<br>
+          • <strong>Switch execution engine</strong> — vague/wrong answer. The fix is Spark <em>config</em>, not swapping engines entirely.<br><br>
+          <strong>Trigger words:</strong> "UDF", "user-defined function", "poor performance", "lakehouse queries slow" → think native engine compatibility → adjust Spark config.
+        </div>
         <div class="qa">
           <div class="qa-q">Q: A data engineer runs 5 notebooks at once. Spark takes 3 min to start each. What to enable?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>High Concurrency Mode.</strong> Shares the existing session — no new startup per notebook. NOT autoscale (that scales nodes, not sessions).</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: Queries using UDFs in a Fabric Lakehouse are underperforming. You must keep using UDFs. What should you do?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Adjust Spark configuration.</strong> The native execution engine (default) does not support UDFs. Adjusting Spark config disables the native engine for those queries and falls back to the traditional Spark engine, which supports UDFs fully. High Concurrency Mode and query caching do not address UDF compatibility.</div>
         </div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Enable &amp; Test High Concurrency Mode</h4>
@@ -173,12 +193,28 @@
           <tr><th>Concept</th><th>What It Means</th></tr>
           <tr><td><strong>Deployment Rules</strong></td><td>Override item properties (connection strings, parameters, data sources) per stage. Configure this so the Test stage pipeline points to Test DB, not Dev DB.</td></tr>
           <tr><td><strong>Item Pairing</strong></td><td>Items in adjacent stages are "paired" — deployments overwrite the paired item. Un-paired items of the same name create duplicates instead of overwriting.</td></tr>
+          <tr><td><strong>Assigning a workspace to a stage</strong></td><td>Does NOT copy or move any content. It only links the workspace to that pipeline stage. Content is copied only when you explicitly click Deploy.</td></tr>
           <tr><td><strong>Deployment Pipelines vs Azure Pipelines</strong></td><td>Fabric Deployment Pipelines = ALM for Fabric items. Azure Pipelines (ADO) = CI/CD for code. DIFFERENT products.</td></tr>
+          <tr><td><strong>Pipeline Admin Role</strong></td><td>Controls who can <strong>edit pipeline settings</strong> (stages, rules, access). Assigned at the pipeline level — separate from workspace roles.</td></tr>
         </table>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Pipeline Admin vs RBAC vs Workspace Roles</strong>
+          <table style="margin-top:8px">
+            <tr><th>Goal</th><th>Use This</th><th>Why Others Are Wrong</th></tr>
+            <tr><td>Restrict editing of <strong>pipeline settings</strong></td><td><strong>Pipeline Admin Role</strong></td><td>Workspace roles = workspace access only. RBAC is generic — not pipeline-specific. Item permissions don't apply to pipeline settings.</td></tr>
+            <tr><td>Control who can deploy between stages</td><td>Pipeline Admin Role</td><td>Same — pipeline-level role is the only one that scopes to pipeline actions.</td></tr>
+            <tr><td>Control who can read items in a workspace</td><td>Workspace Viewer role</td><td>—</td></tr>
+          </table>
+          <p style="margin-top:8px"><strong>Key rule:</strong> "Implement RBAC" = generic answer = usually wrong when a specific Fabric role exists. The exam tests whether you know the <em>specific</em> Fabric mechanism, not the general security concept.</p>
+        </div>
         <div class="qa">
           <div class="qa-q">Q: After deploying from Dev to Test, the Test pipeline still connects to the Dev database. What's missing?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
           <div class="qa-answer"><strong>Deployment rule</strong> was not configured. Add a deployment rule for the pipeline that overrides its data source connection to point to the Test database.</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: You need to restrict editing of deployment pipeline settings to authorized users only. What should you do?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Assign pipeline admin roles.</strong> The Pipeline Admin Role is the specific mechanism that controls who can edit pipeline settings (stages, rules, access). Workspace roles only control workspace-level access. Item permissions don't apply to pipeline settings. "Implementing RBAC" is a generic concept — not the specific Fabric answer.</div>
         </div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Build a 3-Stage Deployment Pipeline</h4>
@@ -215,6 +251,24 @@
         </div>
         <h4>Database Projects</h4>
         <p>Schema-as-code for Fabric Warehouse. Define your warehouse schema (tables, views, stored procedures) as SQL scripts in a Git repo. Publish the project to apply schema changes to the warehouse. Incremental — applies only changes, no drop/recreate.</p>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — SDK-Style vs DAC vs Generic Database Project</strong>
+          <table style="margin-top:8px">
+            <tr><th>Option</th><th>Works with Fabric Warehouse?</th><th>Why</th></tr>
+            <tr><td><strong>SDK-style project + Import Schema</strong></td><td class="green">✅ Correct</td><td>This is the required project type for Fabric Warehouse. Import schema pulls the existing DB1 schema into the project so you can manage it as code.</td></tr>
+            <tr><td>Generic "database project" (non-SDK)</td><td class="red">❌ Wrong</td><td>Legacy project format — not supported for Fabric Warehouse database projects.</td></tr>
+            <tr><td>Export DAC → import DAC</td><td class="red">❌ Wrong</td><td>DAC (Data-tier Application) is a SQL Server / Azure SQL concept. Fabric Warehouse does not use DAC packages.</td></tr>
+          </table>
+          <p style="margin-top:8px"><strong>Workflow to deploy schema changes to an existing warehouse:</strong><br>
+          1. Create a new <strong>SDK-style</strong> SQL Database Project<br>
+          2. <strong>Import the schema</strong> of the existing warehouse (DB1) into the project<br>
+          3. Make schema changes as SQL scripts in Git<br>
+          4. <strong>Publish</strong> the project to apply changes to the warehouse (incremental — no drop/recreate)</p>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: You need to use a database project to deploy schema changes to an existing Fabric Warehouse named DB1. What should you do?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Create a new SDK-style project, and import the schema of DB1 into the project.</strong> SDK-style is the required format for Fabric Warehouse database projects. Importing the schema captures the existing DB1 structure so you can manage and deploy changes as code. DAC (Data-tier Application) packages are a SQL Server concept and do NOT apply to Fabric Warehouse.</div>
+        </div>
         <div class="qa">
           <div class="qa-q">Q: A developer adds a stored procedure in the Git repo SQL script. How is it deployed to the warehouse?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
@@ -255,12 +309,19 @@
         <table class="dt">
           <tr><th>Requirement</th><th>Use This</th></tr>
           <tr><td>"User should see ALL items in the workspace"</td><td>Workspace Role (Viewer)</td></tr>
+          <tr><td>"User needs read-only access to ONE item only — least privilege"</td><td><strong>Item Permission</strong> (NOT Workspace Viewer — Viewer grants access to ALL items)</td></tr>
           <tr><td>"User should see only ONE lakehouse, not the warehouse"</td><td>Item Permission on that lakehouse</td></tr>
           <tr><td>"User should see only the Sales table, not HR table in a lakehouse"</td><td>OneLake Data Access Role (scoped to /Tables/Sales/)</td></tr>
           <tr><td>"User should see only rows where Region='West' in a warehouse table"</td><td>Row-Level Security (SQL policy in warehouse)</td></tr>
           <tr><td>"User should not see the Salary column in a warehouse table"</td><td>Column-Level Security (DENY SELECT on column)</td></tr>
           <tr><td>"User should see masked phone numbers unless authorized"</td><td>Dynamic Data Masking (DDM)</td></tr>
         </table>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Least Privilege = Item Permissions, NOT Workspace Viewer</strong>
+          A common trap: "User was removed from workspace. Now needs read-only access to ONE lakehouse. Use least privilege."<br><br>
+          ❌ <strong>Workspace Viewer</strong> — grants read-only access to <em>ALL items</em> in the workspace. Violates least privilege if the user only needs one item.<br>
+          ✅ <strong>Item Permissions</strong> on the specific Lakehouse — grants access only to that one item. True least privilege.<br><br>
+          Rule: If the question says "least privilege" + "one specific item" → always choose <strong>item permissions</strong>, not workspace roles.
+        </div>
         <div class="priority-box"><strong>🚨 OneLake Data Access Roles</strong> (GA 2025 — New Feature, Heavily Tested)
           Create a role → assign folder/table paths (e.g., /Tables/Sales/) → assign users or groups.<br>
           This is SEPARATE from workspace roles. A user with Viewer workspace role still needs OneLake data access role to read specific tables.
@@ -510,7 +571,47 @@
           <tr><td>Upsert (MERGE)</td><td><code>DeltaTable.forName().merge().whenMatchedUpdate().whenNotMatchedInsert().execute()</code></td><td>SCD Type 1, deduplication</td></tr>
           <tr><td>COPY INTO (Warehouse)</td><td><code>COPY INTO schema.table FROM 'https://...' WITH (FILE_TYPE='PARQUET')</code></td><td>Load from external storage into warehouse</td></tr>
         </table>
-        <div class="gotcha"><strong>⚠️ COPY INTO</strong> loads data from external sources (ADLS, S3, etc.) INTO a Fabric warehouse table. It's idempotent — already loaded files are tracked and not reloaded. Supports Parquet, CSV, JSON, ORC, Avro.</div>
+        <div class="gotcha"><strong>⚠️ COPY INTO</strong> loads data from external sources (ADLS, S3, Azure Blob, etc.) INTO a Fabric warehouse table. It's idempotent — already loaded files are tracked and not reloaded. Supports Parquet, CSV, JSON, ORC, Avro.</div>
+
+        <h4>CTAS — CREATE TABLE AS SELECT</h4>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Integrate Warehouse + Lakehouse into One Table → CTAS</strong>
+          When you need to <strong>combine data from a warehouse and a lakehouse into a single table</strong> with <strong>minimal development effort</strong>, the answer is <strong>CTAS (CREATE TABLE AS SELECT)</strong>.<br><br>
+          CTAS creates a new table and populates it from a SELECT query in a single statement — you can cross-query the warehouse and lakehouse SQL endpoint in the same SELECT using cross-database queries.<br><br>
+          <table style="margin-top:8px">
+            <tr><th>Option</th><th>Works here?</th><th>Why</th></tr>
+            <tr><td><strong>CTAS</strong></td><td class="green">✅ Correct</td><td>Creates + populates a new table from combined sources in one SQL statement. Minimal code, works across warehouse + lakehouse SQL endpoint.</td></tr>
+            <tr><td>Dataflow Gen2</td><td class="red">❌ Wrong</td><td>Great for data prep/transformation, but does NOT directly create new tables from combined warehouse + lakehouse sources.</td></tr>
+            <tr><td>SELECT INTO</td><td class="red">❌ Wrong</td><td>Can create a table from a query, but not suitable for integrating data from multiple Fabric sources (warehouse + lakehouse).</td></tr>
+            <tr><td>Azure Data Factory</td><td class="red">❌ Wrong</td><td>External service — does not directly support creating tables from combined warehouse/lakehouse sources inside Fabric. Also not "minimal effort."</td></tr>
+          </table>
+          <p style="margin-top:8px"><strong>Trigger words:</strong> "integrate data from warehouse AND lakehouse", "single table", "minimize development effort" → CTAS.</p>
+          <p><strong>Why not Dataflow Gen2?</strong> The trap is that Dataflow Gen2 is great for ETL — but it's a <em>transformation tool</em>, not a SQL table creation tool. CTAS is pure SQL, instant, and works natively across Fabric items.</p>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: You need to integrate data from a Fabric warehouse and a lakehouse into a single table for analysis with minimal development effort. What should you use?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>CREATE TABLE AS SELECT (CTAS).</strong> It creates and populates a new table from a single SELECT query that can span both the warehouse and the lakehouse SQL endpoint. Dataflow Gen2 is a transformation tool and can't directly create tables from combined Fabric sources. SELECT INTO and ADF don't meet the multi-source + minimal effort requirement.</div>
+        </div>
+
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Efficient Bulk Ingestion from Blob Storage → COPY with Wildcards</strong>
+          When loading <strong>large datasets from Azure Blob Storage</strong> (or ADLS) into a Fabric Warehouse efficiently with minimal errors, the answer is <strong>COPY statement with wildcards</strong>.<br><br>
+          <strong>Why wildcards?</strong> Large datasets typically land as multiple files (e.g., <code>sales_2024_*.parquet</code>). Using a wildcard pattern in COPY INTO processes all matching files in one statement — no loops, no per-file scripts, no error-prone row-by-row inserts.<br><br>
+          <table style="margin-top:8px">
+            <tr><th>Option</th><th>Efficient for Large Data?</th><th>Why</th></tr>
+            <tr><td><strong>COPY INTO with wildcards</strong></td><td class="green">✅ Best</td><td>Bulk load all matching files in one statement. Idempotent, parallel, minimal errors.</td></tr>
+            <tr><td>Single INSERT per row</td><td class="red">❌ Worst</td><td>One transaction per row = extremely slow + high error surface for large data.</td></tr>
+            <tr><td>Multiple INSERT per row</td><td class="red">❌ Bad</td><td>Still row-by-row logic — not a bulk operation.</td></tr>
+            <tr><td>Enable data partitioning before loading</td><td class="red">❌ Wrong scope</td><td>Partitioning helps query performance AFTER data is loaded, not ingestion efficiency.</td></tr>
+          </table>
+          <p style="margin-top:8px"><strong>Example:</strong><br>
+          <code>COPY INTO dbo.sales FROM 'https://myblob.blob.core.windows.net/data/sales_*.parquet' WITH (FILE_TYPE = 'PARQUET', CREDENTIAL = ...);</code></p>
+          <p style="margin-top:4px"><strong>Trigger words:</strong> "large dataset", "Azure Blob Storage", "efficient ingestion", "minimal errors", "multiple files" → COPY INTO with wildcards.</p>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: You need to load large datasets from Azure Blob Storage into a Fabric data warehouse efficiently with minimal errors. What should you do?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer"><strong>Use COPY statement with wildcards.</strong> COPY INTO processes all matching files in one bulk operation — idempotent, parallel, minimal error surface. INSERT statements (single or multiple per row) are row-by-row and extremely inefficient for large data. Data partitioning is a query optimisation technique, not an ingestion one.</div>
+        </div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Try the watermark pattern</h4>
           <ol>
@@ -637,6 +738,16 @@ df_agg.writeStream
           <tr><td><strong>Mirrored / Shortcut (Accelerated)</strong></td><td>Shortcut to OneLake Delta table that has been "accelerated" (data is indexed in KQL format)</td><td>Very fast — KQL indexes built on OneLake data</td><td>Query existing lakehouse Delta tables with KQL speed</td></tr>
           <tr><td><strong>Shortcut (Non-Accelerated)</strong></td><td>Shortcut to external storage (ADLS, S3) — NOT indexed by eventhouse</td><td>Slower — uses <code>external_table()</code>, reads from source on each query</td><td>Occasional queries on external data, no performance requirement</td></tr>
         </table>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Eventhouse is NOT for Batch PySpark + SQL Processing</strong>
+          <table style="margin-top:8px">
+            <tr><th>Need</th><th>Correct Store</th><th>Why</th></tr>
+            <tr><td>Structured + semi + unstructured data, PySpark + SQL ops</td><td><strong>Lakehouse</strong></td><td>Supports all formats, PySpark notebooks + SQL endpoint natively</td></tr>
+            <tr><td>Large-scale analytics, T-SQL + Spark, diverse skill sets</td><td><strong>Azure Synapse Analytics</strong></td><td>Supports all formats + both T-SQL and Spark; accepted as equivalent to Lakehouse in this scenario</td></tr>
+            <tr><td>Real-time streaming, KQL queries, telemetry, IoT</td><td><strong>Eventhouse</strong></td><td>Optimised for real-time — NOT for batch PySpark/SQL workloads</td></tr>
+            <tr><td>Structured data only, pure SQL analytics at scale</td><td><strong>Warehouse</strong></td><td>SQL-only, no PySpark</td></tr>
+          </table>
+          <p style="margin-top:8px"><strong>Trap:</strong> Eventhouse supports diverse data formats and seems like a good answer — but it's built for <em>real-time KQL</em>, not batch PySpark or SQL transformation at scale. When the question mentions "PySpark AND SQL" → pick Lakehouse (or Synapse).</p>
+        </div>
         <div class="priority-box"><strong>🚨 Accelerated vs Non-Accelerated Shortcut</strong><br>
           Accelerated shortcut = eventhouse builds its own indexes on the OneLake Delta data → fast KQL queries.<br>
           Non-accelerated shortcut = no indexes → slow, use <code>external_table('name')</code> to query.
