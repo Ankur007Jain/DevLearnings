@@ -23,13 +23,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* ── Dropdown Nav (2-group style) ── */
-.tabs-dropdowns { padding: 8px 24px; gap: 16px; align-items: center; flex-wrap: wrap; }
-.nav-group { display: flex; align-items: center; gap: 8px; }
-.nav-group-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-.nav-select { padding: 6px 28px 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 13px; font-weight: 500; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; transition: border-color 0.15s; min-width: 200px; }
-.nav-select:hover, .nav-select:focus { border-color: var(--accent); outline: none; }
-.nav-sep-v { width: 1px; height: 28px; background: var(--border); margin: 0 4px; }
+/* ── 2-row nav ── */
+.tabs-rows { flex-direction: column; gap: 0; padding: 0; }
+.nav-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0; padding: 4px 16px; border-bottom: 1px solid var(--border); }
+.nav-row:last-child { border-bottom: none; }
+.nav-row-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 12px 6px 4px; white-space: nowrap; border-right: 1px solid var(--border); margin-right: 4px; }
 
 /* ── Page Wrapper ── */
 .page { max-width: 1100px; margin: 0 auto; padding: 24px; }
