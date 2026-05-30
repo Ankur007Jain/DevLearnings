@@ -46,6 +46,7 @@
   <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
   <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
   <a href="dp700_pb_notes.html" class="tab-btn active">📖 PB Notes</a>
+  <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
   <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
   <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
   <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
@@ -273,10 +274,10 @@
         <ul>
           <li><strong>General tab</strong> — Name, Description, Timeout (default 12h), Retry count, Retry interval</li>
           <li><strong>Source tab</strong> — Connection, table/query/stored proc, partition options</li>
-          <li><strong>Destination tab</strong> — Connection, table, write method, <strong>Enable partitions</strong> (for file partitioning)</li>
+          <li><strong>Destination tab</strong> — Connection, table/file path, write method, Copy behavior (Flatten/Merge/Preserve hierarchy), max rows per file</li>
           <li><strong>Settings tab</strong> — <strong>Enable staging</strong> (for COPY INTO), logging, data consistency</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Timeout/Retry:</strong> General tab. <strong>Staging:</strong> Settings tab. <strong>File partitioning:</strong> Destination tab → Enable partitions.</div>
+        <div class="gotcha"><strong>⚠️ Timeout/Retry:</strong> General tab. <strong>Staging:</strong> Settings tab. <strong>Partitioning (parallel read):</strong> Source tab &rarr; Advanced &rarr; partition options (connector-specific, e.g. Azure SQL, Oracle).</div>
 
         <h3>Copy Tool vs Copy Activity</h3>
         <ul>
@@ -477,12 +478,17 @@ df.writeStream \
 
         <h3>File Partitioning</h3>
         <ul>
-          <li>Splits output files by column value (e.g., year, country)</li>
-          <li>Implemented via: <strong>Pipeline → Copy Activity → Destination tab → Enable partitions → select column</strong></li>
-          <li>Creates folder structure: <code>Files/tablename/year=2024/month=01/</code></li>
-          <li>Improves query performance via partition pruning</li>
+          <li>Splits output written files by column value (e.g., year, country) — creates folder structure like <code>Files/tablename/year=2024/month=01/</code></li>
+          <li>Improves downstream query performance via partition pruning</li>
+          <li><strong>How to implement:</strong>
+            <ul>
+              <li>&#128196; <strong>Spark Notebook:</strong> <code>df.write.partitionBy("year","month").format("delta").save("Tables/tablename")</code> — most common method</li>
+              <li>&#128196; <strong>Copy Activity Source tab</strong> (Advanced) → partition options — this is for <em>parallel reading</em> from supported database sources (Azure SQL, Oracle etc.), NOT for writing partitioned output</li>
+              <li>&#128196; <strong>Copy Activity Destination tab</strong> → Copy behavior options: Flatten hierarchy / Merge files / Preserve hierarchy / Max rows per file — no partition-by-column feature</li>
+            </ul>
+          </li>
         </ul>
-        <div class="gotcha"><strong>⚠️ File partitioning path:</strong> Pipeline Copy Activity → <strong>Destination tab</strong> → Enable partitions.</div>
+        <div class="gotcha"><strong>&#9888;&#65039; Common misconception:</strong> Copy Activity does NOT have an "Enable partitions" button on the Destination tab to create year=/month= folder structures. That is done in <strong>Spark notebooks using <code>partitionBy()</code></strong>. Copy Activity Source tab has partition options but they control <em>parallel read throughput</em> from databases, not output folder structure.</div>
 
         <h3>Delta Table Optimization</h3>
         <ul>
@@ -492,7 +498,7 @@ df.writeStream \
             <ul>
               <li>✅ Improves read speed 10–50% (Power BI DirectLake, SQL, Spark)</li>
               <li>❌ Decreases write speed ~15%</li>
-              <li>ON by default in Fabric</li>
+              <li><strong>DISABLED by default</strong> in Fabric (<code>spark.sql.parquet.vorder.default=false</code>); enable per session or per table</li>
             </ul>
           </li>
           <li><strong>ZORDER</strong> — sorts data within files by column for predicate pushdown: <code>OPTIMIZE table ZORDER BY (col)</code></li>

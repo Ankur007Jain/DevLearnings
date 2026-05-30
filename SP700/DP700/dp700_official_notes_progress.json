@@ -1,0 +1,75 @@
+{
+  "started": "2026-05-30",
+  "file": "dp700_official_notes.html",
+  "status": "in_progress",
+  "sections": {
+    "S1_Lakehouse": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Lakehouse overview", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-overview", "done": false},
+        {"topic": "SQL analytics endpoint", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sql-analytics-endpoint", "done": false},
+        {"topic": "OneLake shortcuts", "url": "https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts", "done": false},
+        {"topic": "Shortcut caching", "url": "https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts-caching", "done": false},
+        {"topic": "Delta table maintenance", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-table-maintenance", "done": false},
+        {"topic": "OneLake data access roles", "url": "https://learn.microsoft.com/en-us/fabric/governance/onelake-data-access-roles-overview", "done": false},
+        {"topic": "Lakehouse sharing/permissions", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sharing", "done": false}
+      ]
+    },
+    "S2_Warehouse": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Warehouse overview", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing", "done": false},
+        {"topic": "Row-level security", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/row-level-security", "done": false},
+        {"topic": "Column-level security", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security", "done": false},
+        {"topic": "Dynamic data masking", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/dynamic-data-masking", "done": false},
+        {"topic": "Query insights", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/query-insights", "done": false},
+        {"topic": "COPY INTO", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data-copy", "done": false},
+        {"topic": "Warehouse sharing/permissions", "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/share-warehouse-manage-permissions", "done": false}
+      ]
+    },
+    "S3_DataFactory": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Dataflow Gen2 overview", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/dataflows-gen2-overview", "done": false},
+        {"topic": "Dataflow Gen2 destinations", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings", "done": false},
+        {"topic": "Copy activity", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/copy-data-activity", "done": false},
+        {"topic": "Pipeline activity overview", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/activity-overview", "done": false},
+        {"topic": "SHIR overview", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/connector-shir-overview", "done": false},
+        {"topic": "Pipeline runs/scheduling", "url": "https://learn.microsoft.com/en-us/fabric/data-factory/pipeline-runs", "done": false}
+      ]
+    },
+    "S4_RealTime": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Eventstream overview", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview", "done": false},
+        {"topic": "Eventstream sources", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source", "done": false},
+        {"topic": "Eventstream destinations", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-destination-fabric-workspace", "done": false},
+        {"topic": "Eventstream processor/windowing", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/process-events-using-event-processor-editor", "done": false},
+        {"topic": "Eventhouse overview", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse", "done": false},
+        {"topic": "Activator overview", "url": "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-activator/activator-introduction", "done": false}
+      ]
+    },
+    "S5_Security_Governance": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Sensitivity labels", "url": "https://learn.microsoft.com/en-us/fabric/governance/sensitivity-labels-overview", "done": false},
+        {"topic": "Endorsement", "url": "https://learn.microsoft.com/en-us/fabric/governance/endorsement-overview", "done": false},
+        {"topic": "Deployment pipelines", "url": "https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/intro-to-deployment-pipelines", "done": false},
+        {"topic": "Deployment pipelines process", "url": "https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/understand-the-deployment-process", "done": false},
+        {"topic": "Git integration", "url": "https://learn.microsoft.com/en-us/fabric/cicd/git-integration/intro-to-git-integration", "done": false},
+        {"topic": "Managed private endpoints", "url": "https://learn.microsoft.com/en-us/fabric/security/security-managed-private-endpoints-overview", "done": false}
+      ]
+    },
+    "S6_Monitoring_Admin": {
+      "status": "pending",
+      "pages": [
+        {"topic": "Capacity metrics app", "url": "https://learn.microsoft.com/en-us/fabric/enterprise/metrics-app", "done": false},
+        {"topic": "Fabric licenses/SKUs", "url": "https://learn.microsoft.com/en-us/fabric/enterprise/licenses", "done": false},
+        {"topic": "Admin tenant settings", "url": "https://learn.microsoft.com/en-us/fabric/admin/tenant-settings-index", "done": false},
+        {"topic": "Direct Lake overview", "url": "https://learn.microsoft.com/en-us/fabric/get-started/direct-lake-overview", "done": false},
+        {"topic": "High concurrency mode", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/high-concurrency-overview", "done": false},
+        {"topic": "Spark compute/pools", "url": "https://learn.microsoft.com/en-us/fabric/data-engineering/spark-compute", "done": false}
+      ]
+    }
+  }
+}

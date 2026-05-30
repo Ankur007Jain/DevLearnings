@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Official Notes – Microsoft Learn</title>
+<style>
+  :root {
+    --bg: #0f0f1a; --card: #1a1a2e; --border: #2a2a4a;
+    --accent: #6c63ff; --accent2: #00d4aa; --warn: #ff6b6b;
+    --gold: #ffd700; --text: #e8e8f0; --muted: #8888aa;
+    --green: #4caf50; --orange: #ff9800; --blue: #2196f3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; }
+
+  /* TOP NAV */
+  .top-nav { background: #12122a; border-bottom: 2px solid var(--accent); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .top-nav a { color: var(--muted); text-decoration: none; padding: 5px 12px; border-radius: 6px; font-size: 13px; transition: all 0.2s; white-space: nowrap; }
+  .top-nav a:hover { background: var(--border); color: var(--text); }
+  .top-nav a.active { background: var(--accent); color: #fff; font-weight: 600; }
+  .nav-label { color: var(--muted); font-size: 12px; margin-right: 4px; font-weight: 600; }
+
+  /* PAGE HEADER */
+  .page-header { background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%); padding: 24px 24px 16px; border-bottom: 1px solid var(--border); }
+  .page-header h1 { font-size: 22px; color: var(--accent2); }
+  .page-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* SECTION TABS */
+  .section-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 44px; z-index: 90; }
+  .section-tabs button { background: var(--border); border: none; color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+  .section-tabs button:hover { background: #333358; color: var(--text); }
+  .section-tabs button.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+  /* CONTENT PANELS */
+  .content-area { padding: 20px 16px; max-width: 1100px; margin: 0 auto; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .card h2 { font-size: 17px; color: var(--accent2); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card h3 { font-size: 15px; color: var(--gold); margin: 14px 0 8px; }
+  .card h4 { font-size: 14px; color: #aaa; margin: 10px 0 6px; }
+  .card p, .card li { color: var(--text); margin-bottom: 6px; }
+  .card ul, .card ol { padding-left: 20px; margin-bottom: 8px; }
+  .card code { background: #2a2a4a; color: #00d4aa; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'Courier New', monospace; }
+  .card pre { background: #1e1e35; border: 1px solid var(--border); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 8px 0; }
+  .card pre code { background: none; padding: 0; font-size: 13px; }
+
+  /* GOTCHA BOX */
+  .gotcha { background: #2a1515; border: 1px solid var(--warn); border-left: 4px solid var(--warn); border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
+  .gotcha::before { content: "⚠️ EXAM TRAP: "; font-weight: 700; color: var(--warn); }
+  .gotcha p, .gotcha li { color: #ffcccc; margin: 4px 0; }
+
+  /* TIP BOX */
+  .tip { background: #0d2a1f; border: 1px solid var(--green); border-left: 4px solid var(--green); border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
+  .tip::before { content: "✅ KEY POINT: "; font-weight: 700; color: var(--green); }
+
+  /* NOTE BOX */
+  .note { background: #1a1f3a; border: 1px solid var(--blue); border-left: 4px solid var(--blue); border-radius: 6px; padding: 10px 14px; margin: 8px 0; }
+  .note::before { content: "📌 NOTE: "; font-weight: 700; color: var(--blue); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  th { background: #2a2a4a; color: var(--accent2); padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+  td { padding: 7px 10px; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #16162a; }
+  tr:hover td { background: #1e1e35; }
+
+  /* SOURCE CITATION */
+  .source { font-size: 11px; color: var(--muted); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .source a { color: var(--accent); text-decoration: none; }
+  .source a:hover { text-decoration: underline; }
+
+  /* BADGE */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .badge-green { background: #1a3a1a; color: #4caf50; border: 1px solid #4caf50; }
+  .badge-red { background: #3a1a1a; color: #ff6b6b; border: 1px solid #ff6b6b; }
+  .badge-gold { background: #2a2a00; color: #ffd700; border: 1px solid #ffd700; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav class="top-nav">
+  <span class="nav-label">DP-700:</span>
+  <a href="dp700_pb_notes.html">📚 PB Notes</a>
+  <a href="dp700_official_notes.html" class="active">📖 Official Notes</a>
+  <a href="dp700_mock1.html">🧪 Mock 1</a>
+  <a href="dp700_mock2.html">🧪 Mock 2</a>
+  <a href="dp700_mock3.html">🧪 Mock 3</a>
+  <a href="dp700_mock4.html">🧪 Mock 4</a>
+  <a href="dp700_mock5.html">🧪 Mock 5</a>
+  <a href="dp700_mock6.html">🧪 Mock 6</a>
+  <a href="dp700_labs.html">🔬 Labs</a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>📖 DP-700 Official Notes — Sourced from Microsoft Learn</h1>
+  <p>Every claim is sourced directly from official MS Learn documentation. No hallucinations. Exam-focused with gotchas highlighted.</p>
+</div>
+
+<!-- SECTION TABS -->
+<div class="section-tabs">
+  <button class="active" onclick="showPanel('s1')">🏠 S1: Lakehouse</button>
+  <button onclick="showPanel('s2')">🏗️ S2: Warehouse</button>
+  <button onclick="showPanel('s3')">🔄 S3: Data Factory</button>
+  <button onclick="showPanel('s4')">⚡ S4: Real-Time</button>
+  <button onclick="showPanel('s5')">🔒 S5: Security & Governance</button>
+  <button onclick="showPanel('s6')">📊 S6: Monitoring & Admin</button>
+</div>
+
+<div class="content-area">
+
+<!-- ===== S1: LAKEHOUSE ===== -->
+<div id="s1" class="panel active">
+
+  <div class="card">
+    <h2>Lakehouse Overview</h2>
+    <h3>What is a Lakehouse?</h3>
+    <p>A Fabric Lakehouse is a data architecture platform for storing, managing and analyzing structured and unstructured data in a single location. It combines the flexibility of a data lake with the analytical power of a data warehouse.</p>
+    <ul>
+      <li>All data stored in <strong>Delta format</strong> (Parquet + transaction log)</li>
+      <li>Two views: <strong>Lake view</strong> (Files + Tables) and <strong>SQL analytics endpoint view</strong></li>
+      <li>Supports both <strong>Apache Spark</strong> (notebooks, Spark Job Definitions) and <strong>T-SQL</strong> (via SQL analytics endpoint)</li>
+      <li>Data stored in <strong>OneLake</strong> — one logical data lake per tenant</li>
+    </ul>
+    <div class="gotcha">
+      <p>Lakehouse does NOT support multi-table ACID transactions. That requires a <strong>Warehouse</strong>.</p>
+    </div>
+    <h3>Lakehouse Items</h3>
+    <table>
+      <tr><th>Component</th><th>Purpose</th></tr>
+      <tr><td>Tables folder</td><td>Managed Delta tables, auto-registered in metastore</td></tr>
+      <tr><td>Files folder</td><td>Raw unmanaged files (any format)</td></tr>
+      <tr><td>SQL analytics endpoint</td><td>Read-only T-SQL access to Delta tables</td></tr>
+      <tr><td>Default semantic model</td><td>Auto-generated Power BI semantic model</td></tr>
+    </table>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-overview" target="_blank">Lakehouse overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>SQL Analytics Endpoint</h2>
+    <p>Each Lakehouse automatically provisions a <strong>SQL analytics endpoint</strong> — a read-only T-SQL interface over the Delta tables in the Lakehouse.</p>
+    <h3>What you CAN do at the SQL analytics endpoint:</h3>
+    <ul>
+      <li>Query Delta tables with T-SQL (SELECT)</li>
+      <li><code>CREATE VIEW</code>, <code>CREATE INLINE TVF</code>, <code>CREATE PROCEDURE</code></li>
+      <li><code>CREATE SCHEMA</code>, <code>CREATE FUNCTION</code>, <code>CREATE SECURITY POLICY</code></li>
+      <li>Manage permissions (GRANT, DENY, REVOKE)</li>
+    </ul>
+    <h3>What you CANNOT do:</h3>
+    <ul>
+      <li><code>CREATE TABLE</code> (tables come from the Lakehouse, not T-SQL)</li>
+      <li>DML: INSERT, UPDATE, DELETE, MERGE</li>
+      <li>No DDL for tables (read-only data path)</li>
+    </ul>
+    <div class="gotcha">
+      <p>SQL analytics endpoint is <strong>read-only for data</strong>. You can CREATE SCHEMA, CREATE FUNCTION, CREATE SECURITY POLICY — but NOT CREATE TABLE. For table creation use Spark or the Lakehouse interface.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sql-analytics-endpoint" target="_blank">SQL analytics endpoint — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>OneLake Shortcuts</h2>
+    <p>Shortcuts are embedded pointers to storage locations inside or outside OneLake. They appear as folders in a Lakehouse or KQL database but data stays in the source.</p>
+    <h3>Supported shortcut sources:</h3>
+    <ul>
+      <li>Internal: <strong>OneLake</strong> (other Fabric items)</li>
+      <li>External: <strong>Azure Data Lake Storage Gen2 (ADLS Gen2)</strong></li>
+      <li>External: <strong>Amazon S3</strong></li>
+      <li>External: <strong>Google Cloud Storage (GCS)</strong></li>
+      <li>External: <strong>Amazon S3-compatible storage</strong></li>
+      <li>External: <strong>Dataverse</strong></li>
+      <li>External: <strong>On-premises data gateway (OPDG)</strong></li>
+    </ul>
+    <h3>Shortcut Caching</h3>
+    <p>Caching temporarily stores external shortcut data in OneLake for faster access.</p>
+    <div class="gotcha">
+      <p>Caching is supported ONLY for: <strong>GCS, S3, S3-compatible, and OPDG shortcuts</strong>. It is <strong>NOT supported</strong> for Azure Blob Storage or ADLS Gen2 shortcuts.</p>
+    </div>
+    <h3>Shortcut Limitations:</h3>
+    <ul>
+      <li>Shortcuts cannot point to another shortcut (no chaining)</li>
+      <li>Shortcuts in a Lakehouse Tables folder must point to Delta tables</li>
+      <li>Cross-region shortcuts not supported for OneLake security roles</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts" target="_blank">OneLake shortcuts — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Delta Table Maintenance (OPTIMIZE & VACUUM)</h2>
+    <h3>OPTIMIZE</h3>
+    <p>Compacts small Parquet files into larger, more efficient files. Two variants:</p>
+    <ul>
+      <li><code>OPTIMIZE tablename</code> — basic compaction</li>
+      <li><code>OPTIMIZE tablename VORDER</code> — apply V-Order during compaction</li>
+      <li><code>OPTIMIZE tablename WHERE predicate ZORDER BY (col) VORDER</code> — filter + ZORDER + V-Order</li>
+    </ul>
+    <h3>V-Order (Critical Exam Topic)</h3>
+    <p>V-Order is a Fabric-specific write optimization that applies sorting, row-group elimination, and dictionary encoding to Parquet files for faster Power BI reads.</p>
+    <div class="gotcha">
+      <p>V-Order is <strong>DISABLED by default</strong> in new Fabric workspaces (<code>spark.sql.parquet.vorder.default=false</code>). You must explicitly enable it. This is the opposite of what some prep materials claim.</p>
+    </div>
+    <p>Enable V-Order: <code>SET spark.sql.parquet.vorder.default=TRUE</code></p>
+    <p>V-Order can be combined with ZORDER: <code>OPTIMIZE tablename ZORDER BY (col) VORDER</code></p>
+    <h3>VACUUM</h3>
+    <p>Removes old Parquet files no longer referenced by the Delta transaction log.</p>
+    <ul>
+      <li>Default retention: <strong>7 days</strong></li>
+      <li>You cannot VACUUM below 7 days unless explicitly overriding the safety check</li>
+      <li>VACUUM prevents time travel beyond the retention period</li>
+    </ul>
+    <div class="gotcha">
+      <p>Running VACUUM with retention below 7 days risks breaking concurrent readers. The default is 7 days — do not set it lower in production.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-table-maintenance" target="_blank">Delta table maintenance — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>OneLake Data Access Control (OneLake Security Roles)</h2>
+    <p>OneLake security uses RBAC to control access to data at the <strong>folder/table level</strong>, independent of workspace roles.</p>
+    <h3>Permission Types:</h3>
+    <table>
+      <tr><th>Permission</th><th>What it grants</th></tr>
+      <tr><td>Read</td><td>Read data from table + view metadata (like SELECT + VIEW_DEFINITION)</td></tr>
+      <tr><td>ReadWrite</td><td>Read and write data to a table or folder (ALTER, DROP, UPDATE, INSERT)</td></tr>
+    </table>
+    <h3>Supported Items:</h3>
+    <ul>
+      <li>Lakehouse <span class="badge badge-green">Public Preview</span></li>
+      <li>Azure Databricks Mirrored Catalog <span class="badge badge-green">Public Preview</span></li>
+      <li>Mirrored Databases <span class="badge badge-green">Public Preview</span></li>
+    </ul>
+    <h3>Workspace Role → OneLake Access:</h3>
+    <table>
+      <tr><th>Role</th><th>View Files in OneLake</th><th>Write Files</th><th>Edit Security Roles</th></tr>
+      <tr><td>Admin/Member/Contributor</td><td>Always Yes</td><td>Always Yes</td><td>Admin/Member only</td></tr>
+      <tr><td>Viewer</td><td>No by default (use OneLake security)</td><td>No</td><td>No</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>Admin, Member, and Contributor workspace roles automatically override OneLake security Read permissions with Write access. OneLake data access roles primarily affect <strong>Viewers</strong>.</p>
+    </div>
+    <h3>Default Roles (Auto-created):</h3>
+    <table>
+      <tr><th>Role</th><th>Permission</th><th>Scope</th><th>Members</th></tr>
+      <tr><td>DefaultReader</td><td>Read</td><td>All Tables/ and Files/ folders</td><td>Users with ReadAll permission</td></tr>
+      <tr><td>DefaultReadWriter</td><td>Read</td><td>All folders</td><td>Users with Write permission</td></tr>
+    </table>
+    <h3>Role Combination Logic:</h3>
+    <ul>
+      <li>Multiple roles combine via <strong>UNION</strong> (least-restrictive)</li>
+      <li>RLS predicates combine with <strong>OR</strong></li>
+      <li>CLS uses a <strong>DENY semantic in SQL Endpoint</strong> (intersection, not union)</li>
+    </ul>
+    <h3>Latency:</h3>
+    <ul>
+      <li>Role definition changes: ~5 minutes to apply</li>
+      <li>Group membership changes: ~1 hour to apply</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/onelake/security/data-access-control-model" target="_blank">OneLake security access control model — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Lakehouse Sharing &amp; Permissions</h2>
+    <h3>Lakehouse Item Permissions:</h3>
+    <table>
+      <tr><th>Permission</th><th>Description</th></tr>
+      <tr><td>Read</td><td>Read metadata (no data access by default — use OneLake security to grant data)</td></tr>
+      <tr><td>ReadAll</td><td>Read all data in OneLake (equivalent to full file system access)</td></tr>
+      <tr><td>ReadData</td><td>Read data through the SQL analytics endpoint only</td></tr>
+      <tr><td>Write</td><td>Read + write to OneLake (all data); can edit SQL analytics endpoint objects</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>Sharing a Lakehouse with <strong>Read</strong> permission alone does NOT give data access. You need ReadAll (for file-level access) or ReadData (for SQL endpoint access) or configure OneLake security roles.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sharing" target="_blank">Lakehouse sharing — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S1 -->
+
+<!-- ===== S2: WAREHOUSE ===== -->
+<div id="s2" class="panel">
+
+  <div class="card">
+    <h2>Fabric Data Warehouse Overview</h2>
+    <p>Fabric Data Warehouse is an enterprise-scale relational warehouse built on a data lake foundation. Unlike traditional warehouses, it stores data in <strong>Delta tables</strong> (Parquet + transaction log in OneLake).</p>
+    <h3>Key Characteristics:</h3>
+    <ul>
+      <li>Full <strong>multi-table ACID transaction support</strong> ✅ (unlike Lakehouse)</li>
+      <li>Primarily developed with <strong>T-SQL</strong></li>
+      <li>Supports DDL + DML (CREATE TABLE, INSERT, UPDATE, DELETE, MERGE)</li>
+      <li>Materialized views, functions, stored procedures</li>
+      <li>Data automatically replicated to OneLake Files for external access</li>
+      <li>Autonomous workload management — no knobs to tune</li>
+      <li>Scale near-instantaneously (storage and compute separated)</li>
+    </ul>
+    <h3>Warehouse vs. Lakehouse SQL Endpoint:</h3>
+    <table>
+      <tr><th>Feature</th><th>Warehouse</th><th>SQL Analytics Endpoint</th></tr>
+      <tr><td>CREATE TABLE</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td>DML (INSERT/UPDATE/DELETE)</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td>Multi-table ACID</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td>Stored Procedures</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+      <tr><td>CREATE VIEW / TVF</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+      <tr><td>CREATE SECURITY POLICY</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+    </table>
+    <h3>Ingestion Methods:</h3>
+    <ul>
+      <li>COPY INTO (bulk load from Azure storage) — primary ingestion</li>
+      <li>Pipelines (Copy activity, Dataflow Gen2)</li>
+      <li>Cross-database ingestion: CTAS, INSERT...SELECT, SELECT INTO</li>
+      <li>Spark (data written directly to Delta tables)</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing" target="_blank">Fabric Data Warehouse overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Row-Level Security (RLS)</h2>
+    <p>RLS restricts which rows users can see, implemented via <strong>security policies + inline table-valued functions (TVFs)</strong>.</p>
+    <h3>Implementation Steps:</h3>
+    <pre><code>-- 1. Create schema and TVF (filter function)
+CREATE SCHEMA Security;
+GO
+CREATE FUNCTION Security.tvf_securitypredicate(@SalesRep AS nvarchar(50))
+    RETURNS TABLE WITH SCHEMABINDING AS
+    RETURN SELECT 1 AS result
+    WHERE @SalesRep = USER_NAME() OR USER_NAME() = 'manager@contoso.com';
+GO
+
+-- 2. Create security policy
+CREATE SECURITY POLICY SalesFilter
+ADD FILTER PREDICATE Security.tvf_securitypredicate(SalesRep)
+ON sales.Orders
+WITH (STATE = ON);</code></pre>
+    <h3>Key Behaviors:</h3>
+    <ul>
+      <li>Filter predicates affect: SELECT, DELETE, UPDATE (users cannot see/delete/update filtered rows)</li>
+      <li>Users CAN INSERT rows that will later be filtered</li>
+      <li>To modify the TVF: you must DROP the security policy first, then ALTER, then recreate</li>
+      <li>SCHEMABINDING = ON (default) — bypasses additional permission checks on referenced objects</li>
+    </ul>
+    <div class="gotcha">
+      <p>In Fabric (unlike SQL Server), <strong>dbo users and db_owner members ARE filtered by RLS</strong>. Security policies apply to ALL users. If admins need to see all rows, the policy must explicitly allow it.</p>
+    </div>
+    <div class="gotcha">
+      <p>Power BI in Direct Lake mode will <strong>fall back to DirectQuery</strong> when RLS is applied to the underlying warehouse. Direct Lake cannot bypass row-level security.</p>
+    </div>
+    <h3>RLS applies to:</h3>
+    <ul>
+      <li>✅ Warehouse</li>
+      <li>✅ SQL analytics endpoint (shared warehouse or lakehouse)</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/row-level-security" target="_blank">Row-level security — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Column-Level Security (CLS)</h2>
+    <p>CLS restricts which columns users can access using the <strong>GRANT T-SQL statement</strong>.</p>
+    <h3>Implementation:</h3>
+    <pre><code>-- Grant access to specific columns only (excludes CreditCard)
+GRANT SELECT ON Customers(CustomerID, FirstName, LastName, Phone, Email)
+TO [Charlie@contoso.com];</code></pre>
+    <p>Queries including restricted columns will fail with an error:</p>
+    <pre><code>Msg 230, Level 14, State 1, Line 12
+The SELECT permission was denied on the column 'CreditCard'...</code></pre>
+    <h3>Key Points:</h3>
+    <ul>
+      <li>Implemented with GRANT (column-level), not CREATE SECURITY POLICY</li>
+      <li>Simpler than creating views to filter columns</li>
+      <li>Applies to shared warehouse or lakehouse SQL endpoint</li>
+      <li>Only <strong>Microsoft Entra authentication</strong> supported (no SQL auth)</li>
+    </ul>
+    <div class="gotcha">
+      <p>Like RLS, Power BI in Direct Lake mode will <strong>fall back to DirectQuery</strong> when column-level security is applied to the underlying warehouse.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security" target="_blank">Column-level security — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Dynamic Data Masking (DDM)</h2>
+    <p>DDM hides sensitive data from non-privileged users in query results, without changing the underlying data.</p>
+    <h3>Masking Types:</h3>
+    <table>
+      <tr><th>Type</th><th>Function</th><th>Example Output</th></tr>
+      <tr><td>Default</td><td><code>MASKED WITH (FUNCTION = 'default()')</code></td><td>Strings → XXXX, Numbers → 0, Dates → 1900-01-01</td></tr>
+      <tr><td>Email</td><td><code>MASKED WITH (FUNCTION = 'email()')</code></td><td><code>aXXX@XXXX.com</code> (first letter + .com)</td></tr>
+      <tr><td>Random</td><td><code>MASKED WITH (FUNCTION = 'random(1, 100)')</code></td><td>Random number in range</td></tr>
+      <tr><td>Custom String</td><td><code>MASKED WITH (FUNCTION = 'partial(1,"XXX",0)')</code></td><td>First char + XXX (prefix, padding, suffix)</td></tr>
+    </table>
+    <h3>Who Sees Unmasked Data:</h3>
+    <ul>
+      <li>Admin, Member, Contributor workspace roles have CONTROL — see unmasked data</li>
+      <li>UNMASK permission must be explicitly granted to others: <code>GRANT UNMASK ON dbo.Customers TO [user]</code></li>
+    </ul>
+    <div class="gotcha">
+      <p>DDM does NOT encrypt data — it only hides it in query results. Admins/Members/Contributors with CONTROL permission always see unmasked data regardless of masking settings.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/dynamic-data-masking" target="_blank">Dynamic data masking — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Query Insights</h2>
+    <p>Query Insights provides historical query data and actionable insights for 30 days in Warehouse and SQL analytics endpoint.</p>
+    <h3>Five queryinsights Views:</h3>
+    <table>
+      <tr><th>View</th><th>Purpose</th></tr>
+      <tr><td><code>queryinsights.exec_requests_history</code></td><td>Each completed SQL request/query (last 30 days)</td></tr>
+      <tr><td><code>queryinsights.exec_sessions_history</code></td><td>Completed sessions</td></tr>
+      <tr><td><code>queryinsights.long_running_queries</code></td><td>Queries ranked by execution time</td></tr>
+      <tr><td><code>queryinsights.frequently_run_queries</code></td><td>Frequently run queries (aggregated by query shape/hash)</td></tr>
+      <tr><td><code>queryinsights.sql_pool_insights</code></td><td>Pool-level metrics, pressure indicators, resource allocation</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>There are <strong>5 views</strong> in queryinsights, not 4. The 5th view (<code>sql_pool_insights</code>) covers pool-level metrics and pressure — commonly missed.</p>
+    </div>
+    <h3>Key Behaviors:</h3>
+    <ul>
+      <li>Data retention: <strong>30 days</strong></li>
+      <li>System queries are NOT stored (user queries only)</li>
+      <li>Full query text visible to Admin, Member, Contributor roles</li>
+      <li>Queries can take up to <strong>15 minutes</strong> to appear after completion</li>
+      <li>Similar queries grouped by <strong>query hash</strong> (same shape = same hash regardless of predicates)</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/query-insights" target="_blank">Query Insights — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>COPY INTO Statement</h2>
+    <p>COPY INTO is the primary bulk ingestion mechanism for Fabric Data Warehouse, loading data directly from Azure storage.</p>
+    <h3>Basic Syntax:</h3>
+    <pre><code>COPY INTO dbo.TargetTable
+FROM 'https://storageaccount.blob.core.windows.net/container/path'
+WITH (
+    FILE_TYPE = 'PARQUET',
+    CREDENTIAL = (IDENTITY = 'Managed Identity')
+);</code></pre>
+    <h3>Supported File Types:</h3>
+    <ul>
+      <li>CSV, Parquet, ORC</li>
+      <li>Source: Azure Blob Storage, ADLS Gen2</li>
+    </ul>
+    <div class="note">
+      <p>COPY INTO is for Warehouse. For Lakehouse, use Spark (notebooks/Spark Job Definitions) or COPY INTO via pipelines targeting the underlying Delta tables.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data-copy" target="_blank">COPY INTO — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Warehouse Sharing &amp; Permissions</h2>
+    <h3>Warehouse Permission Table:</h3>
+    <table>
+      <tr><th>Permission</th><th>Default roles</th><th>Shareable</th></tr>
+      <tr><td>Read</td><td>Admin, Member, Contributor, Viewer</td><td>Yes</td></tr>
+      <tr><td>ReadData</td><td>Admin, Member, Contributor, Viewer</td><td>Yes</td></tr>
+      <tr><td>ReadAll</td><td>Admin, Member, Contributor</td><td>Yes</td></tr>
+      <tr><td>Write</td><td>Admin, Member, Contributor</td><td>No</td></tr>
+      <tr><td>Monitor</td><td>Admin, Member, Contributor</td><td>N/A</td></tr>
+      <tr><td>Audit</td><td>Admin only</td><td>N/A</td></tr>
+      <tr><td>Reshare</td><td>Admin, Member</td><td>N/A</td></tr>
+    </table>
+    <div class="gotcha">
+      <p><strong>Write permission cannot be shared</strong> — it can only be assigned by being an Admin/Member/Contributor in the workspace. You cannot delegate Write via item-level sharing.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/share-warehouse-manage-permissions" target="_blank">Warehouse sharing — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S2 -->
+
+<!-- ===== S3: DATA FACTORY ===== -->
+<div id="s3" class="panel">
+
+  <div class="card">
+    <h2>Dataflow Gen2 Overview</h2>
+    <p>Dataflow Gen2 is a cloud-based, low-code/no-code data preparation tool using the <strong>Power Query</strong> experience. It ingests, transforms, and loads data from hundreds of sources into multiple destinations.</p>
+    <h3>Key Improvements over Gen1:</h3>
+    <table>
+      <tr><th>Feature</th><th>Gen2</th><th>Gen1</th></tr>
+      <tr><td>Multiple output destinations</td><td>✅</td><td>❌</td></tr>
+      <tr><td>AutoSave &amp; background publishing</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Works with Pipelines</td><td>✅</td><td>❌</td></tr>
+      <tr><td>High-performance computing</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Better monitoring</td><td>✅</td><td>❌</td></tr>
+      <tr><td>DirectQuery via dataflow connector</td><td>❌</td><td>✅</td></tr>
+    </table>
+    <h3>Supported Data Destinations:</h3>
+    <ul>
+      <li>Azure SQL databases</li>
+      <li>Azure Data Explorer (Kusto)</li>
+      <li>Azure Data Lake Gen2 (preview)</li>
+      <li>Fabric Lakehouse Tables</li>
+      <li>Fabric Lakehouse Files (preview)</li>
+      <li>Fabric Warehouse</li>
+      <li>Fabric KQL database</li>
+      <li>Fabric SQL database</li>
+      <li>SharePoint Files</li>
+    </ul>
+    <div class="note">
+      <p>When loading to Warehouse, staging is <strong>required</strong>. Ensure staging is enabled for all queries that load into the warehouse. Only same-workspace warehouse loading is currently supported.</p>
+    </div>
+    <h3>Update Methods:</h3>
+    <ul>
+      <li><strong>Replace</strong>: Data dropped and replaced on each refresh (default for new tables)</li>
+      <li><strong>Append</strong>: New data appended to existing table on each refresh</li>
+    </ul>
+    <div class="gotcha">
+      <p>KQL databases and Azure Data Explorer do <strong>NOT support Replace</strong> as an update method — only Append is supported for these destinations.</p>
+    </div>
+    <h3>Automatic vs. Manual Settings (new tables):</h3>
+    <ul>
+      <li><strong>Automatic (default)</strong>: Managed mapping, Replace method, table dropped and recreated on refresh</li>
+      <li><strong>Manual</strong>: Full control over column mapping and update method</li>
+      <li>Automatic settings only supported for: <strong>Lakehouse</strong> and <strong>Azure SQL database</strong> destinations</li>
+    </ul>
+    <h3>Staging:</h3>
+    <ul>
+      <li>Staging is ON by default (uses internal Lakehouse)</li>
+      <li>Disabled by default when loading to Lakehouse (for performance)</li>
+      <li>Required and cannot be disabled for Warehouse destination</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-factory/dataflows-gen2-overview" target="_blank">Dataflow Gen2 overview — Microsoft Learn</a> | <a href="https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings" target="_blank">Destinations — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Copy Activity</h2>
+    <p>The Copy activity in a Pipeline moves data between supported sources and destinations. It handles serialization/deserialization, compression, column mapping, and type conversions.</p>
+    <h3>Copy Activity vs. Copy Job:</h3>
+    <table>
+      <tr><th>Feature</th><th>Copy Activity (in Pipeline)</th><th>Copy Job</th></tr>
+      <tr><td>Transformations</td><td>✅ Yes (with other activities)</td><td>❌ No (data movement only)</td></tr>
+      <tr><td>Complexity</td><td>Full pipeline orchestration</td><td>Simplified UI</td></tr>
+      <tr><td>Use case</td><td>Complex workflows</td><td>Simple data movement</td></tr>
+    </table>
+    <h3>Source Tab (Partitioning for Parallel Read):</h3>
+    <ul>
+      <li>Source tab → Advanced → Partitioning options enable <strong>parallel reads</strong></li>
+      <li>These are SOURCE-side parallelism settings (physical/logical/dynamic range partitions)</li>
+    </ul>
+    <div class="gotcha">
+      <p>There is NO "Enable partitions" option on the Destination tab of a Copy activity. Partitioned output (like writing partitioned files) is done via <strong>Spark notebooks using <code>partitionBy()</code></strong>, not Copy activity destination settings.</p>
+    </div>
+    <h3>Settings Tab — Key Options:</h3>
+    <table>
+      <tr><th>Setting</th><th>Description</th></tr>
+      <tr><td>Intelligent throughput optimization</td><td>Auto/Standard/Balanced/Maximum (dataIntegrationUnits)</td></tr>
+      <tr><td>Degree of copy parallelism</td><td>parallelCopies setting</td></tr>
+      <tr><td>Data consistency verification</td><td>File size/checksum check after copy</td></tr>
+      <tr><td>Enable staging</td><td>Interim staging store for PolyBase-style loads</td></tr>
+      <tr><td>Fault tolerance</td><td>Skip incompatible rows/missing files</td></tr>
+    </table>
+    <div class="note">
+      <p>Single gateway limitation: Both source and sink in a Copy activity must use the same on-premises data gateway if both are on-premises. Use an intermediate cloud store for different gateways.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-factory/copy-data-activity" target="_blank">Copy activity — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Pipeline Activity Types</h2>
+    <h3>Data Movement Activities:</h3>
+    <ul>
+      <li>Copy data — move data between any supported source/destination</li>
+      <li>Copy job — simplified method for quick data movement</li>
+    </ul>
+    <h3>Data Transformation Activities:</h3>
+    <ul>
+      <li>Copy data, Dataflow Gen2, Delete data</li>
+      <li>Fabric Notebook, Spark Job Definition (Apache Spark clusters)</li>
+      <li>Stored Procedure, SQL script (Azure SQL / Synapse)</li>
+      <li>HDInsight activity</li>
+    </ul>
+    <h3>Control Flow Activities:</h3>
+    <ul>
+      <li><strong>ForEach</strong> — loop over collection</li>
+      <li><strong>If Condition</strong> — branch on true/false</li>
+      <li><strong>Switch</strong> — multiple branches on expression</li>
+      <li><strong>Until</strong> — Do-Until loop</li>
+      <li><strong>Wait</strong> — pause execution for specified time</li>
+      <li><strong>Set Variable / Append Variable</strong> — manage pipeline variables</li>
+      <li><strong>Fail</strong> — force failure with custom message/code</li>
+      <li><strong>Filter</strong> — filter input array</li>
+      <li><strong>Get Metadata</strong> — retrieve metadata</li>
+      <li><strong>Invoke pipeline</strong> — call another pipeline</li>
+      <li><strong>Lookup Activity</strong> — read a record from external source</li>
+      <li><strong>Web activity / Webhook activity</strong> — call REST endpoints</li>
+      <li><strong>Teams activity</strong> — post message to Teams</li>
+      <li><strong>KQL activity</strong> — execute KQL against Kusto</li>
+      <li><strong>Lakehouse maintenance activity</strong> — run table maintenance</li>
+    </ul>
+    <div class="note">
+      <p>Maximum 120 activities per pipeline (including inner activities for containers).</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-factory/activity-overview" target="_blank">Activity overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Pipeline Runs &amp; Scheduling</h2>
+    <h3>Three Ways to Start a Pipeline:</h3>
+    <ol>
+      <li><strong>On-demand</strong> — Click Run in the pipeline editor</li>
+      <li><strong>Scheduled</strong> — Set time-based schedule (requires start AND end date)</li>
+      <li><strong>Event-based</strong> — Trigger on file events, job events, workspace events (uses Data Activator/Reflex)</li>
+    </ol>
+    <h3>Scheduling Options:</h3>
+    <ul>
+      <li><strong>Fixed schedule</strong> — hourly, daily, weekly, monthly with specific times</li>
+      <li><strong>Interval-based schedule (preview)</strong> — fixed non-overlapping windows; adds Window start time and Window end time as pipeline trigger parameters</li>
+      <li>Up to <strong>20 schedules</strong> per pipeline</li>
+    </ul>
+    <div class="gotcha">
+      <p>A scheduled pipeline MUST have both a start AND an end date — there is no "open-ended" option. For long-running pipelines, set end date to a far future date (e.g. 01/01/2099).</p>
+    </div>
+    <h3>Failure Notifications:</h3>
+    <ul>
+      <li>Can be configured for scheduled runs only (not on-demand runs)</li>
+      <li>Set in Schedule → Failure notifications → add users/groups</li>
+    </ul>
+    <h3>Event Triggers:</h3>
+    <ul>
+      <li>Powered by <strong>Data Activator (Reflex) + Eventstream</strong></li>
+      <li>Supports: OneLake events, Azure Blob Storage events, file created/deleted</li>
+      <li>Filter by folder name, file name, file type, container</li>
+      <li>Trigger parameters: <code>@pipeline()?.TriggerEvent?.FileName</code></li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-factory/pipeline-runs" target="_blank">Pipeline runs — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Self-Hosted Integration Runtime (SHIR)</h2>
+    <p>SHIR enables Fabric pipelines to connect to on-premises or private network data sources that are not publicly accessible.</p>
+    <h3>Key Points:</h3>
+    <ul>
+      <li>Installed on a machine within your private network</li>
+      <li>Allows Copy activity to read from on-premises SQL Server, Oracle, SAP, file shares, etc.</li>
+      <li>Also called <strong>on-premises data gateway</strong> in some Fabric contexts</li>
+      <li>SHIR is different from <strong>Managed Private Endpoints</strong> (Spark-based VNet)</li>
+    </ul>
+    <div class="gotcha">
+      <p>A single Copy activity can only use ONE gateway. If both source and sink are on-premises with different gateways, use an intermediate cloud storage as a staging area.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-factory/connector-shir-overview" target="_blank">SHIR overview — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S3 -->
+
+<!-- ===== S4: REAL-TIME ===== -->
+<div id="s4" class="panel">
+
+  <div class="card">
+    <h2>Eventstream Overview</h2>
+    <p>Eventstream is a Fabric Real-Time Intelligence feature that ingests real-time events, transforms them, and routes them to destinations — without writing code.</p>
+    <h3>Two Capability Modes:</h3>
+    <table>
+      <tr><th>Mode</th><th>Sources</th><th>Destinations</th></tr>
+      <tr><td>Standard</td><td>Azure Event Hubs, IoT Hub, Sample data, Custom app</td><td>KQL database, Lakehouse, Fabric Activator, Custom app</td></tr>
+      <tr><td>Enhanced (recommended)</td><td>All standard + CDC sources (SQL, PostgreSQL, MySQL, MongoDB, Cosmos DB, SQL MI, SQL on VM), Google Pub/Sub, Amazon Kinesis, Confluent Kafka, Apache Kafka, Amazon MSK, Azure Service Bus, Azure Event Grid, OneLake events, Workspace events, Job events, MQTT, and more</td><td>All standard + Spark Notebook (preview), Derived stream</td></tr>
+    </table>
+    <div class="gotcha">
+      <p><strong>Warehouse is NOT a supported Eventstream destination.</strong> Use Lakehouse or Eventhouse (KQL database) instead. If you need data in a Warehouse, land it in Lakehouse first, then use a pipeline.</p>
+    </div>
+    <div class="gotcha">
+      <p>In Enhanced mode, the intermediate node after transformations is called a <strong>Derived stream</strong> (not "Eventstream chain" — that term is outdated).</p>
+    </div>
+    <h3>Supported Transformations:</h3>
+    <table>
+      <tr><th>Transformation</th><th>Description</th></tr>
+      <tr><td>Filter</td><td>Filter events by field value</td></tr>
+      <tr><td>Manage fields</td><td>Add, remove, rename, change type of fields</td></tr>
+      <tr><td>Aggregate</td><td>Sum/min/max/avg over time window (single event-triggered)</td></tr>
+      <tr><td>Group by</td><td>Aggregations across events in a time window (richer than Aggregate)</td></tr>
+      <tr><td>Union</td><td>Combine two+ streams with shared fields</td></tr>
+      <tr><td>Expand</td><td>New row per array value</td></tr>
+      <tr><td>Join</td><td>Combine two streams on matching condition</td></tr>
+    </table>
+    <h3>Key Limits:</h3>
+    <table>
+      <tr><th>Limit</th><th>Value</th></tr>
+      <tr><td>Maximum message size</td><td>1 MB</td></tr>
+      <tr><td>Maximum data retention</td><td>90 days</td></tr>
+      <tr><td>Event delivery guarantees</td><td>At least once</td></tr>
+    </table>
+    <div class="note">
+      <p>Eventstream is built on Azure Event Hubs. When you create an eventstream, an event hub namespace is automatically provisioned. An event hub is allocated to the default stream.</p>
+    </div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview" target="_blank">Eventstream overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Eventhouse Overview</h2>
+    <p>An Eventhouse is a container that holds one or more <strong>KQL databases</strong>. It is the preferred engine for real-time, time-series, semi-structured (JSON/XML), and free-text analysis in Fabric.</p>
+    <h3>Key Characteristics:</h3>
+    <ul>
+      <li>Designed for <strong>streaming data</strong> — query billions of events in seconds</li>
+      <li>One Eventhouse can host <strong>multiple KQL databases</strong></li>
+      <li>Databases share capacity and resources within the Eventhouse</li>
+      <li>Unified monitoring and management across all databases</li>
+      <li>Supports structured, semi-structured (JSON, XML), and unstructured data</li>
+      <li>Auto-indexed by ingestion time for fast searching</li>
+    </ul>
+    <h3>Use Cases:</h3>
+    <ul>
+      <li>Telemetry and log data</li>
+      <li>Time series and IoT data</li>
+      <li>Security and compliance logs</li>
+      <li>Financial records</li>
+    </ul>
+    <h3>Ingestion Sources:</h3>
+    <ul>
+      <li>Eventstream (primary)</li>
+      <li>SDKs, Kafka, Logstash</li>
+      <li>Dataflows, Pipelines</li>
+    </ul>
+    <h3>Sharing:</h3>
+    <ul>
+      <li>Sharing an Eventhouse link gives recipient same permissions to all KQL databases, tables, dashboards, functions, materialized views within it</li>
+      <li>Individual KQL databases can be shared independently</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse" target="_blank">Eventhouse overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Fabric Activator (Data Activator)</h2>
+    <p>Activator is a <strong>no-code event detection engine</strong> that monitors data streams and automatically triggers actions when specific patterns or conditions are detected.</p>
+    <h3>Core Architecture Components:</h3>
+    <table>
+      <tr><th>Component</th><th>Description</th></tr>
+      <tr><td>Event sources</td><td>Eventstream, Power BI reports, Fabric/Azure events, Real-Time dashboards</td></tr>
+      <tr><td>Objects</td><td>Business entities being monitored (e.g. freezer, vehicle, campaign). Grouped by object ID column.</td></tr>
+      <tr><td>Properties</td><td>Specific attributes of objects to monitor (e.g. temperature, balance)</td></tr>
+      <tr><td>Rules</td><td>Conditions evaluated continuously — stateless or stateful</td></tr>
+      <tr><td>Actions</td><td>What happens when rule fires</td></tr>
+    </table>
+    <h3>Supported Actions:</h3>
+    <ul>
+      <li>Fabric: Pipelines, Notebooks, Spark Job Definitions, Dataflows, User Data Functions (preview)</li>
+      <li>External: Power Automate flows</li>
+      <li>Notifications: Teams messages (individual/group/channel), Email</li>
+    </ul>
+    <h3>Rule Types:</h3>
+    <ul>
+      <li><strong>Stateless</strong>: Evaluate each event in isolation (e.g. value &lt; 50). Near-millisecond latency.</li>
+      <li><strong>Stateful</strong>: Track changes over time (BECOMES, DECREASES, INCREASES, EXIT RANGE, heartbeat)</li>
+    </ul>
+    <h3>Billing:</h3>
+    <ul>
+      <li>Pay-as-you-go — only charged when rules are actively running</li>
+      <li>Activators are capacity-bound</li>
+    </ul>
+    <h3>Key Integration Points:</h3>
+    <table>
+      <tr><th>Component</th><th>Interaction</th></tr>
+      <tr><td>Eventstream</td><td>Primary data source; alert creation embedded in Eventstream UI</td></tr>
+      <tr><td>Power BI</td><td>Event source for report visuals; also consumes pipeline/notebook outputs</td></tr>
+      <tr><td>Pipeline</td><td>Target of Activator rule triggers</td></tr>
+    </table>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-activator/activator-introduction" target="_blank">Fabric Activator introduction — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S4 -->
+
+<!-- ===== S5: SECURITY & GOVERNANCE ===== -->
+<div id="s5" class="panel">
+
+  <div class="card">
+    <h2>Endorsement</h2>
+    <p>Endorsement helps users find high-quality, trustworthy content. Endorsed items display a badge in the Fabric UI.</p>
+    <h3>Three Endorsement Badges:</h3>
+    <table>
+      <tr><th>Badge</th><th>Who Can Apply</th><th>Meaning</th></tr>
+      <tr><td><strong>Promoted</strong></td><td>Any user with <strong>write permissions</strong> on the item (including Contributor)</td><td>Item is ready for sharing and reuse</td></tr>
+      <tr><td><strong>Certified</strong></td><td>Users <strong>specified by Fabric administrator</strong> only</td><td>Meets org quality standards; reliable and authoritative</td></tr>
+      <tr><td><strong>Master data</strong></td><td>Users <strong>specified by Fabric administrator</strong> only</td><td>Core organizational data source; single source of truth</td></tr>
+    </table>
+    <div class="gotcha">
+      <p><strong>Power BI Dashboards CANNOT be promoted or certified</strong> — they are explicitly excluded. All other Fabric and Power BI items can be promoted or certified.</p>
+    </div>
+    <div class="gotcha">
+      <p><strong>Master data</strong> endorsement can only be applied to items that <strong>contain data</strong> (e.g. lakehouses, semantic models) — not to reports, dashboards, or other non-data items.</p>
+    </div>
+    <h3>Key Notes:</h3>
+    <ul>
+      <li>Certification can be <strong>delegated to domain administrators</strong> — different reviewers per domain</li>
+      <li>Certification and Master data must be enabled by a Fabric admin first</li>
+      <li>Any user can <em>request</em> certification; only designated users can actually certify</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/governance/endorsement-overview" target="_blank">Endorsement overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Sensitivity Labels</h2>
+    <p>Sensitivity labels (from Microsoft Purview Information Protection) classify and protect Fabric content based on data sensitivity.</p>
+    <h3>Key Points:</h3>
+    <ul>
+      <li>Applied to Fabric items (lakehouses, warehouses, reports, semantic models, etc.)</li>
+      <li>Labels flow downstream — when you apply a label to a dataset, it can propagate to dependent items</li>
+      <li>Labels appear in the Fabric UI and in data exports</li>
+      <li>Labels with <strong>protection</strong> can encrypt files and apply permissions</li>
+    </ul>
+    <h3>Sensitivity Labels in Deployment Pipelines:</h3>
+    <div class="gotcha">
+      <p>Sensitivity labels are <strong>NOT automatically copied</strong> during deployment in most cases. Labels ARE copied only when: (1) a new item is deployed (clean deploy), OR (2) the source item has a protected label and the target does not.</p>
+    </div>
+    <h3>Also NOT copied during Deployment Pipeline:</h3>
+    <ul>
+      <li>Data (only metadata is copied)</li>
+      <li>Permissions / URL / ID</li>
+      <li>Refresh schedule</li>
+      <li>Data source credentials</li>
+      <li>Role assignment</li>
+      <li>Endorsement settings</li>
+      <li>App content and settings</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/governance/sensitivity-labels-overview" target="_blank">Sensitivity labels overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Deployment Pipelines</h2>
+    <p>Deployment pipelines provide an ALM (Application Lifecycle Management) tool for managing content across Dev → Test → Production stages.</p>
+    <h3>Key Characteristics:</h3>
+    <ul>
+      <li>2–10 stages per pipeline (default: 3)</li>
+      <li>Stages are permanent after creation (cannot rename/delete stages)</li>
+      <li>Deploy content from any adjacent stage in either direction</li>
+      <li>Maximum <strong>300 items</strong> per single deployment</li>
+    </ul>
+    <h3>Item Pairing:</h3>
+    <ul>
+      <li>Items in adjacent stages are "paired" by connection (not by name)</li>
+      <li>Paired items can have different names across stages</li>
+      <li>Items with same name/type but not paired create a DUPLICATE (don't overwrite)</li>
+      <li>Deployment overwrites the paired item's content but preserves its ID, URL, and permissions</li>
+    </ul>
+    <h3>Properties Copied During Deployment:</h3>
+    <ul>
+      <li>✅ Data sources, Parameters, Report visuals, Report pages, Dashboard tiles, Model metadata, Item relationships</li>
+      <li>✅ Sensitivity labels (only under specific conditions — see above)</li>
+    </ul>
+    <h3>Properties NOT Copied (Critical Exam List):</h3>
+    <table>
+      <tr><th>Not Copied</th><th>Explanation</th></tr>
+      <tr><td>Data</td><td>Only metadata copied; run refresh after deployment</td></tr>
+      <tr><td>URL / ID / Permissions</td><td>Each stage has its own identity</td></tr>
+      <tr><td>Refresh schedule</td><td>Must be reconfigured per stage</td></tr>
+      <tr><td>Data source credentials</td><td>Must be reconfigured per stage</td></tr>
+      <tr><td>Endorsement settings</td><td>Not propagated across stages</td></tr>
+      <tr><td>Role assignment</td><td>Not copied</td></tr>
+      <tr><td>Workspace settings</td><td>Each stage has own workspace</td></tr>
+      <tr><td>App content and settings</td><td>Must be manually updated</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>After deploying a semantic model with a Direct Lake connection, the model in the target stage still points to the <strong>source stage lakehouse</strong>. You must manually configure datasource rules to bind it to the target stage lakehouse.</p>
+    </div>
+    <h3>Autobinding:</h3>
+    <ul>
+      <li>Deployment pipelines automatically connect (autobind) deployed items to paired items in the target stage</li>
+      <li>Both pipelines in cross-pipeline autobinding must have the <strong>same number of stages</strong></li>
+    </ul>
+    <h3>Required Permissions:</h3>
+    <ul>
+      <li>To deploy: Pipeline admin + at least Contributor in both source and target workspaces</li>
+      <li>Workspace must reside on a Fabric capacity</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/intro-to-deployment-pipelines" target="_blank">Deployment pipelines intro — Microsoft Learn</a> | <a href="https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/understand-the-deployment-process" target="_blank">Deployment process — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Git Integration</h2>
+    <p>Fabric Git integration enables version control of workspace items at the workspace level, using Azure DevOps or GitHub.</p>
+    <h3>Supported Git Providers:</h3>
+    <ul>
+      <li>Azure DevOps (cloud-based only)</li>
+      <li>GitHub (cloud-based only)</li>
+      <li>GitHub Enterprise (cloud-based only)</li>
+    </ul>
+    <div class="gotcha">
+      <p>Only <strong>cloud-based</strong> Git providers are supported. On-premises Azure DevOps Server is NOT supported.</p>
+    </div>
+    <h3>Key Supported Items:</h3>
+    <ul>
+      <li>Data Engineering: Lakehouse, Notebook, Spark Job Definition, Environment, GraphQL</li>
+      <li>Data Factory: Dataflow Gen2, Pipeline, Copy Job, Mirrored database</li>
+      <li>Real-Time Intelligence: Eventhouse, Eventstream, KQL database, KQL Queryset, Real-time Dashboard, Activator (preview)</li>
+      <li>Data Warehouse: Warehouse (preview)</li>
+      <li>Power BI: Report, Semantic model, Paginated report (preview)</li>
+      <li>Database: SQL database</li>
+    </ul>
+    <h3>Integration Level:</h3>
+    <ul>
+      <li>Workspace-level integration (entire workspace, not item-by-item)</li>
+      <li>Workspace folder structure preserved in Git repository</li>
+      <li>Unsupported items are ignored (not deleted, not synced)</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/cicd/git-integration/intro-to-git-integration" target="_blank">Git integration overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Managed Private Endpoints</h2>
+    <p>Managed private endpoints allow Fabric workloads to securely access private network data sources without public internet exposure.</p>
+    <h3>Key Points:</h3>
+    <ul>
+      <li>Created by <strong>workspace admins</strong> via workspace settings</li>
+      <li>Microsoft Fabric creates and manages the endpoints</li>
+      <li>Supported for: <strong>Fabric trial capacity and all Fabric F SKU capacities</strong></li>
+      <li>Require Fabric Data Engineering (Spark-based) workload in both the tenant home region and capacity region</li>
+    </ul>
+    <h3>Supported Workloads:</h3>
+    <ul>
+      <li><strong>Fabric Data Engineering</strong>: Notebooks (Spark and Python runtimes), Lakehouses, Spark Job Definitions</li>
+      <li><strong>Eventstream</strong>: Connect to Azure resources securely</li>
+    </ul>
+    <h3>Limitations:</h3>
+    <ul>
+      <li>OneLake shortcuts do NOT yet support ADLS Gen2 or Azure Blob Storage via managed private endpoints</li>
+      <li>Workspace migration across capacities in different regions is unsupported</li>
+      <li>When using Starter Pools with Private Links or Managed VNets, sessions start in 2–5 minutes (not 5–10 seconds)</li>
+      <li>Wait at least 15 minutes before creating a new private endpoint to the same resource after deleting one</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/security/security-managed-private-endpoints-overview" target="_blank">Managed private endpoints — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S5 -->
+
+<!-- ===== S6: MONITORING & ADMIN ===== -->
+<div id="s6" class="panel">
+
+  <div class="card">
+    <h2>Fabric Capacity Metrics App</h2>
+    <p>The Fabric Capacity Metrics app monitors capacity consumption and health. Install it from AppSource — you must be a <strong>capacity admin</strong> to install and view it.</p>
+    <h3>App Pages:</h3>
+    <table>
+      <tr><th>Page</th><th>Purpose</th></tr>
+      <tr><td>Health</td><td>High-level overview across all capacities you admin; identify throttling or query rejections</td></tr>
+      <tr><td>Compute</td><td>14-day view of capacity compute performance; ribbon charts, utilization trends, operations matrix</td></tr>
+      <tr><td>Storage</td><td>30-day storage usage by workspace; soft-deleted data trends</td></tr>
+      <tr><td>Timepoint</td><td>Drill into a specific 30-second timepoint — which operations consumed most compute</td></tr>
+      <tr><td>Timepoint summary</td><td>Operation types (not individual) that contributed to usage during a timepoint</td></tr>
+      <tr><td>Timepoint item detail</td><td>Granular detail on operations within a specific item at a timepoint</td></tr>
+      <tr><td>Autoscale compute for Spark</td><td>Autoscaling behavior of Spark workloads</td></tr>
+      <tr><td>Autoscale compute for Spark detail</td><td>Which workloads triggered scaling</td></tr>
+      <tr><td>Plan capacity</td><td>Estimate right capacity SKU using Fabric SKU Estimator</td></tr>
+      <tr><td>Monitor paused capacity</td><td>When capacity was paused/resumed; carryforward operations</td></tr>
+      <tr><td>Calculations</td><td>How app computes CU usage, throttling, autoscale impact</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>The Capacity Metrics app is a <strong>multi-page app with many pages</strong> (not just 2 tabs). AI Functions appears as a <strong>distinct operation category</strong> separate from Spark and Dataflows Gen2.</p>
+    </div>
+    <h3>Data Latency:</h3>
+    <ul>
+      <li>Usage data available within <strong>10–15 minutes</strong> after activity</li>
+      <li>Capacities/workspaces/items refresh at <strong>midnight local time</strong> (new items won't appear until next scheduled refresh)</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/enterprise/metrics-app" target="_blank">Capacity Metrics app — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Fabric Licenses &amp; SKUs</h2>
+    <h3>Fabric SKU Table (CUs = Capacity Units):</h3>
+    <table>
+      <tr><th>SKU</th><th>CUs</th><th>Power BI Equivalent</th><th>v-cores</th></tr>
+      <tr><td>F2</td><td>2</td><td>—</td><td>0.25</td></tr>
+      <tr><td>F4</td><td>4</td><td>—</td><td>0.5</td></tr>
+      <tr><td>F8</td><td>8</td><td>EM/A1</td><td>1</td></tr>
+      <tr><td>F16</td><td>16</td><td>EM2/A2</td><td>2</td></tr>
+      <tr><td>F32</td><td>32</td><td>EM3/A3</td><td>4</td></tr>
+      <tr><td>F64</td><td>64</td><td>P1/A4</td><td>8</td></tr>
+      <tr><td>Trial</td><td>64</td><td>—</td><td>8</td></tr>
+      <tr><td>F128</td><td>128</td><td>P2/A5</td><td>16</td></tr>
+      <tr><td>F256</td><td>256</td><td>P3/A6</td><td>32</td></tr>
+      <tr><td>F512</td><td>512</td><td>P4/A7</td><td>64</td></tr>
+      <tr><td>F1024</td><td>1024</td><td>P5/A8</td><td>128</td></tr>
+      <tr><td>F2048</td><td>2048</td><td>—</td><td>256</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>A and EM SKUs only support Power BI items — NOT Fabric items (lakehouses, warehouses, notebooks, etc.). F SKUs support all Fabric experiences.</p>
+    </div>
+    <h3>Per-User License Types:</h3>
+    <table>
+      <tr><th>License</th><th>Key Capability</th></tr>
+      <tr><td>Free</td><td>Auto-granted on first Fabric sign-in. Create non-Power BI Fabric items on F/Trial capacity. Cannot create Power BI items outside My Workspace without Pro/PPU.</td></tr>
+      <tr><td>Pro</td><td>Create and share Power BI items. Required for Power BI in workspaces &lt; F64.</td></tr>
+      <tr><td>PPU (Premium Per User)</td><td>Access to most Power BI Premium features per-user. Does NOT provision a Fabric capacity — cannot create Fabric (non-PBI) items without an F capacity.</td></tr>
+    </table>
+    <div class="gotcha">
+      <p><strong>F64+ threshold</strong>: On F64 or larger capacities, Free-license users with a Viewer workspace role CAN view Power BI content. On smaller SKUs (&lt;F64), viewing Power BI content requires Pro, PPU, or trial.</p>
+    </div>
+    <div class="gotcha">
+      <p>PPU does NOT provision a Fabric capacity. You cannot create lakehouses, warehouses, or notebooks with PPU alone — you need an F capacity or Trial.</p>
+    </div>
+    <h3>Spark VCores Formula:</h3>
+    <ul>
+      <li>1 Capacity Unit = 2 Spark VCores</li>
+      <li>3x Burst Multiplier applies for custom pools</li>
+      <li>F64 = 64 CUs × 2 × 3 = <strong>384 Spark VCores</strong></li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/enterprise/licenses" target="_blank">Fabric licenses — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Direct Lake Mode</h2>
+    <p>Direct Lake is a Power BI semantic model storage mode that reads Delta tables directly from OneLake without importing or using DirectQuery — combining the speed of Import with the freshness of DirectQuery.</p>
+    <h3>How Direct Lake Works:</h3>
+    <ul>
+      <li>Reads Parquet files directly from OneLake into memory (column store framing)</li>
+      <li>When a query comes in, the engine checks if the required data is already "framed" (cached)</li>
+      <li>If not framed, data is loaded from OneLake on demand</li>
+      <li>V-Order optimized Parquet files load significantly faster into Direct Lake</li>
+    </ul>
+    <h3>Direct Lake Fallback to DirectQuery:</h3>
+    <p>Direct Lake falls back to DirectQuery (slower) when:</p>
+    <table>
+      <tr><th>Fallback Trigger</th><th>Explanation</th></tr>
+      <tr><td>Row-Level Security on Warehouse</td><td>Direct Lake detects security policy → falls back to DirectQuery</td></tr>
+      <tr><td>Column-Level Security on Warehouse</td><td>Same — CLS triggers DirectQuery fallback</td></tr>
+      <tr><td>Frame limit exceeded</td><td>Model exceeds the number of rows/columns that can be framed for the SKU</td></tr>
+      <tr><td>Unsupported data types</td><td>Some complex types force DirectQuery</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>Direct Lake falls back to DirectQuery when RLS or CLS is applied to the <strong>Warehouse</strong> source. If you need Direct Lake performance with security, use OneLake security roles on a Lakehouse instead.</p>
+    </div>
+    <h3>Frame Limits by SKU:</h3>
+    <ul>
+      <li>Frame limits vary by capacity SKU — larger SKUs support more rows/columns in memory</li>
+      <li>When limits are exceeded, the query automatically falls back to DirectQuery</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview" target="_blank">Direct Lake overview — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>High Concurrency Mode (Spark)</h2>
+    <p>High concurrency mode lets multiple Spark workloads share one running Spark session instead of starting a new session per workload.</p>
+    <h3>How It Works:</h3>
+    <ul>
+      <li>One Spark application hosts multiple workloads via separate <strong>REPL cores</strong></li>
+      <li>Each REPL core isolates execution state (variables don't bleed between notebooks)</li>
+      <li>Subsequent workloads start much faster (session already running)</li>
+      <li>FAIR scheduling across REPL cores to reduce starvation</li>
+    </ul>
+    <h3>Session Sharing Requirements:</h3>
+    <ul>
+      <li>Sessions must be within a <strong>single-user boundary</strong></li>
+      <li>Sessions use the <strong>same default Lakehouse configuration</strong></li>
+      <li>Sessions use the <strong>same Spark compute settings</strong></li>
+    </ul>
+    <div class="gotcha">
+      <p>If ANY of the three requirements differ (different user, different lakehouse, different compute settings), Fabric starts a <strong>separate Spark session</strong> instead of sharing.</p>
+    </div>
+    <h3>Billing:</h3>
+    <ul>
+      <li>Only the <strong>initiating notebook or pipeline activity</strong> that starts the shared Spark application is billed</li>
+      <li>Subsequent sessions sharing the same Spark session are NOT billed separately</li>
+      <li>This is reflected in Capacity Metrics — usage reported against the initiating notebook</li>
+    </ul>
+    <h3>Session Sharing Limits:</h3>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td>Default max notebooks per session</td><td>5</td></tr>
+      <tr><td>Maximum configurable limit</td><td>50</td></tr>
+      <tr><td>Configuration property</td><td><code>spark.highConcurrency.max = &lt;2–50&gt;</code></td></tr>
+      <tr><td>Where to set</td><td>Environment item → Spark Properties</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>Default is <strong>5 notebooks</strong> per session. You must explicitly set <code>spark.highConcurrency.max</code> to increase it — it doesn't change automatically.</p>
+    </div>
+    <h3>Speed Benefit:</h3>
+    <ul>
+      <li>Custom pools with high concurrency mode: session start up to <strong>36x faster</strong> than standard Spark session</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/high-concurrency-overview" target="_blank">High concurrency mode — Microsoft Learn</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Apache Spark Compute (Starter Pools &amp; Custom Pools)</h2>
+    <h3>Starter Pools:</h3>
+    <ul>
+      <li>Pre-warmed Spark clusters — always on and ready</li>
+      <li>Default startup: <strong>5–10 seconds</strong> (no libraries, Medium node size, no special networking)</li>
+      <li>Only support <strong>Medium node size</strong></li>
+      <li>NOT supported with Private Links or Managed VNets (falls back to 2–5 min on-demand)</li>
+    </ul>
+    <h3>Starter Pool Startup Times:</h3>
+    <table>
+      <tr><th>Scenario</th><th>Typical Startup</th></tr>
+      <tr><td>Default settings, no libraries</td><td>5–10 seconds</td></tr>
+      <tr><td>Custom libraries / Spark properties</td><td>5–10 sec + 30 sec–5 min (library setup)</td></tr>
+      <tr><td>High traffic in region (no libraries)</td><td>2–5 minutes</td></tr>
+      <tr><td>Private Links / Managed VNets</td><td>2–5 minutes</td></tr>
+    </table>
+    <div class="gotcha">
+      <p>Selecting any node size other than Medium, or using Private Links/Managed VNets, disables Starter Pool optimization. Session start falls back to on-demand (2–5 minutes).</p>
+    </div>
+    <h3>Custom Spark Pools:</h3>
+    <ul>
+      <li>Created by workspace admins (require admin permission)</li>
+      <li>Take ~3 minutes to start (Spark gets nodes from Azure)</li>
+      <li>Session expires after 20 minutes of inactivity (configurable)</li>
+      <li>Pool deallocated after 2 minutes of inactivity post-expiry</li>
+      <li>Supports Autoscale and Dynamic Allocation</li>
+    </ul>
+    <h3>Node Sizes:</h3>
+    <table>
+      <tr><th>Size</th><th>vCores</th><th>Memory</th></tr>
+      <tr><td>Small</td><td>4</td><td>32 GB</td></tr>
+      <tr><td>Medium</td><td>8</td><td>64 GB</td></tr>
+      <tr><td>Large</td><td>16</td><td>128 GB</td></tr>
+      <tr><td>X-Large</td><td>32</td><td>256 GB</td></tr>
+      <tr><td>XX-Large</td><td>64</td><td>512 GB</td></tr>
+    </table>
+    <div class="note">
+      <p>X-Large and XX-Large are only available for non-trial Fabric SKUs. Node-to-executor ratio is always 1:1 in Fabric (one executor per worker node).</p>
+    </div>
+    <h3>Billing:</h3>
+    <ul>
+      <li>Charged only for active session duration (not cluster idle time or provisioning)</li>
+      <li>Billing stops when Spark session expires</li>
+    </ul>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/spark-compute" target="_blank">Apache Spark compute — Microsoft Learn</a></div>
+  </div>
+
+</div><!-- end S6 -->
+
+</div><!-- end content-area -->
+
+<script>
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.section-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
