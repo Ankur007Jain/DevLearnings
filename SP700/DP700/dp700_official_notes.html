@@ -4,112 +4,85 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DP-700 Official Notes – Microsoft Learn</title>
+<link rel="stylesheet" href="dp700_styles.css">
 <style>
-  :root {
-    --bg: #0f0f1a; --card: #1a1a2e; --border: #2a2a4a;
-    --accent: #6c63ff; --accent2: #00d4aa; --warn: #ff6b6b;
-    --gold: #ffd700; --text: #e8e8f0; --muted: #8888aa;
-    --green: #4caf50; --orange: #ff9800; --blue: #2196f3;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; }
-
-  /* TOP NAV */
-  .top-nav { background: #12122a; border-bottom: 2px solid var(--accent); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .top-nav a { color: var(--muted); text-decoration: none; padding: 5px 12px; border-radius: 6px; font-size: 13px; transition: all 0.2s; white-space: nowrap; }
-  .top-nav a:hover { background: var(--border); color: var(--text); }
-  .top-nav a.active { background: var(--accent); color: #fff; font-weight: 600; }
-  .nav-label { color: var(--muted); font-size: 12px; margin-right: 4px; font-weight: 600; }
-
-  /* PAGE HEADER */
-  .page-header { background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%); padding: 24px 24px 16px; border-bottom: 1px solid var(--border); }
-  .page-header h1 { font-size: 22px; color: var(--accent2); }
-  .page-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
-
-  /* SECTION TABS */
-  .section-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 44px; z-index: 90; }
-  .section-tabs button { background: var(--border); border: none; color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
-  .section-tabs button:hover { background: #333358; color: var(--text); }
-  .section-tabs button.active { background: var(--accent); color: #fff; font-weight: 600; }
-
-  /* CONTENT PANELS */
-  .content-area { padding: 20px 16px; max-width: 1100px; margin: 0 auto; }
+  /* Panel visibility */
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* CARDS */
+  /* Content area */
+  .content-area { max-width: 1100px; margin: 0 auto; padding: 20px 24px; }
+
+  /* Cards */
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
-  .card h2 { font-size: 17px; color: var(--accent2); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .card h3 { font-size: 15px; color: var(--gold); margin: 14px 0 8px; }
-  .card h4 { font-size: 14px; color: #aaa; margin: 10px 0 6px; }
-  .card p, .card li { color: var(--text); margin-bottom: 6px; }
+  .card h2 { font-size: 17px; color: var(--accent); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card h3 { font-size: 15px; color: var(--d1); margin: 14px 0 8px; font-weight: 700; }
+  .card h4 { font-size: 13px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
+  .card p, .card li { margin-bottom: 5px; }
   .card ul, .card ol { padding-left: 20px; margin-bottom: 8px; }
-  .card code { background: #2a2a4a; color: #00d4aa; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'Courier New', monospace; }
-  .card pre { background: #1e1e35; border: 1px solid var(--border); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 8px 0; }
-  .card pre code { background: none; padding: 0; font-size: 13px; }
 
-  /* GOTCHA BOX */
-  .gotcha { background: #2a1515; border: 1px solid var(--warn); border-left: 4px solid var(--warn); border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
-  .gotcha::before { content: "⚠️ EXAM TRAP: "; font-weight: 700; color: var(--warn); }
-  .gotcha p, .gotcha li { color: #ffcccc; margin: 4px 0; }
-
-  /* TIP BOX */
-  .tip { background: #0d2a1f; border: 1px solid var(--green); border-left: 4px solid var(--green); border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
+  /* Callout overrides (match shared style but add ::before labels) */
+  .gotcha::before { content: "⚠️ EXAM TRAP: "; font-weight: 700; color: var(--amber); }
+  .tip { background: #f0fdf4; border-left: 3px solid var(--green); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
   .tip::before { content: "✅ KEY POINT: "; font-weight: 700; color: var(--green); }
+  .note { background: #eff6ff; border-left: 3px solid var(--d1); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
+  .note::before { content: "📌 NOTE: "; font-weight: 700; color: var(--d1); }
 
-  /* NOTE BOX */
-  .note { background: #1a1f3a; border: 1px solid var(--blue); border-left: 4px solid var(--blue); border-radius: 6px; padding: 10px 14px; margin: 8px 0; }
-  .note::before { content: "📌 NOTE: "; font-weight: 700; color: var(--blue); }
-
-  /* TABLE */
-  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
-  th { background: #2a2a4a; color: var(--accent2); padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
-  td { padding: 7px 10px; border: 1px solid var(--border); vertical-align: top; }
-  tr:nth-child(even) td { background: #16162a; }
-  tr:hover td { background: #1e1e35; }
-
-  /* SOURCE CITATION */
+  /* Source citation */
   .source { font-size: 11px; color: var(--muted); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
   .source a { color: var(--accent); text-decoration: none; }
   .source a:hover { text-decoration: underline; }
 
-  /* BADGE */
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-left: 6px; }
-  .badge-green { background: #1a3a1a; color: #4caf50; border: 1px solid #4caf50; }
-  .badge-red { background: #3a1a1a; color: #ff6b6b; border: 1px solid #ff6b6b; }
-  .badge-gold { background: #2a2a00; color: #ffd700; border: 1px solid #ffd700; }
+  /* Badge variants */
+  .badge-green { background: #d1fae5; color: var(--green); border: 1px solid var(--green); border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .badge-red   { background: #fee2e2; color: var(--red);   border: 1px solid var(--red);   border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .badge-gold  { background: #fef3c7; color: var(--amber); border: 1px solid var(--amber); border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+  /* Section dropdown bar */
+  .section-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 85px; z-index: 80; }
+  .section-bar label { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .section-select { padding: 7px 32px 7px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color 0.15s; min-width: 280px; }
+  .section-select:focus { outline: none; border-color: var(--accent); }
+  .section-select:hover { border-color: var(--accent); }
+  .section-count { font-size: 12px; color: var(--muted); background: #f1f5f9; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; }
 </style>
 </head>
 <body>
 
-<!-- TOP NAVIGATION -->
-<nav class="top-nav">
-  <span class="nav-label">DP-700:</span>
-  <a href="dp700_pb_notes.html">📚 PB Notes</a>
-  <a href="dp700_official_notes.html" class="active">📖 Official Notes</a>
-  <a href="dp700_mock1.html">🧪 Mock 1</a>
-  <a href="dp700_mock2.html">🧪 Mock 2</a>
-  <a href="dp700_mock3.html">🧪 Mock 3</a>
-  <a href="dp700_mock4.html">🧪 Mock 4</a>
-  <a href="dp700_mock5.html">🧪 Mock 5</a>
-  <a href="dp700_mock6.html">🧪 Mock 6</a>
-  <a href="dp700_labs.html">🔬 Labs</a>
+<div class="header">
+  <span style="font-size:22px">📄</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
+  <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
+  <a href="dp700_official_notes.html" class="tab-btn active">📄 Official Notes</a>
+  <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
+  <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+  <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
+  <span class="nav-sep">|</span>
+  <a href="dp700_mock2.html" class="tab-btn">📋 Full Mock</a>
+  <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
+  <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+  <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+  <a href="dp700_mock6.html" class="tab-btn">🌟 Mock 6</a>
 </nav>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <h1>📖 DP-700 Official Notes — Sourced from Microsoft Learn</h1>
-  <p>Every claim is sourced directly from official MS Learn documentation. No hallucinations. Exam-focused with gotchas highlighted.</p>
-</div>
-
-<!-- SECTION TABS -->
-<div class="section-tabs">
-  <button class="active" onclick="showPanel('s1')">🏠 S1: Lakehouse</button>
-  <button onclick="showPanel('s2')">🏗️ S2: Warehouse</button>
-  <button onclick="showPanel('s3')">🔄 S3: Data Factory</button>
-  <button onclick="showPanel('s4')">⚡ S4: Real-Time</button>
-  <button onclick="showPanel('s5')">🔒 S5: Security & Governance</button>
-  <button onclick="showPanel('s6')">📊 S6: Monitoring & Admin</button>
+<!-- SECTION DROPDOWN BAR -->
+<div class="section-bar">
+  <label for="sectionSelect">📂 Jump to section:</label>
+  <select id="sectionSelect" class="section-select" onchange="showPanel(this.value)">
+    <option value="s1">🏠 S1: Lakehouse</option>
+    <option value="s2">🏗️ S2: Warehouse</option>
+    <option value="s3">🔄 S3: Data Factory</option>
+    <option value="s4">⚡ S4: Real-Time Intelligence</option>
+    <option value="s5">🔒 S5: Security &amp; Governance</option>
+    <option value="s6">📊 S6: Monitoring &amp; Admin</option>
+  </select>
+  <span class="section-count">6 sections · MS Learn sourced · No hallucinations</span>
 </div>
 
 <div class="content-area">
@@ -1124,10 +1097,13 @@ WITH (
 <script>
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.section-tabs button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  // Keep dropdown in sync if called from JS elsewhere
+  const sel = document.getElementById('sectionSelect');
+  if (sel && sel.value !== id) sel.value = id;
 }
+// Show first panel on load
+document.addEventListener('DOMContentLoaded', () => showPanel('s1'));
 </script>
 
 </body>
