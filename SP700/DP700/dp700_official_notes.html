@@ -39,7 +39,8 @@
   .badge-gold  { background: #fef3c7; color: var(--amber); border: 1px solid var(--amber); border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
 
   /* Section dropdown bar */
-  .section-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 85px; z-index: 80; }
+  .section-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 80; transition: transform 0.25s ease, opacity 0.25s ease; }
+  .section-bar.hidden { transform: translateY(-110%); opacity: 0; pointer-events: none; }
   .section-bar label { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
   .section-select { padding: 7px 32px 7px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color 0.15s; min-width: 280px; }
   .section-select:focus { outline: none; border-color: var(--accent); }
@@ -1110,12 +1111,24 @@ WITH (
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Keep dropdown in sync if called from JS elsewhere
   const sel = document.getElementById('sectionSelect');
   if (sel && sel.value !== id) sel.value = id;
 }
-// Show first panel on load
-document.addEventListener('DOMContentLoaded', () => showPanel('s1'));
+document.addEventListener('DOMContentLoaded', () => {
+  showPanel('s1');
+  // Auto-hide section bar on scroll down, reveal on scroll up
+  const bar = document.querySelector('.section-bar');
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > lastY && y > 120) {
+      bar.classList.add('hidden');
+    } else {
+      bar.classList.remove('hidden');
+    }
+    lastY = y;
+  }, { passive: true });
+});
 </script>
 
 </body>
