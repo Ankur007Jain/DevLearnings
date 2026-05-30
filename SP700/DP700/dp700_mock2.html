@@ -188,7 +188,7 @@ const questions = [
           'C. Custom Spark pool — provisions a dedicated pool per notebook',
           'D. Increase executor memory on the starter pool'],
     ans:1,
-    expl:'<strong>B — High Concurrency Mode.</strong> It shares ONE running Spark session across multiple workloads for the SAME user, eliminating per-notebook cold starts (up to 36× faster). Autoscale adds/removes compute nodes — it does not eliminate startup time. Custom pools have their own startup overhead.'
+    expl:'<strong>B — High Concurrency Mode.</strong> It shares ONE running Spark session across multiple workloads for the SAME user, eliminating per-notebook cold starts. For <strong>custom pools</strong>, high concurrency mode can start sessions up to 36× faster than a standard Spark session. Autoscale adds/removes compute nodes — it does not eliminate startup time.'
   },
 
   { domain:'d1', topic:'Spark Config — UDFs',

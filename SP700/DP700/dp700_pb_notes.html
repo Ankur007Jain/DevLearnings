@@ -472,7 +472,7 @@ df.writeStream \
         <h3>Shortcuts</h3>
         <ul>
           <li>Create: Files folder → New shortcut (or Tables → New shortcut)</li>
-          <li>Sources: ADLS Gen2, Amazon S3, Google Cloud Storage, OneLake, S3-compatible, On-premises Data Gateway</li>
+          <li>Sources: ADLS Gen2, <strong>Azure Blob Storage</strong>, Amazon S3, Google Cloud Storage, OneLake, S3-compatible, On-premises Data Gateway, Dataverse, OneDrive/SharePoint</li>
           <li>No data is copied — shortcut reads data in-place from external source</li>
           <li>ADLS Gen2 shortcuts: data stays in Azure, Fabric reads it directly</li>
         </ul>
@@ -587,7 +587,8 @@ OPTIMIZE tablename ZORDER BY (OrderDate, Region)</div>
         <h3>Dynamic Data Masking (DDM)</h3>
         <ul>
           <li>Masks data for unauthorized users — they see masked values (not an error)</li>
-          <li>Owner/sysadmin always sees real data</li>
+          <li>Users with <strong>Admin, Member, or Contributor</strong> workspace roles (or UNMASK/CONTROL permission) always see unmasked data</li>
+          <li>Users with lower access (Viewer, or direct item share only) see masked values</li>
         </ul>
         <div class="code-block">
 -- Mask entire column by data type (email → XXXX@XXXX.com, numbers → 0)
@@ -601,7 +602,7 @@ ALTER TABLE t ALTER COLUMN name ADD MASKED WITH (FUNCTION = 'partial(2,"xxxxxx",
 
 -- Random: show random number between 1 and 1000
 ALTER TABLE t ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'random(1,1000)')</div>
-        <div class="gotcha"><strong>⚠️ DDM partial():</strong> partial(prefixSize, "padding", suffixSize). For first 2 + last 4: partial(2,"xxxx",4). For salary use random(). Cannot mask yourself or sysadmin.</div>
+        <div class="gotcha"><strong>⚠️ DDM in Fabric Warehouse:</strong> partial(prefixSize, "padding", suffixSize). For first 2 + last 4: partial(2,"xxxx",4). For salary use random(). Users with <strong>Admin/Member/Contributor workspace roles</strong> or UNMASK permission always see real data — NOT "sysadmin/dbo" (SQL Server concept that doesn't apply in Fabric).</div>
 
         <h3>GRANT / DENY / REVOKE</h3>
         <div class="code-block">
@@ -616,7 +617,7 @@ DENY SELECT ON dbo.TableName TO [role_or_user]
 
 -- Revoke (removes effect of both GRANT and DENY)
 REVOKE SELECT ON dbo.TableName FROM [role_or_user]</div>
-        <div class="gotcha"><strong>⚠️ REVOKE removes BOTH grant and deny.</strong> You cannot DENY/GRANT to: sysadmin, dbo, db_owner, information_schema, sys, or yourself.</div>
+        <div class="gotcha"><strong>⚠️ REVOKE removes BOTH grant and deny.</strong> You cannot DENY/GRANT to: db_owner, information_schema, sys, or yourself. Note: "sysadmin" and "dbo" immunity is a SQL Server concept — in Fabric Warehouse, RLS/CLS applies to ALL users including dbo; the exempt principals are workspace-role based (Admin/Member/Contributor have CONTROL permission).</div>
 
         <h3>Row-Level Security (RLS)</h3>
         <div class="code-block">
@@ -632,7 +633,7 @@ CREATE SECURITY POLICY SalesFilter
 ADD FILTER PREDICATE dbo.fn_security(SalesPersonID)
 ON dbo.SalesTable
 WITH (STATE = ON)</div>
-        <div class="gotcha"><strong>⚠️ RLS requires a SECURITY POLICY with FILTER PREDICATE.</strong> Cannot block sysadmin/dbo/yourself.</div>
+        <div class="gotcha"><strong>⚠️ RLS in Fabric Warehouse:</strong> Requires a SECURITY POLICY with FILTER PREDICATE. RLS applies to <strong>ALL users including dbo</strong> — unlike traditional SQL Server where sysadmin is immune. In Fabric, the exempt users are those with Admin/Member/Contributor workspace roles (they hold CONTROL permission). You cannot filter yourself out of a policy you own without explicitly writing an exception.</div>
 
         <h3>Column-Level Security (CLS)</h3>
         <ul>
@@ -1178,7 +1179,7 @@ dataformat=csv
           <li>Change indicator icon: appears when content changed since last deployment</li>
           <li>Unsupported items: shown in UI but cannot be deployed (e.g., some custom items)</li>
           <li>What IS copied: item definitions, schema, code, connection config structure</li>
-          <li>What is NOT copied: credentials, data, sensitivity label settings, <strong>endorsement settings</strong>, refresh schedules</li>
+          <li>What is NOT copied: credentials, data, sensitivity label settings, <strong>endorsement settings</strong>, refresh schedules, <strong>role assignments</strong>, query caching settings, personal bookmarks, app content/settings, item IDs/URLs, permissions</li>
         </ul>
 
         <h3>Git Integration</h3>

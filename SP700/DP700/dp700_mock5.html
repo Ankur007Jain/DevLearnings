@@ -293,7 +293,7 @@ const questions = [
       'D. V-Order improves write speed.'
     ],
     ans:[0,1],
-    expl:'<strong>A &amp; B — V-Order improves read speed and decreases write speed.</strong> V-Order applies sorting, RLE encoding, and layout optimisations DURING WRITE — making reads faster by Power BI DirectLake, Fabric SQL engine, and Spark (10–50% read improvement). The trade-off: writes are slightly slower (~15%). V-Order is ON by default in Fabric. Disabling it speeds writes but degrades reads. For read-heavy workloads (most analytics), keep V-Order enabled.'
+    expl:'<strong>A &amp; B — V-Order improves read speed and decreases write speed.</strong> V-Order applies sorting, RLE encoding, and layout optimisations DURING WRITE — making reads faster by Power BI DirectLake, Fabric SQL engine, and Spark (10–50% read improvement). The trade-off: writes are slightly slower (~15%). ⚠️ V-Order is <strong>DISABLED by default</strong> in new Fabric workspaces (spark.sql.parquet.vorder.default=false). Enable it for read-heavy analytics workloads. When enabled, disabling it speeds writes but degrades reads.'
   },
 
   { domain:'d2', topic:'Dataflow Gen2 — Merge Query Type',
@@ -449,7 +449,7 @@ const questions = [
       'D. The item owner only'
     ],
     ans:[1],
-    expl:'<strong>B — Fabric administrator or a delegated certifier.</strong> Certified endorsement requires a Fabric administrator OR a user explicitly designated as a certifier by the Fabric admin in tenant settings (Admin portal → Certification settings). Promoted endorsement (the other type) CAN be set by any workspace Member or Admin. This distinction is heavily tested: Promoted = self-service (any Member/Admin); Certified = admin-controlled (requires delegation). Do not confuse the two.'
+    expl:'<strong>B — Fabric administrator or a delegated certifier.</strong> Certified endorsement requires a Fabric administrator OR a user explicitly designated as a certifier by the Fabric admin in tenant settings (Admin portal → Certification settings). Promoted endorsement (the other type) CAN be set by any user with write permissions on the item (Contributor, Member, or Admin). This distinction is heavily tested: Promoted = self-service (any Member/Admin); Certified = admin-controlled (requires delegation). Do not confuse the two.'
   },
 
   { domain:'d2', topic:'KQL — Filter Last 30 Minutes',
