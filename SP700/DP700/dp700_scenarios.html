@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Scenario Practice</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+/* ── Page layout ── */
+.page-header {
+  background: linear-gradient(135deg, #1e1b4b, #3730a3);
+  color: #fff;
+  padding: 28px 36px 22px;
+  border-bottom: 3px solid var(--accent);
+}
+.page-header h1 { font-size: 1.65rem; margin-bottom: 6px; }
+.page-header p  { font-size: 0.9rem; color: #c7d2fe; margin: 0; }
+
+/* ── Scoreboard ── */
+.scoreboard {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  padding: 14px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.score-pill {
+  font-size: 13px; font-weight: 700;
+  padding: 5px 14px; border-radius: 20px;
+  background: #ede9fe; color: #4c1d95;
+}
+.score-pill span { font-size: 16px; }
+.score-pill.correct  { background: #d1fae5; color: #065f46; }
+.score-pill.incorrect{ background: #fee2e2; color: #991b1b; }
+.score-pill.skipped  { background: #fef9c3; color: #713f12; }
+#progressBar {
+  flex: 1; min-width: 160px; height: 8px;
+  background: #e5e7eb; border-radius: 99px; overflow: hidden;
+}
+#progressFill {
+  height: 100%; background: var(--accent); border-radius: 99px;
+  transition: width .4s ease; width: 0%;
+}
+#resetBtn {
+  margin-left: auto;
+  padding: 6px 16px; border-radius: 8px; border: none;
+  background: #e5e7eb; color: #374151; font-weight: 600;
+  cursor: pointer; font-size: 12px;
+}
+#resetBtn:hover { background: #d1d5db; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 10px 20px; border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 10;
+}
+.filter-btn {
+  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: #fff; color: #374151; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+}
+.filter-btn:hover { background: #ede9fe; border-color: var(--accent); }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── Questions ── */
+.questions { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+
+.q-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 28px;
+  overflow: hidden; transition: box-shadow .2s;
+}
+.q-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+.q-card.answered-correct { border-left: 4px solid #10b981; }
+.q-card.answered-wrong   { border-left: 4px solid #ef4444; }
+
+.q-header {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 18px 20px 14px;
+}
+.q-num {
+  background: var(--accent); color: #fff;
+  border-radius: 8px; padding: 2px 9px;
+  font-size: 11px; font-weight: 800; white-space: nowrap; margin-top: 2px;
+}
+.q-tag {
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 12px; white-space: nowrap; margin-top: 4px;
+}
+.tag-pipeline  { background: #dbeafe; color: #1e40af; }
+.tag-lakehouse { background: #d1fae5; color: #065f46; }
+.tag-warehouse { background: #fde68a; color: #78350f; }
+.tag-realtime  { background: #fce7f3; color: #9d174d; }
+
+.q-scenario {
+  font-size: 13.5px; color: var(--muted); font-style: italic;
+  padding: 0 20px 8px; line-height: 1.55;
+}
+.q-text {
+  font-size: 15px; font-weight: 600; color: var(--fg);
+  padding: 0 20px 14px; line-height: 1.5;
+}
+
+/* options */
+.q-options { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; }
+.opt-btn {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: #fff;
+  cursor: pointer; text-align: left; font-size: 13.5px;
+  color: var(--fg); transition: all .15s; line-height: 1.45;
+}
+.opt-btn:hover:not(:disabled) { background: #f5f3ff; border-color: #a78bfa; }
+.opt-btn .opt-letter {
+  font-weight: 800; color: #6d28d9; min-width: 22px;
+  font-size: 12px; margin-top: 1px;
+}
+.opt-btn.correct  { background: #d1fae5; border-color: #10b981; }
+.opt-btn.wrong    { background: #fee2e2; border-color: #ef4444; }
+.opt-btn.reveal   { background: #ecfdf5; border-color: #34d399; }
+.opt-btn:disabled { cursor: default; }
+
+/* explanation */
+.q-explanation {
+  display: none; margin: 0 20px 18px;
+  background: #f8fafc; border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; font-size: 13.5px; line-height: 1.6;
+}
+.q-explanation.show { display: block; }
+.q-explanation strong { color: var(--accent); }
+.exp-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px;
+}
+.trial-tip {
+  margin-top: 10px; padding: 10px 12px;
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-radius: 8px; font-size: 12.5px; color: #78350f;
+}
+.trial-tip::before { content: "🧪 Fabric Trial Tip: "; font-weight: 700; }
+
+/* results banner */
+#resultsBanner {
+  display: none; margin: 0 auto 24px; max-width: 900px;
+  padding: 24px; border-radius: 14px;
+  background: linear-gradient(135deg, #1e1b4b, #3730a3);
+  color: #fff; text-align: center;
+}
+#resultsBanner h2 { font-size: 1.4rem; margin-bottom: 8px; }
+#resultsBanner p  { color: #c7d2fe; margin: 4px 0; }
+#resultsBanner .big-score { font-size: 3rem; font-weight: 800; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<nav class="tabs tabs-rows">
+  <div class="nav-row">
+    <span class="nav-row-label">📚 Study</span>
+    <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+    <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
+    <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
+    <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
+    <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
+    <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+    <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
+    <a href="dp700_scenarios.html" class="tab-btn active">🎭 Scenarios</a>
+  </div>
+  <div class="nav-row">
+    <span class="nav-row-label">📋 Mocks</span>
+    <a href="dp700_mock2.html" class="tab-btn">📋 Full Mock</a>
+    <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
+    <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+    <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+    <a href="dp700_mock6.html" class="tab-btn">🌟 Mock 6</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>🎭 DP-700 Scenario Practice</h1>
+  <p>30 real-world scenarios · Pipelines · Lakehouse · Warehouse Security · Real-time · Fabric Free Trial tips included</p>
+</div>
+
+<div class="scoreboard">
+  <div class="score-pill">Q <span id="sAnswered">0</span>/30</div>
+  <div class="score-pill correct">✅ <span id="sCorrect">0</span></div>
+  <div class="score-pill incorrect">❌ <span id="sWrong">0</span></div>
+  <div id="progressBar"><div id="progressFill"></div></div>
+  <button id="resetBtn" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterQ('all',this)">All (30)</button>
+  <button class="filter-btn" onclick="filterQ('pipeline',this)">🔄 Pipelines &amp; Dataflows</button>
+  <button class="filter-btn" onclick="filterQ('lakehouse',this)">🏠 Lakehouse &amp; Delta</button>
+  <button class="filter-btn" onclick="filterQ('warehouse',this)">🏢 Warehouse &amp; Security</button>
+  <button class="filter-btn" onclick="filterQ('realtime',this)">⚡ Real-time &amp; KQL</button>
+</div>
+
+<div class="questions" id="qContainer">
+  <div id="resultsBanner">
+    <h2>🎉 All Scenarios Complete!</h2>
+    <div class="big-score" id="finalScore">–</div>
+    <p id="finalMsg"></p>
+    <p style="margin-top:12px;font-size:13px;">Click ↺ Reset to try again</p>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // ── PIPELINES & DATAFLOWS ──────────────────────────────────────────────
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "Your company receives CSV files from a vendor in an Azure Blob Storage container every hour. The data must land raw in a Bronze layer before transformation into Delta tables.",
+    question: "What is the BEST two-step approach to ingest and transform the files using Fabric?",
+    options: [
+      "Use a Copy Activity to land raw CSVs into Lakehouse Files section (Bronze), then a Dataflow Gen2 or Notebook to transform into Delta Tables (Silver).",
+      "Use Dataflow Gen2 directly from Azure Blob to Lakehouse Tables — this skips the raw landing.",
+      "Use a single Copy Activity with 'Overwrite' mode writing directly to Lakehouse Tables.",
+      "Use an Eventstream to stream the CSV files into the Lakehouse in real time."
+    ],
+    answer: 0,
+    explanation: "<strong>A is correct.</strong> Copy Activity → Lakehouse Files preserves the raw Bronze layer. Dataflow Gen2 or a Notebook then transforms to Silver Delta Tables. Option B skips the medallion raw layer, losing the original data. Option C loses schema flexibility. Option D — Eventstream is for streaming data, not batch file ingestion.",
+    tip: "In your Fabric trial: Create a Lakehouse → upload a sample CSV (use NYC Taxi open data: <code>https://aka.ms/NYCTaxi</code>) → build a Pipeline with Copy Activity → explore the Files section."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "You have a pipeline that calls an external REST API. The API occasionally returns HTTP 429 (rate limit) errors. You need automatic retries with a 5-minute wait between attempts, up to 3 times.",
+    question: "Where is the CORRECT place to configure retry behavior?",
+    options: [
+      "In the pipeline's Schedule trigger settings — set retry count = 3.",
+      "In the Copy Activity (or Web Activity) Settings tab — set Retry = 3, Retry interval = 300 seconds.",
+      "Add a ForEach loop wrapping the activity with a counter variable.",
+      "In the Linked Service connection — enable exponential backoff."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> Each pipeline activity (Copy, Web, etc.) has a built-in Retry setting in its Settings tab. Retry count sets max attempts; Retry interval (seconds) sets the wait. This is the native, zero-code solution. Trigger settings don't control per-activity retries. ForEach loops work but are unnecessary complexity.",
+    tip: "In your Fabric trial: Open any pipeline → add a Web Activity → go to Settings tab → look for 'Retry' and 'Retry interval' fields. Try calling a public API like <code>https://api.publicapis.org/entries</code>."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "You need to load data from an on-premises SQL Server into a Fabric Lakehouse. The SQL Server is behind a corporate firewall and has no public internet access.",
+    question: "Which component is REQUIRED to make this connection work?",
+    options: [
+      "Azure ExpressRoute — to create a private network path to Fabric.",
+      "Managed Virtual Network with a private endpoint in the Fabric workspace.",
+      "A Self-hosted Integration Runtime (SHIR) installed on a machine that can reach the SQL Server.",
+      "An Azure Data Factory pipeline that forwards data to Fabric."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> SHIR (Self-hosted Integration Runtime) is a lightweight agent installed on a machine inside your corporate network. It bridges Fabric pipelines to on-premises or private network resources. ExpressRoute is a network-level solution but doesn't give Fabric pipelines the ability to authenticate and query SQL Server. Managed VNet is for cloud-to-cloud private connectivity, not on-prem.",
+    tip: "In your Fabric trial: Go to Settings → Manage Connections and Gateways → New → On-premises data gateway. This is the UI equivalent of SHIR. Install the gateway on your local machine to connect Fabric to local SQL Server."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "You need a pipeline that copies data from 50 different source tables into a Lakehouse. Each table has a different name but follows the same copy pattern. You don't want to create 50 separate Copy Activities.",
+    question: "What is the MOST efficient approach?",
+    options: [
+      "Create 50 parallel Copy Activities inside the pipeline canvas.",
+      "Use a Lookup Activity to read a metadata table of source table names, then a ForEach Activity with a parameterized Copy Activity inside.",
+      "Write a Notebook that loops through table names using Python.",
+      "Use Dataflow Gen2 with 50 separate queries, one per table."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> This is the metadata-driven pipeline pattern. Lookup reads a list of tables (from a config table or JSON file). ForEach iterates over each entry and calls a single parameterized Copy Activity. This is the exam's preferred pattern — scalable, maintainable, and zero-duplication. Notebooks work but aren't the pipeline-native solution the exam expects.",
+    tip: "In your Fabric trial: Create a JSON array parameter like <code>[{\"src\":\"Orders\"},{\"src\":\"Customers\"}]</code>. Add a ForEach Activity → set Items to the array → add a Copy Activity inside with @item().src as the source table name."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "A pipeline runs nightly and appends new sales records to a Lakehouse Delta table. After 3 days, downstream reports show duplicate rows matching 3 days' worth of data.",
+    question: "What is the MOST LIKELY cause?",
+    options: [
+      "V-Order is disabled on the Delta table, causing duplicate file writes.",
+      "The Copy Activity Write behavior is set to 'Append' and the pipeline has been triggered multiple times per night due to an overlapping schedule or manual reruns.",
+      "The Lakehouse Delta table has no primary key constraint, so Delta can't deduplicate.",
+      "OPTIMIZE was run, which caused file merges to duplicate rows."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> 'Append' mode writes new rows on every run. If the pipeline was triggered more than once (duplicate trigger, manual rerun, or overlapping schedule window), rows are written multiple times. Delta tables don't enforce primary keys — deduplication requires MERGE INTO or explicit duplicate filtering. V-Order and OPTIMIZE never cause duplicates.",
+    tip: "In your Fabric trial: After running an append pipeline twice, query your Delta table with <code>SELECT COUNT(*) FROM table</code>. Then check <code>DESCRIBE HISTORY table</code> to see all write operations."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "You need a pipeline to start automatically whenever a new Parquet file lands in a specific folder in your Lakehouse's Files section.",
+    question: "Which trigger type should you use?",
+    options: [
+      "Schedule trigger set to run every 1 minute.",
+      "Storage event trigger configured on the OneLake path for that folder.",
+      "Tumbling window trigger with a 1-minute window.",
+      "Manual trigger — have users click Run when they upload files."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> Storage event triggers fire in response to blob/file events (file created, file deleted) on a specified path. For Lakehouse files, use the OneLake ADLS endpoint path. Schedule triggers poll on time, not file arrival — they can miss files or fire unnecessarily. Tumbling window is for time-partitioned processing, not event-based.",
+    tip: "In your Fabric trial: Open your Pipeline → Add Trigger → New/Edit → Type = Storage events. The blob path is your Lakehouse's ADLS Gen2 endpoint (found in Lakehouse Settings → Properties)."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "Your Dataflow Gen2 refreshes by querying a large SQL source, doing a JOIN between a 500M-row fact table and a 10M-row dimension table. Refresh takes 90 minutes. You want to reduce this without redesigning the query.",
+    question: "What should you try FIRST in Dataflow Gen2?",
+    options: [
+      "Enable Staging in Dataflow Gen2 settings — this moves compute to Fabric's internal engine.",
+      "Increase the Fabric capacity SKU to F64.",
+      "Split the dataflow into two separate dataflows connected by a reference query.",
+      "Schedule the refresh during off-peak hours to get more compute resources."
+    ],
+    answer: 0,
+    explanation: "<strong>A is correct.</strong> Enabling Staging in Dataflow Gen2 offloads the query execution to a Fabric-optimized staging Lakehouse using Spark/SQL compute instead of the Mashup engine. This can dramatically reduce refresh time for large datasets. It's a one-checkbox fix. Scaling SKU helps but is costly. Splitting dataflows adds complexity.",
+    tip: "In your Fabric trial: Open a Dataflow Gen2 → Home tab → Options → Scale → toggle 'Staging' to ON. Then check the refresh duration in the workspace monitoring view."
+  },
+  {
+    tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
+    scenario: "You run a pipeline branch based on whether a condition is true. If true, run Activity A; if false, run Activity B. You also need to run Activity C regardless of the condition outcome.",
+    question: "Which activity combination achieves this?",
+    options: [
+      "If Condition Activity (branches to A or B) → connect both success outputs to Activity C.",
+      "Switch Activity with two cases → then C after all cases.",
+      "ForEach Activity iterating over [A, B] with an If inside, then C.",
+      "Two parallel Copy Activities (A and B) with a filter, then C."
+    ],
+    answer: 0,
+    explanation: "<strong>A is correct.</strong> If Condition Activity has a True path (→ A) and a False path (→ B). You then draw dependency arrows from both paths to Activity C with 'Upon completion' dependency. This ensures C runs regardless of which branch executed. Switch Activity works for multiple cases (3+), not binary conditions.",
+    tip: "In your Fabric trial: Add an If Condition Activity → configure the expression (e.g., @equals(variables('runFull'),'yes')) → add activities to True/False → drag an arrow from the If Condition to a final Notebook Activity and set dependency to 'Upon completion'."
+  },
+
+  // ── LAKEHOUSE & DELTA LAKE ─────────────────────────────────────────────
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "Your Lakehouse Delta table has grown to 500GB spread across 15,000 small Parquet files from daily micro-batch loads. Users complain that queries are slow even on a large Spark cluster.",
+    question: "What is the BEST command to run to address this performance issue?",
+    options: [
+      "VACUUM to remove old snapshot files and reduce storage.",
+      "OPTIMIZE to compact small files into larger ones, and ZORDER BY on the most frequently filtered column (e.g., date).",
+      "DROP TABLE and reload from source with a single write.",
+      "Enable V-Order on the table — it will consolidate files automatically."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> OPTIMIZE compacts many small files into fewer, larger Parquet files — fixing the 'small file problem.' ZORDER BY reorders data within files so Spark can skip irrelevant row groups (data skipping). Together they directly address both I/O overhead and predicate efficiency. VACUUM removes OLD data files (doesn't compact). V-Order is an encoding, not a compaction operation.",
+    tip: "In your Fabric trial Lakehouse: After loading data, open a Notebook and run: <code>OPTIMIZE my_table ZORDER BY (EventDate)</code> then <code>DESCRIBE HISTORY my_table</code> to see the operation logged."
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "A data engineer ran VACUUM on a Delta table after setting the retention duration to 2 days. A week later, a business analyst asks to view the table as it was 5 days ago using time travel.",
+    question: "What will happen when the analyst runs the time travel query?",
+    options: [
+      "The query succeeds — Delta stores all history in the transaction log regardless of VACUUM.",
+      "The query fails — VACUUM deleted data files older than 2 days, which the 5-day-old snapshot depends on. Time travel requires both the log entry AND the underlying data files.",
+      "The query returns an empty result set instead of an error.",
+      "Time travel only works for 24 hours in Fabric regardless of VACUUM settings."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> Time travel reads historical snapshot data by replaying the transaction log and accessing the referenced data files. VACUUM with a 2-day retention deletes data files not referenced in the last 2 days. The 5-day-old snapshot's data files are gone — so the query fails with a FileNotFoundException. The transaction log entry still exists, but without the files it can't reconstruct the data.",
+    tip: "In your Fabric trial: Run <code>VACUUM my_table RETAIN 0 HOURS</code> (only on test data!), then try <code>SELECT * FROM my_table TIMESTAMP AS OF '2024-01-01'</code> and see the error. Then run <code>DESCRIBE HISTORY my_table</code> to understand what changed."
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "You create a shortcut in your Fabric Lakehouse pointing to an Amazon S3 bucket containing partner CSV files. Users report the first query each morning is slow (3 minutes) but re-running the same query takes only 5 seconds.",
+    question: "What explains this behavior?",
+    options: [
+      "Spark cluster cold-start adds overhead on the first query only.",
+      "OneLake shortcut caching is active for S3 sources — data is fetched from S3 and cached in OneLake on first access; subsequent reads hit the local cache.",
+      "S3 uses GZIP compression that must be decompressed once and then cached in memory.",
+      "OneLake caches all shortcut sources (ADLS Gen2, Azure Blob, S3) equally."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> OneLake provides transparent caching for external shortcuts — specifically for Amazon S3, Google Cloud Storage, S3-compatible sources, and On-premises data gateway. Data fetched from S3 is cached in OneLake's local storage. The first read is slow (crosses the internet to S3); subsequent reads hit the OneLake cache instantly. IMPORTANT: ADLS Gen2 and Azure Blob shortcuts are NOT cached.",
+    tip: "In your Fabric trial: Create a shortcut to the public NYC Taxi S3 bucket: <code>s3://nyc-tlc/trip data/</code>. Query it twice and compare durations in the Spark monitoring logs."
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "Your team creates a shortcut in a Gold Lakehouse pointing to an ADLS Gen2 container. A data engineer asks: 'Will OneLake cache this data to improve query speed like it does for S3?'",
+    question: "What is the correct answer?",
+    options: [
+      "Yes — OneLake caches all shortcut sources automatically, including ADLS Gen2.",
+      "No — OneLake caching only applies to S3, GCS, S3-compatible, and OPDG shortcuts. ADLS Gen2 and Azure Blob shortcuts are NOT cached.",
+      "Yes, but only if you enable it in Lakehouse Advanced Settings.",
+      "No — shortcuts never cache data; caching only works with native Delta tables."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> This is a common exam trap. OneLake shortcut caching is selective: it applies to Amazon S3, Google Cloud Storage, S3-compatible, and On-premises data gateway sources. ADLS Gen2 and Azure Blob Storage shortcuts do NOT benefit from OneLake caching — they always read directly from the source. Plan your architecture accordingly if query latency matters.",
+    tip: "Memorize this: S3 / GCS / S3-compatible / OPDG = CACHED ✅ | ADLS Gen2 / Azure Blob = NOT cached ❌"
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "You have Bronze, Silver, and Gold Lakehouses in your Fabric workspace. Gold should always show the latest Silver data without maintaining a separate copy or running nightly copy jobs.",
+    question: "What is the BEST solution?",
+    options: [
+      "Schedule a nightly pipeline with a Copy Activity from Silver Tables to Gold Tables.",
+      "Create a shortcut in the Gold Lakehouse pointing to the Silver Lakehouse's Delta tables — reads go directly to Silver through OneLake.",
+      "Use Dataflow Gen2 to sync Silver to Gold every hour.",
+      "Use Fabric Mirroring to replicate the Silver Lakehouse to Gold."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> OneLake shortcuts work within Fabric too — you can create a shortcut in Gold Lakehouse that points to a Silver Lakehouse table. Queries against Gold read directly from Silver's Delta files via OneLake. No data copy, no lag, no pipeline needed. This is the zero-ETL medallion pattern within Fabric.",
+    tip: "In your Fabric trial: Open Gold Lakehouse → New Shortcut → Microsoft OneLake → browse to your Silver Lakehouse → select a table. The shortcut appears in Gold as a native table — query it with SQL."
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "A data engineer is writing Delta tables from a Spark notebook and notices write performance is slower than expected. A colleague suggests enabling V-Order. The engineer asks: 'Is V-Order on by default?'",
+    question: "What is the correct answer about V-Order and its default state?",
+    options: [
+      "V-Order is a write-time optimization that sorts and encodes Parquet for faster Power BI reads — it is ON by default in all Fabric workspaces.",
+      "V-Order is a write-time Parquet optimization that improves Direct Lake and Power BI read performance — it is DISABLED by default in new Fabric workspaces (spark.sql.parquet.vorder.default=false).",
+      "V-Order compresses files at write time and is ON by default only in Premium capacities.",
+      "V-Order is a Delta Lake feature that auto-partitions tables and is always enabled."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> V-Order applies special sorting and encoding to Parquet files at write time, enabling faster reads particularly for Power BI Direct Lake mode. HOWEVER, it is DISABLED by default in new Fabric workspaces. You must explicitly enable it per session: <code>spark.conf.set('spark.sql.parquet.vorder.default', 'true')</code> or per table: <code>%%sql ALTER TABLE my_table SET TBLPROPERTIES ('delta.parquet.vorder.enabled'='true')</code>.",
+    tip: "In your Fabric trial Notebook: Run <code>spark.conf.get('spark.sql.parquet.vorder.default')</code> — it returns 'false'. Then enable it and compare write time for a large dataset."
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "You need to load 100M rows of historical data once into a Lakehouse Delta table, then append ~50K new rows every night. You want optimal write strategy for both phases.",
+    question: "What is the RECOMMENDED approach for each phase?",
+    options: [
+      "Use Dataflow Gen2 for both — it handles large loads and incremental appends equally well.",
+      "Use a Spark Notebook with mode('overwrite') for the historical load and mode('append') for nightly increments.",
+      "Use Copy Activity with 'Overwrite' mode for ALL loads — it handles deduplication automatically.",
+      "Use MERGE INTO for all loads including the initial historical load."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> For bulk historical loads, overwrite mode is fastest — it writes a fresh Delta table in one pass without checking existing data. For nightly increments, append mode adds new rows efficiently. MERGE INTO is correct for upserts (when new rows may update existing ones), but it's overkill and much slower for pure-append scenarios. Dataflow Gen2 struggles with 100M-row single loads.",
+    tip: "In your Fabric trial Notebook: <code>df.write.format('delta').mode('overwrite').saveAsTable('sales_history')</code> then for nightly: <code>df.write.format('delta').mode('append').saveAsTable('sales_history')</code>"
+  },
+  {
+    tag: "lakehouse", tagLabel: "🏠 Lakehouse & Delta Lake",
+    scenario: "You run DESCRIBE HISTORY on a Delta table and see 2,000 transaction log entries. You notice query planning is slow because Spark must process all log entries to reconstruct the current table state.",
+    question: "What automatically helps reduce this overhead in Delta Lake?",
+    options: [
+      "VACUUM — it prunes old transaction log entries.",
+      "OPTIMIZE — it rewrites the log into a compact format.",
+      "Delta Lake automatically creates checkpoint files (JSON snapshots of table state) every 10 commits, so Spark only needs to replay log entries since the last checkpoint.",
+      "You must manually run CHECKPOINT TABLE to consolidate the log."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Delta Lake auto-checkpoints every 10 commits by default. A checkpoint file is a Parquet snapshot of the full table state at that point. Spark reads the latest checkpoint and replays only log entries after it — making startup fast even with thousands of commits. VACUUM removes OLD data files, not log entries. OPTIMIZE compacts data files, not logs.",
+    tip: "In your Fabric trial: After 10+ writes to a Delta table, check the _delta_log folder in Lakehouse Files. You'll see .checkpoint.parquet files alongside the .json log files."
+  },
+
+  // ── WAREHOUSE & SECURITY ───────────────────────────────────────────────
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "Your Fabric Warehouse contains a Salary column with sensitive compensation data. All users can query the Employee table, but only HR team members (who have Contributor workspace role) should see actual salary values. Everyone else should see '****'.",
+    question: "Which Fabric security feature should you use?",
+    options: [
+      "Row-Level Security (RLS) — filter out non-HR users' rows.",
+      "Column-Level Security (CLS) — DENY SELECT on the Salary column for non-HR users.",
+      "Dynamic Data Masking (DDM) — mask the Salary column; users with Contributor+ workspace roles automatically see unmasked values.",
+      "Object-Level Security (OLS) — hide the Salary column from non-HR users."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> DDM (Dynamic Data Masking) is the right tool. It shows masked values (e.g., '****' or '0') to users without unmask permission, while users with Admin, Member, or Contributor workspace roles automatically see the real values — no extra grant needed. RLS filters rows, not columns. CLS (DENY SELECT) prevents column access entirely — users can't even see a masked value. OLS hides the object entirely.",
+    tip: "In your Fabric trial Warehouse: <code>ALTER TABLE Employee ALTER COLUMN Salary ADD MASKED WITH (FUNCTION = 'default()')</code>. Connect as a Viewer-role user — you'll see masked data. Connect as a Contributor — you'll see real data."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "You configure Row-Level Security (RLS) on a Fabric Warehouse table so each regional sales manager sees only their region's data. The warehouse owner (who is assigned the dbo schema) reports they can see ALL regions. Is this expected?",
+    question: "What is the correct behavior of RLS in Fabric Warehouse?",
+    options: [
+      "Yes — dbo/owners always bypass RLS in Fabric Warehouse, just like sysadmin in SQL Server.",
+      "No — in Fabric Warehouse, RLS applies to ALL users including dbo. Unlike SQL Server where sysadmin bypasses RLS, Fabric has no such exemption.",
+      "Yes — Workspace Admins and dbo always bypass all security policies automatically.",
+      "No — this is a known bug; file a support ticket with Microsoft."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> This is a KEY exam difference from SQL Server. In SQL Server, the sysadmin fixed server role bypasses RLS. In Fabric Warehouse, RLS applies to ALL users including dbo — no user is immune. If the dbo is seeing all rows, the RLS policy was likely not applied correctly or the SECURITY_CONTEXT isn't filtering their session as expected. Re-check the predicate function.",
+    tip: "Test this in your Fabric trial: Create an RLS policy → log in as a workspace Admin → verify the policy still filters their data. It will — Fabric doesn't give Admins an automatic RLS bypass."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "You need to prevent specific users from reading the 'Email' and 'Phone' columns in a Warehouse table, while still allowing them to SELECT other columns and run aggregations on the table.",
+    question: "Which security approach is CORRECT for this requirement?",
+    options: [
+      "Apply DDM (Dynamic Data Masking) to Email and Phone — denied users see masked values.",
+      "Apply RLS with a filter predicate that removes rows containing non-null Email values.",
+      "Use Column-Level Security (CLS): DENY SELECT on the Email and Phone columns for those users or their role.",
+      "Use Object-Level Security to hide the entire table from those users."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Column-Level Security (CLS) in Fabric Warehouse uses T-SQL GRANT/DENY on specific columns. DENY SELECT on Email and Phone prevents those users from reading those columns — they still query other columns and run aggregations that don't reference the denied columns. DDM shows masked values but doesn't truly restrict access. RLS filters rows, not columns. OLS hides the whole object.",
+    tip: "In your Fabric trial Warehouse: <code>DENY SELECT ON dbo.Employee (Email, Phone) TO [user@domain.com];</code> Then query as that user: <code>SELECT Name, Salary FROM Employee</code> works; <code>SELECT Email FROM Employee</code> returns an error."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "A data steward wants to mark a Lakehouse dataset as verified and trustworthy so that the entire organization knows it's the official source of truth. Anyone in the company should be able to see this endorsement badge.",
+    question: "What endorsement level is needed, and who can apply it?",
+    options: [
+      "Promoted endorsement — any workspace Contributor, Member, or Admin can apply it.",
+      "Certified endorsement — requires designation by the Fabric tenant administrator in the tenant settings. Only designated certifiers can certify content.",
+      "Certified endorsement — any workspace Admin can certify content.",
+      "Promoted endorsement — only workspace Admins can promote content to avoid misuse."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> There are two endorsement levels: <strong>Promoted</strong> = any user with write permissions (Contributor+) can promote — signals 'quality, ready to use.' <strong>Certified</strong> = only users designated in Fabric Admin Portal tenant settings can certify — signals 'official, org-approved source of truth.' The data steward needs Certified, which requires Fabric Admin designation.",
+    tip: "Memorize: Promoted = Contributor+ (self-service quality signal). Certified = tenant-designated certifier only (official stamp). Dashboards CANNOT be promoted or certified."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "Your team uses Fabric deployment pipelines to move artifacts from Dev → Test → Production. After a successful deployment to Production, the Prod pipeline fails to connect to the production database. Dev worked fine.",
+    question: "What is the MOST LIKELY reason?",
+    options: [
+      "Deployment pipelines copy all settings including credentials — the Prod credentials may have expired.",
+      "Deployment pipelines do NOT copy credentials or connection details. They must be manually re-configured in each stage after deployment.",
+      "The pipeline was corrupted during the deployment process.",
+      "The Production capacity is a lower SKU than Dev, causing connection timeouts."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> Deployment pipelines intentionally do NOT copy credentials, sensitivity labels, refresh schedules, role assignments, query caching settings, endorsement settings, app settings, or stage-specific connection configurations. After deploying to Prod, you must open the artifact and reconfigure its connections/credentials for the Prod environment. This is by design — to prevent Dev credentials from reaching Prod.",
+    tip: "Items NOT copied by deployment pipelines: credentials, data, refresh schedules, role assignments, query caching settings, endorsement, sensitivity label settings, personal bookmarks, app content, IDs/URLs."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "A Power BI report uses Direct Lake mode connected to a Fabric Lakehouse. Users report the report suddenly became very slow — it appears to be running in DirectQuery mode instead of Direct Lake.",
+    question: "Which scenario would cause Direct Lake to fall back to DirectQuery?",
+    options: [
+      "The Lakehouse was optimized with VACUUM, which changes the table format.",
+      "Too many users opened the report simultaneously.",
+      "Row-Level Security (RLS) is applied to an underlying Warehouse source, OR the dataset exceeded the frame row limit for the capacity SKU, OR Column-Level Security (CLS) is applied to the Warehouse.",
+      "The Lakehouse has more than 100 tables, causing a fallback."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Direct Lake fallback to DirectQuery is triggered by: (1) RLS applied to a Warehouse the dataset reads from, (2) CLS applied to a Warehouse, (3) the framing row limit for the capacity SKU is exceeded. VACUUM and OPTIMIZE don't affect Direct Lake mode. User count and table count are not fallback triggers.",
+    tip: "To check if your dataset fell back: In Power BI Desktop, open Performance Analyzer → run a visual → look for 'Direct Lake' or 'DirectQuery' in the DAX query trace. In Fabric trial, test by applying RLS to a Warehouse-backed semantic model."
+  },
+  {
+    tag: "warehouse", tagLabel: "🏢 Warehouse & Security",
+    scenario: "An external vendor application needs to read data from a specific folder in your Lakehouse (e.g., /gold/products/) without being granted any workspace-level access. You want the most granular access control possible.",
+    question: "What Fabric feature allows folder-level access without workspace membership?",
+    options: [
+      "Share the entire workspace with the vendor as a Viewer — they can then filter the data they need.",
+      "Use OneLake Data Access Roles to grant read permission on specific folders or tables within the Lakehouse.",
+      "Create a separate Lakehouse with just the products folder and share that workspace.",
+      "Grant the vendor READ access to the entire Lakehouse via the Lakehouse sharing dialog."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> OneLake Data Access Roles (ODAR) allow you to define custom roles that grant access to specific folders or tables within a Lakehouse — without granting workspace-level access. The vendor gets a scoped token that only allows reading /gold/products/. This is the most granular Fabric access control below workspace level.",
+    tip: "In your Fabric trial: Open a Lakehouse → Manage OneLake Data Access → New Role → select specific folders → assign users or service principals. This is distinct from workspace roles."
+  },
+
+  // ── REAL-TIME & KQL ────────────────────────────────────────────────────
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "Your factory floor has 500 IoT sensors sending temperature readings every second to an Azure Event Hub. You need to automatically send a maintenance alert email when any sensor exceeds 85°C — within 30 seconds of the event.",
+    question: "What Fabric architecture achieves this?",
+    options: [
+      "Eventstream → Lakehouse → Pipeline with a 1-minute schedule trigger to check temperatures and send email.",
+      "Eventstream → Eventhouse (KQL) → Power BI real-time dashboard where an analyst manually triggers alerts.",
+      "Eventstream → Activator (configured with an alert rule: temperature > 85 → send email action).",
+      "Azure Event Hub → Logic Apps → Email (outside Fabric entirely)."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Eventstream ingests the IoT stream from Event Hub. Activator (formerly Reflex) applies real-time rules to the stream data. You define: condition = sensor_temp > 85, action = send email. Activator fires within seconds of the condition being met — no polling, no dashboard watching needed. Option A's pipeline schedule would have up to 1-minute lag and misses sub-minute events.",
+    tip: "In your Fabric trial: Create an Eventstream → add a Custom Endpoint as source (generate test events with a Python script) → add Activator as destination → define an alert rule → use Power Automate action to send email."
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "You need to write a KQL query against an Eventhouse table to calculate the running cumulative total of sales, ordered by transaction date, within a single result set.",
+    question: "Which KQL function correctly computes a cumulative sum in row order?",
+    options: [
+      "Use sum(Sales) with a by clause grouped by date.",
+      "Use row_cumsum(Sales) on a serialized table — this computes a running total in row order.",
+      "Use running_sum(Sales) — this is the KQL equivalent of SQL's SUM() OVER (ORDER BY).",
+      "Use cumulative_sum(Sales, date) — KQL's built-in windowed aggregation."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> <code>row_cumsum()</code> is a KQL row-context function that computes a cumulative sum on a serialized (ordered) table. Pattern: <code>Sales | order by TransactionDate asc | extend CumulativeSales = row_cumsum(Amount)</code>. Options C and D don't exist in KQL. Option A just groups — not a running total.",
+    tip: "In your Fabric trial Eventhouse: Create a KQL table with test data → try: <code>MyTable | order by EventDate asc | extend Running = row_cumsum(Value) | project EventDate, Value, Running</code>"
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "You have an Eventstream receiving data from two sources: an Azure Event Hub (IoT sensor data) and a Custom App Endpoint (user activity events). You need IoT data to flow to an Eventhouse and user activity data to flow to a Lakehouse Delta table.",
+    question: "How do you route these two streams to different destinations within a single Eventstream?",
+    options: [
+      "Create two separate Eventstreams — one per source/destination pair.",
+      "Add both sources to one Eventstream, use a Filter or Route operator to split by source type, and connect each branch to its own destination (Eventhouse and Lakehouse).",
+      "Route all data to the Eventhouse first, then use a KQL query to copy user activity rows to the Lakehouse.",
+      "Eventstream only supports one destination per stream — use a Pipeline to split afterward."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> Eventstream supports multiple sources, stream processing operators (Filter, Group By, Aggregate, Route), and multiple destinations in a single canvas. A Filter operator can split the stream by event type or source, routing IoT events to the Eventhouse and user events to the Lakehouse. This is the native Fabric real-time routing pattern.",
+    tip: "In your Fabric trial: Create an Eventstream → add a Custom App source → add a Filter operator (e.g., event_type == 'iot') → connect one branch to Eventhouse and another to Lakehouse."
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "Your Eventhouse KQL database holds 2 years of telemetry data (1 billion rows). Users exclusively query the last 7 days for operational dashboards. Older data is rarely queried. You want to minimize cost and maximize query speed for the 7-day window.",
+    question: "What should you configure?",
+    options: [
+      "Run a nightly pipeline to delete data older than 7 days to keep the table small.",
+      "Create a materialized view that pre-aggregates the last 7 days.",
+      "Set a caching policy on the KQL table: hot cache = 7 days (stored on fast SSD), cold cache = 2 years (stored on blob). Recent data is served from hot cache instantly.",
+      "Partition the KQL table by day and only load the last 7 partitions."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> KQL (Kusto) has a tiered caching model: hot cache = fast SSD/memory for frequently queried data; cold cache = slower blob storage for archival data. Setting hot cache to 7 days means operational queries are served from SSD instantly. Cold data is still queryable (just slower). You retain 2 years without deleting anything. This is the exam-standard pattern for time-series hot/cold tiering.",
+    tip: "In your Fabric trial Eventhouse: Go to your KQL Database → Manage → Policies → Caching. Set 'Hot data' = 7 days. In KQL: <code>.alter table MyTable policy caching hot = 7d</code>"
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "You need to query an Eventhouse table to find all events where EventType equals 'Error', count them by hour, for the last 24 hours.",
+    question: "Which KQL query correctly achieves this?",
+    options: [
+      "<code>Events | where EventType == \"Error\" | where Timestamp > ago(24h) | summarize Count=count() by bin(Timestamp, 1h)</code>",
+      "<code>Events | filter EventType = 'Error' | group by hour(Timestamp) | count()</code>",
+      "<code>SELECT COUNT(*) FROM Events WHERE EventType='Error' AND Timestamp > DATEADD(hour,-24,GETDATE()) GROUP BY DATEPART(hour,Timestamp)</code>",
+      "<code>Events | where EventType == 'Error' | last 24h | bucket(Timestamp, 1h) | count()</code>"
+    ],
+    answer: 0,
+    explanation: "<strong>A is correct.</strong> KQL syntax: <code>where</code> for filters, <code>ago(24h)</code> for time range, <code>summarize count() by bin(Timestamp, 1h)</code> for hourly grouping. Option B uses SQL-style syntax that doesn't exist in KQL. Option C is T-SQL (wrong engine). Option D uses <code>last</code> and <code>bucket</code> which are not valid KQL functions.",
+    tip: "In your Fabric trial Eventhouse: Open KQL Queryset → paste the query → replace 'Events' with your table name and 'Timestamp' with your timestamp column. Try modifying <code>1h</code> to <code>15m</code> for 15-minute buckets."
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "An Activator rule fires an email alert every minute because a server's CPU usage has been above 90% continuously for an hour. You want the alert to fire ONLY ONCE when CPU first crosses 90%, not repeatedly while it stays high.",
+    question: "What should you configure in Activator?",
+    options: [
+      "Set the alert frequency to 'Never repeat' in the trigger settings.",
+      "Add a KQL filter upstream to deduplicate events before they reach Activator.",
+      "Change the Activator rule condition to detect state changes: fire 'When condition changes from false to true' rather than 'On each event'.",
+      "Set a 60-minute cooldown timer in the Activator action settings."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Activator supports two trigger modes: (1) 'On each event' — fires for every event meeting the condition (causes repeated alerts), and (2) 'When condition changes' — fires only when the condition transitions from false→true (state change detection). Switching to state-change mode means the alert fires once when CPU first crosses 90%, and won't fire again until CPU drops below 90% and crosses back up.",
+    tip: "In your Fabric trial: Set up an Activator with a threshold condition → configure it to trigger 'on each event' → observe repeated firing with simulated test data → then switch to 'when condition changes' → observe single-fire behavior."
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "Your architecture must handle streaming clickstream data that needs to be (1) queried with sub-second latency for real-time dashboards, AND (2) stored long-term for historical batch analysis with Spark notebooks over months of data.",
+    question: "What Fabric architecture best serves BOTH requirements?",
+    options: [
+      "Eventstream → Lakehouse only. Use Spark for both real-time and batch — Spark can query Delta tables fast enough.",
+      "Eventstream → Eventhouse (for real-time KQL sub-second queries) AND Eventstream → Lakehouse (for historical Delta storage and Spark batch analysis).",
+      "Eventstream → Warehouse. The Warehouse supports both real-time queries and batch analytics.",
+      "Eventstream → Power BI Streaming Dataset for real-time, then a separate nightly Dataflow Gen2 to write to Lakehouse."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> This is the dual-destination pattern for real-time + historical. Eventstream can fan out to multiple destinations simultaneously: Eventhouse handles sub-second KQL queries for dashboards/alerts; Lakehouse stores Delta files for Spark batch analysis. Each store is optimized for its use case. Spark on Delta is NOT sub-second. Warehouse doesn't ingest from Eventstream natively. Power BI streaming datasets don't persist data long-term.",
+    tip: "In your Fabric trial: Create an Eventstream → add TWO destinations: one Eventhouse KQL table + one Lakehouse Delta table. Send test events and verify data arrives in both. Query the Eventhouse with KQL and the Lakehouse with Spark SQL."
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "You have a KQL query that runs frequently across a large Eventhouse table. You want to pre-compute and store the aggregated results so that queries against the pre-computed results are near-instant, and the aggregation automatically stays updated as new data arrives.",
+    question: "What Eventhouse feature should you use?",
+    options: [
+      "Hot cache — store the entire table in SSD memory.",
+      "A scheduled KQL query that runs every minute and writes results to a summary table.",
+      "A Materialized View — it automatically maintains an incremental aggregation of the source table and updates as new data is ingested.",
+      "A KQL function that encapsulates the aggregation logic for reuse."
+    ],
+    answer: 2,
+    explanation: "<strong>C is correct.</strong> Materialized Views in KQL/Eventhouse pre-compute and persist aggregation results (summarize, count, max, distinct, etc.) incrementally as new data arrives. Queries against the materialized view are served from the pre-computed result — near-instant, regardless of source table size. KQL functions are just saved queries — they still run over raw data every time. Scheduled writes work but add pipeline complexity and lag.",
+    tip: "In your Fabric trial Eventhouse: <code>.create materialized-view HourlySales on table Sales { Sales | summarize TotalSales=sum(Amount) by bin(Timestamp, 1h) }</code> then query: <code>HourlySales | where Timestamp > ago(7d)</code>"
+  },
+  {
+    tag: "realtime", tagLabel: "⚡ Real-time & KQL",
+    scenario: "You are building a KQL query to return the top 5 customers by total spend in the last 30 days. When you run the query without an explicit sort, the results come back in an unexpected order.",
+    question: "What is the DEFAULT sort order in KQL, and how do you return top 5 correctly?",
+    options: [
+      "KQL defaults to ascending order. Use <code>top 5 by TotalSpend asc</code>.",
+      "KQL has no default sort order — results are non-deterministic. Use <code>top 5 by TotalSpend desc</code> to get the top 5 highest spenders.",
+      "KQL defaults to descending order for summarize results. Use <code>limit 5</code> after summarize.",
+      "KQL sorts alphabetically by the first column. Use <code>order by TotalSpend | take 5</code>."
+    ],
+    answer: 1,
+    explanation: "<strong>B is correct.</strong> KQL does not guarantee result order unless you specify it. The <code>top N by column desc</code> operator returns the top N rows by a column in descending order (highest first) — in a single efficient operation. Alternatively: <code>summarize TotalSpend=sum(Amount) by Customer | top 5 by TotalSpend desc</code>. <code>limit</code> just caps rows — no sorting guarantee.",
+    tip: "In your Fabric trial: <code>Purchases | where PurchaseDate > ago(30d) | summarize TotalSpend=sum(Amount) by Customer | top 5 by TotalSpend desc | project Customer, TotalSpend</code>"
+  }
+];
+
+// ── State ──────────────────────────────────────────────────────────────────
+const state = { correct: 0, wrong: 0, answered: 0 };
+
+// ── Build UI ───────────────────────────────────────────────────────────────
+function buildCards() {
+  const container = document.getElementById('qContainer');
+  // keep results banner
+  const banner = document.getElementById('resultsBanner');
+
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.tag = q.tag;
+    card.id = 'q' + i;
+
+    const opts = q.options.map((o, j) => `
+      <button class="opt-btn" onclick="selectOption(${i},${j})" id="opt_${i}_${j}">
+        <span class="opt-letter">${String.fromCharCode(65+j)}.</span>
+        <span>${o}</span>
+      </button>`).join('');
+
+    card.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">Q${i+1}</span>
+        <span class="q-tag tag-${q.tag}">${q.tagLabel}</span>
+      </div>
+      <div class="q-scenario">${q.scenario}</div>
+      <div class="q-text">${q.question}</div>
+      <div class="q-options">${opts}</div>
+      <div class="q-explanation" id="exp_${i}">
+        <div class="exp-label">📖 Explanation</div>
+        ${q.explanation}
+        ${q.tip ? `<div class="trial-tip">${q.tip}</div>` : ''}
+      </div>`;
+
+    container.insertBefore(card, banner);
+  });
+}
+
+function selectOption(qIdx, optIdx) {
+  const q = questions[qIdx];
+  const card = document.getElementById('q' + qIdx);
+  if (card.dataset.answered) return;
+  card.dataset.answered = '1';
+
+  // Style all options
+  for (let j = 0; j < q.options.length; j++) {
+    const btn = document.getElementById(`opt_${qIdx}_${j}`);
+    btn.disabled = true;
+    if (j === q.answer) btn.classList.add(optIdx === q.answer ? 'correct' : 'reveal');
+    else if (j === optIdx) btn.classList.add('wrong');
+  }
+
+  // Card border
+  if (optIdx === q.answer) { card.classList.add('answered-correct'); state.correct++; }
+  else { card.classList.add('answered-wrong'); state.wrong++; }
+
+  // Show explanation
+  document.getElementById('exp_' + qIdx).classList.add('show');
+
+  state.answered++;
+  updateScore();
+
+  if (state.answered === questions.length) showResults();
+}
+
+function updateScore() {
+  document.getElementById('sAnswered').textContent = state.answered;
+  document.getElementById('sCorrect').textContent  = state.correct;
+  document.getElementById('sWrong').textContent    = state.wrong;
+  document.getElementById('progressFill').style.width = (state.answered / questions.length * 100) + '%';
+}
+
+function showResults() {
+  const pct = Math.round(state.correct / questions.length * 100);
+  const banner = document.getElementById('resultsBanner');
+  banner.style.display = 'block';
+  document.getElementById('finalScore').textContent = pct + '%';
+  const msgs = pct >= 80 ? '🎉 Excellent — exam-ready on scenarios!' :
+               pct >= 70 ? '📈 Good progress — review the red cards' :
+               '📚 Keep practising — focus on explanations';
+  document.getElementById('finalMsg').textContent = `${state.correct} / ${questions.length} correct · ${msgs}`;
+  banner.scrollIntoView({ behavior: 'smooth' });
+}
+
+function filterQ(tag, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.q-card').forEach(card => {
+    card.style.display = (tag === 'all' || card.dataset.tag === tag) ? '' : 'none';
+  });
+}
+
+function resetAll() {
+  state.correct = 0; state.wrong = 0; state.answered = 0;
+  updateScore();
+  document.getElementById('resultsBanner').style.display = 'none';
+  document.querySelectorAll('.q-card').forEach(card => {
+    card.dataset.answered = '';
+    card.classList.remove('answered-correct', 'answered-wrong');
+  });
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('correct', 'wrong', 'reveal');
+  });
+  document.querySelectorAll('.q-explanation').forEach(e => e.classList.remove('show'));
+}
+
+buildCards();
+</script>
+</body>
+</html>
