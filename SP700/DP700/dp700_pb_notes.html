@@ -162,14 +162,27 @@
 
         <h3>Data Destinations (where data goes)</h3>
         <ul>
-          <li>✅ Lakehouse (Tables)</li>
-          <li>✅ Warehouse</li>
+          <li>✅ Lakehouse Tables</li>
+          <li>✅ Lakehouse Files (preview)</li>
+          <li>✅ Warehouse <em>(staging must be enabled; same workspace only; fixed schema only)</em></li>
           <li>✅ Azure SQL Database</li>
-          <li>✅ Azure Data Explorer / Eventhouse</li>
-          <li>✅ Azure Blob Storage</li>
-          <li>❌ <strong>Dataverse — NOT a destination</strong> (only a source)</li>
+          <li>✅ Azure Data Explorer / Eventhouse (KQL) <em>(Append only — Replace NOT supported)</em></li>
+          <li>✅ Azure Data Lake Storage Gen2 (preview)</li>
+          <li>✅ Fabric KQL Database <em>(Append only — Replace NOT supported)</em></li>
+          <li>✅ Fabric SQL Database</li>
+          <li>✅ SharePoint Files</li>
+          <li>❌ <strong>Azure Blob Storage — NOT a destination</strong></li>
+          <li>❌ <strong>Dataverse — NOT a destination</strong> (source only)</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Exam trap:</strong> Dataverse is available as a SOURCE but NOT as a destination in Dataflow Gen2.</div>
+        <div class="gotcha"><strong>⚠️ Exam traps:</strong>
+          <ul style="margin:4px 0 0 0;padding-left:18px;">
+            <li>Dataverse = source only, never a destination</li>
+            <li><strong>Azure Blob Storage is NOT a destination</strong> — it's ADLS Gen2 (preview)</li>
+            <li>KQL Database / Azure Data Explorer: <strong>Append only</strong> — Replace is NOT supported</li>
+            <li>Warehouse destination: requires <strong>staging enabled</strong>, <strong>same workspace</strong>, and <strong>fixed schema only</strong></li>
+            <li>Automatic settings (auto-mapping + drop/recreate): only for <strong>Lakehouse</strong> and <strong>Azure SQL Database</strong></li>
+          </ul>
+        </div>
 
         <h3>Scheduling</h3>
         <ul>
@@ -537,6 +550,7 @@ OPTIMIZE tablename ZORDER BY (OrderDate, Region)</div>
           <li>Warehouse: supports <strong>CREATE, INSERT, UPDATE, DELETE, MERGE</strong> — full DW</li>
           <li>Lakehouse SQL endpoint: <strong>READ ONLY</strong> — SELECT only, no writes</li>
           <li>Cross-database: <code>[warehouse_name].[schema].[table]</code></li>
+          <li><strong>Multi-table transactions:</strong> Warehouse ✅ supports | Lakehouse ❌ does NOT</li>
         </ul>
 
         <h3>Slowly Changing Dimensions (SCD)</h3>
@@ -625,8 +639,9 @@ WITH (STATE = ON)</div>
           <li><code>queryinsights.long_running_queries</code> — queries exceeding duration threshold</li>
           <li><code>queryinsights.frequently_run_queries</code> — most-executed query patterns</li>
           <li><code>queryinsights.exec_sessions_history</code> — session activity</li>
+          <li><code>queryinsights.sql_pool_insights</code> &mdash; pool-level metrics: resource allocation, pressure indicators, config changes (SQL pool health monitoring)</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Real-time = sys.dm_exec_requests. History = queryinsights views.</strong> queryinsights has ~15 min delay and 30-day retention.</div>
+        <div class="gotcha"><strong>⚠️ Real-time = sys.dm_exec_requests. History = 5 queryinsights views (exec_requests_history, exec_sessions_history, long_running_queries, frequently_run_queries, sql_pool_insights).</strong> queryinsights has ~15 min delay and 30-day retention.</div>
       </div>
     </div>
   </div>
@@ -838,26 +853,33 @@ dataformat=csv
         </div>
 
         <h3>Eventstream Sources</h3>
+        <p style="font-size:13px;color:#555;margin:4px 0 6px;"><strong>Standard capability</strong> (always available):</p>
         <ul>
           <li>Azure Event Hub</li>
           <li>Azure IoT Hub</li>
-          <li>Azure Service Bus</li>
-          <li>Custom App (SDK)</li>
-          <li>Kafka</li>
-          <li>Amazon Kinesis</li>
-          <li>Google Pub/Sub</li>
+          <li>Custom endpoint / Custom App (SDK)</li>
           <li>Sample data (built-in)</li>
+        </ul>
+        <p style="font-size:13px;color:#555;margin:4px 0 6px;"><strong>Enhanced capabilities</strong> (enable at creation) unlocks:</p>
+        <ul>
+          <li>Azure Service Bus, Azure Event Grid, Azure IoT Operations, HTTP, MQTT</li>
+          <li>Kafka (Apache Kafka, Confluent Cloud, Amazon MSK, Amazon Kinesis, Google Pub/Sub, Cribl, Solace PubSub+)</li>
+          <li><strong>CDC sources:</strong> Azure SQL DB, PostgreSQL, MySQL, Cosmos DB, SQL Server on VM, Azure SQL MI, MongoDB</li>
+          <li><strong>Fabric event sources:</strong> OneLake events, Workspace item events, Fabric job events, Capacity overview events, Azure Blob Storage events</li>
+          <li>Real-time weather</li>
         </ul>
 
         <h3>Eventstream Destinations</h3>
         <ul>
-          <li>✅ Lakehouse</li>
-          <li>✅ KQL Database / Eventhouse</li>
-          <li>✅ Warehouse</li>
-          <li>✅ Activator (Reflex)</li>
-          <li>✅ Custom App (SDK)</li>
-          <li>✅ Eventstream (chain)</li>
+          <li>&#10003;&#65039; Lakehouse</li>
+          <li>&#10003;&#65039; Eventhouse / KQL Database</li>
+          <li>&#10003;&#65039; Fabric Activator</li>
+          <li>&#10003;&#65039; Custom endpoint (custom app)</li>
+          <li>&#10003;&#65039; Derived stream (transformed stream routed onward)</li>
+          <li>&#10003;&#65039; Spark Notebook (preview)</li>
+          <li>&#10060; <strong>Warehouse &mdash; NOT an Eventstream destination</strong> (use Dataflow Gen2 or Pipeline to reach Warehouse)</li>
         </ul>
+        <div class="gotcha"><strong>&#9888;&#65039; Warehouse is NOT an Eventstream destination.</strong> Route to Warehouse via Dataflow Gen2 or Pipelines instead. Eventstream destinations: Lakehouse, Eventhouse, Activator, Custom endpoint, Derived stream, Spark Notebook (preview).</div>
 
         <h3>Eventstream Processor Nodes (transform IN FLIGHT)</h3>
         <ul>
@@ -962,8 +984,11 @@ dataformat=csv
 
         <h3>High Concurrency Mode</h3>
         <ul>
-          <li>Same Spark session shared by multiple notebooks simultaneously</li>
-          <li>36x faster session start vs standard spark session</li>
+          <li>Same Spark session shared by multiple notebooks — each gets its own REPL core for isolation</li>
+          <li>Up to <strong>36x faster</strong> session start — <em>custom pools only</em>, not starter pools</li>
+          <li>Default: <strong>5 notebooks per session</strong>; configurable up to <strong>50</strong> via <code>spark.highConcurrency.max</code></li>
+          <li>Session sharing requires: same user + same default Lakehouse + same Spark compute settings</li>
+          <li><strong>Billing:</strong> only the initiating notebook is billed; shared notebooks NOT billed separately</li>
           <li>Enable: <strong>Workspace Settings → Data Engineering/Science → Spark → High Concurrency tab</strong></li>
         </ul>
 
@@ -1003,7 +1028,7 @@ dataformat=csv
           <li>Performance delta: compares fast operations (&lt;200ms) now vs 7 days ago — higher = better performance</li>
           <li>High CU: heavily used capacity or many operations running</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Capacity Metrics app has exactly TWO tabs: Compute and Storage.</strong></div>
+        <div class="gotcha"><strong>&#9888;&#65039; Capacity Metrics app is multi-page</strong> (NOT just "two tabs"). Key pages: Health, Compute, Storage, Timepoint, Timepoint Summary, Timepoint Item Detail, Autoscale compute for Spark, Plan capacity, Monitor paused capacity. An exam option saying "exactly two tabs" is wrong.</div>
 
         <h3>Workspace Logging</h3>
         <ul>
@@ -1057,19 +1082,34 @@ dataformat=csv
           <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
             <strong>Promoted</strong> 🏅<br>
             Self-service endorsement<br>
-            Any workspace <strong>Member or Admin</strong> can set it<br>
+            Any user with <strong>write permissions (Member, Admin, or Contributor)</strong> can set it<br>
             Signals reliable, quality content<br>
             Access: workspace ⋯ → Settings → Endorsement
           </div>
           <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:12px;">
             <strong>Certified</strong> ✅<br>
             Admin-controlled endorsement<br>
-            Requires: <strong>Fabric Admin OR delegated certifier</strong><br>
+            Requires: <strong>Fabric Admin OR delegated certifier</strong> (security groups only, not named users)<br>
             Certifier delegated via Admin portal → Tenant settings → Certification<br>
+            ❌ Power BI Dashboards CANNOT be certified<br>
             Access: workspace ⋯ → Settings → Endorsement
           </div>
         </div>
-        <div class="gotcha"><strong>⚠️ Promoted = any Member/Admin. Certified = Fabric admin or delegated certifier ONLY.</strong> This distinction is heavily tested.</div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px;margin:8px 0;">
+            <strong>Master data</strong> &#11088;<br>
+            Indicates authoritative single source of truth (e.g. product codes, customer lists)<br>
+            Only applies to <strong>data-containing items</strong>: Lakehouses, Semantic Models<br>
+            &#10060; Cannot be applied to reports, dashboards, or non-data items<br>
+            Only users specified by Fabric Admin can apply it (must be enabled in Tenant settings)
+          </div>
+        <div class="gotcha"><strong>&#9888;&#65039; Endorsement exam traps:</strong>
+          <ul style="margin:4px 0 0 0;padding-left:18px;">
+            <li>Promoted = any user with write permissions (Member, Admin, <strong>Contributor</strong>) &mdash; not admin-only</li>
+            <li>Certified = Fabric Admin or delegated certifier (<strong>security groups only</strong>, not named users)</li>
+            <li><strong>Power BI Dashboards CANNOT be promoted or certified</strong> &mdash; all other Fabric/PBI items can</li>
+            <li>Master data = data-containing items only (Lakehouse, Semantic Model) &mdash; not reports/dashboards</li>
+          </ul>
+        </div>
 
         <h3>Access Control Summary</h3>
         <table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">
@@ -1145,7 +1185,7 @@ dataformat=csv
           <li>Installed on a machine in the private network</li>
           <li>Creates secure OUTBOUND tunnel to Fabric — no inbound firewall rules needed</li>
           <li>Azure IR: cloud/public endpoints only</li>
-          <li>Managed VNet IR: Azure private endpoints</li>
+          <li>Managed Private Endpoints: workspace-level feature for Spark workloads — provides secure outbound access to data sources behind firewalls via a Fabric-managed VNet (not the same as ADF Managed VNet IR)</li>
         </ul>
         <div class="gotcha"><strong>⚠️ On-premises data source + no ExpressRoute = use SHIR.</strong> SHIR creates outbound connection — no inbound firewall changes needed.</div>
 
