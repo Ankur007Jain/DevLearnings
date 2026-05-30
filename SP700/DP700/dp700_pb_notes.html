@@ -397,7 +397,7 @@ result = spark.sql("SELECT * FROM tablename WHERE year = 2026")</div>
         <h3>High Concurrency Mode</h3>
         <ul>
           <li>Same Spark session shared by multiple notebooks simultaneously — each gets its own REPL core for isolation</li>
-          <li>Up to <strong>36x faster</strong> session start vs standard (for custom pools)</li>
+          <li>Up to <strong>36x faster</strong> session start vs standard — <em>this applies to custom pools only, not starter pools</em></li>
           <li>Default: <strong>5 notebooks per session</strong>; configurable up to <strong>50</strong> via <code>spark.highConcurrency.max</code> in Environment Spark Properties</li>
           <li><strong>Session sharing requires:</strong> same user boundary, same default Lakehouse, same Spark compute settings</li>
           <li><strong>Billing:</strong> only the notebook that <em>initiates</em> the shared session is billed; subsequent notebooks sharing it are NOT billed separately</li>
@@ -609,6 +609,7 @@ WITH (STATE = ON)</div>
         </ul>
         <div class="code-block">GRANT SELECT ON dbo.Employee(EmployeeID, Name) TO [AuditorRole]
 -- Auditor can't SELECT Salary or Email — permission error if they try</div>
+        <div class="gotcha"><strong>⚠️ RLS vs CLS implementation contrast:</strong> RLS = CREATE SECURITY POLICY + inline TVF (complex). CLS = just GRANT SELECT ON table(columns) (simple). Both cause Direct Lake → DirectQuery fallback in Power BI. DDM is different — data is still returned, just obfuscated; use DDM when you want users to see a row exists but hide sensitive values.</div>
 
         <h3>Object-Level Security (OLS)</h3>
         <ul>
@@ -1157,7 +1158,7 @@ dataformat=csv
           <li>Cross-workspace lakehouse: supported, no fallback</li>
           <li><strong>RLS or CLS on a Warehouse</strong> causes fallback to DirectQuery to enforce security</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Direct Lake fallback triggers:</strong> (1) Frame limit exceeded by data volume, (2) <strong>Row-Level Security (RLS)</strong> applied to Warehouse, (3) <strong>Column-Level Security (CLS)</strong> applied to Warehouse. When RLS/CLS are active, Power BI queries fall back to DirectQuery to enforce security. V-Order, cross-workspace access, and partition count do NOT cause fallback.</div>
+        <div class="gotcha"><strong>⚠️ Direct Lake fallback triggers:</strong> (1) Frame limit exceeded by data volume, (2) <strong>RLS</strong> applied to Warehouse, (3) <strong>CLS</strong> applied to Warehouse. <br><strong>Exam chain to memorise:</strong> Warehouse has RLS/CLS → Power BI Direct Lake query detects security policy → falls back to DirectQuery to honour it → slower but secure. V-Order, cross-workspace access, and partition count do NOT cause fallback.</div>
       </div>
     </div>
   </div>
