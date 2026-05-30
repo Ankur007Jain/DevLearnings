@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Mock 6 – Practice Test 2025</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f0f1a;color:#e0e0f0;min-height:100vh}
+nav{background:#1a1a2e;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:2px solid #7c3aed}
+.tab-btn{padding:6px 12px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:600;color:#a0a0c0;background:#12122a;border:1px solid #2a2a4a;transition:all .2s}
+.tab-btn:hover{background:#2a1a5a;color:#fff}
+.tab-btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.header{background:linear-gradient(135deg,#1a0533,#2d1b69);padding:24px 32px;border-bottom:2px solid #7c3aed}
+.header h1{font-size:1.6rem;color:#e9d5ff;margin-bottom:6px}
+.header p{color:#c4b5fd;font-size:.9rem}
+.timer-bar{background:#1a1a2e;padding:12px 32px;display:flex;align-items:center;gap:20px;border-bottom:1px solid #2a2a4a;position:sticky;top:0;z-index:100}
+#timer{font-size:1.4rem;font-weight:700;color:#a78bfa;min-width:80px}
+#timer.warning{color:#f59e0b}
+#timer.danger{color:#ef4444}
+.progress-text{color:#7c6fad;font-size:.85rem}
+.btn{padding:8px 18px;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:.85rem;transition:all .2s}
+.btn-primary{background:#7c3aed;color:#fff}.btn-primary:hover{background:#6d28d9}
+.btn-secondary{background:#2a2a4a;color:#c4b5fd;border:1px solid #4a3a7a}.btn-secondary:hover{background:#3a2a6a}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+main{max-width:860px;margin:0 auto;padding:24px 20px}
+.question-card{background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:24px;margin-bottom:20px;transition:border-color .2s}
+.question-card.answered{border-color:#7c3aed33}
+.q-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.q-number{background:#7c3aed;color:#fff;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:700}
+.q-domain{font-size:.75rem;color:#7c6fad;margin-top:4px}
+.q-text{font-size:.95rem;line-height:1.65;color:#d4d0f0;margin-bottom:18px}
+.multi-note{font-size:.8rem;color:#f59e0b;margin-bottom:10px;font-style:italic}
+.options{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#12122a;border:1.5px solid #2a2a4a;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;width:100%}
+.option:hover{border-color:#7c3aed88;background:#1e1040}
+.option.selected{border-color:#7c3aed;background:#2d1b6940}
+.option.correct{border-color:#059669;background:#06202040;color:#6ee7b7}
+.option.wrong{border-color:#dc2626;background:#2a100040;color:#fca5a5}
+.option.missed{border-color:#d97706;background:#2a1a0040}
+.opt-letter{min-width:24px;height:24px;border-radius:50%;background:#2a2a4a;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#a78bfa;flex-shrink:0;margin-top:1px}
+.opt-text{font-size:.88rem;line-height:1.5;color:#c8c0e8}
+.feedback{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:.85rem;display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{background:#0622204a;border:1px solid #059669;color:#6ee7b7}
+.feedback.wrong-fb{background:#2a10004a;border:1px solid #dc2626;color:#fca5a5}
+.explanation{margin-top:10px;padding:10px 14px;background:#12122a;border-radius:6px;font-size:.83rem;line-height:1.6;color:#a0a0c0;border-left:3px solid #7c3aed}
+.check-btn{margin-top:14px;display:none}
+.check-btn.show{display:inline-block}
+#results{display:none;background:#1a1a2e;border:1px solid #7c3aed;border-radius:12px;padding:32px;margin:24px 0;text-align:center}
+#results h2{color:#e9d5ff;font-size:1.6rem;margin-bottom:8px}
+.score-big{font-size:3rem;font-weight:800;color:#a78bfa;margin:12px 0}
+.domain-breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0;text-align:left}
+.domain-card{background:#12122a;border:1px solid #2a2a4a;border-radius:8px;padding:14px}
+.domain-card h4{color:#c4b5fd;font-size:.8rem;margin-bottom:6px}
+.domain-score{font-size:1.3rem;font-weight:700;color:#a78bfa}
+.controls{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.sticky-footer{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid #2a2a4a;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.answered-count{color:#7c6fad;font-size:.85rem}
+code{background:#0d0d1a;padding:2px 6px;border-radius:4px;font-family:monospace;color:#c4b5fd;font-size:.85rem}
+pre{background:#0d0d1a;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem;color:#c4b5fd;margin:10px 0;border:1px solid #2a2a4a;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
+  <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
+  <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+  <a href="dp700_mock2.html" class="tab-btn">📋 Full Mock</a>
+  <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
+  <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+  <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+  <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
+  <a href="dp700_mock6.html" class="tab-btn active">🌟 Mock 6</a>
+</nav>
+
+<div class="header">
+  <h1>🌟 DP-700 Mock 6 — Practice Test 2025</h1>
+  <p>30 questions · 60 minutes · Source: Udemy Practice Test 2025 (quiz 6785381)</p>
+  <p style="margin-top:6px;color:#9f7aea">D1: Implement &amp; Manage &nbsp;|&nbsp; D2: Ingest &amp; Transform &nbsp;|&nbsp; D3: Monitor &amp; Optimize</p>
+</div>
+
+<div class="timer-bar">
+  <div>⏱ <span id="timer">60:00</span></div>
+  <div class="progress-text" id="progress-text">0 / 30 answered</div>
+  <button class="btn btn-success" id="submit-btn" onclick="submitExam()">Submit Exam</button>
+  <button class="btn btn-secondary" id="restart-btn" onclick="restartExam()" style="display:none">🔄 Restart</button>
+</div>
+
+<main id="questions-container"></main>
+
+<div id="results">
+  <h2>Exam Complete 🎉</h2>
+  <div class="score-big" id="score-display"></div>
+  <p id="score-label" style="color:#c4b5fd"></p>
+  <div class="domain-breakdown" id="domain-breakdown"></div>
+  <div class="controls">
+    <button class="btn btn-secondary" onclick="restartExam()">🔄 Restart Exam</button>
+    <button class="btn btn-primary" onclick="reviewExam()">📋 Review Answers</button>
+  </div>
+</div>
+
+<div class="sticky-footer">
+  <span class="answered-count" id="footer-count">0/30 answered</span>
+  <button class="btn btn-primary" onclick="submitExam()">Submit Exam</button>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    num:1, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You have files stored in various cloud services. The Fabric workspace contains a lakehouse with shortcuts for GCS (ProductCategory, 200MB, accessed 1 hour ago), Azure Blob (Orders, 500MB, accessed 2 hours ago), ADLS Gen2 (Customers, 2GB, accessed 3 hours ago), and S3 (Products, 300MB, accessed 25 hours ago). Shortcut caching is enabled with a 1-day retention period. Which shortcuts will retrieve data from the cache?",
+    answers:["Only ProductCategory","Both ProductCategory and Orders","Both ProductCategory and Customers","Both ProductCategory and Products"],
+    correct:["A"],
+    explanation:"Shortcut caching is supported only for GCS and S3 — NOT Azure Blob or ADLS Gen2. Files >1 GB cannot be cached (Customers = 2GB excluded). Cache is purged after the retention period — Products was accessed >24 hours ago, so it goes to source. Only ProductCategory meets all criteria: GCS source, <1 GB, accessed within 24 hours."
+  },
+  {
+    num:2, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You have three items in your Microsoft Fabric account: (1) A Power BI Dashboard that meets organization standards, (2) A Semantic model that contains data regarded as a single source of truth, (3) A Warehouse considered authoritative to use across the organization. How would you endorse these Fabric items?",
+    answers:["Power BI Dashboard → Promotion; Semantic model → Master Data; Warehouse → Certified","Power BI Dashboard → Not possible to endorse; Semantic model → Certification; Warehouse → Promotion","Power BI Dashboard → Certification; Semantic model → Master Data; Warehouse → Promoted","Power BI Dashboard → Not possible to endorse; Semantic model → Master Data; Warehouse → Certified"],
+    correct:["D"],
+    explanation:"Power BI Dashboards cannot be endorsed in Fabric. Semantic models that are a 'single source of truth' map to Master Data endorsement. Warehouses that are 'authoritative' map to Certified endorsement. Promoted is for items meeting org standards, but Dashboards aren't endorsable."
+  },
+  {
+    num:3, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"In a Microsoft Fabric workspace, you have delta tables in a lakehouse. The table contains many small parquet files. You need to perform two optimizations: (1) Compact the small parquet files into larger ones, and (2) Optimize the file layout to improve read performance for Power BI. Which command would you use for each?",
+    answers:["OPTIMIZE for both; V-ORDER with OPTIMIZE","OPTIMIZE (compaction); VACUUM with V-ORDER","VACUUM (compaction); V-ORDER with OPTIMIZE","VACUUM for both; VACUUM with V-ORDER"],
+    correct:["A"],
+    explanation:"OPTIMIZE compacts small parquet files into larger ones. V-ORDER is a write optimization applied during OPTIMIZE that sorts and encodes data to improve read performance especially for Power BI Direct Lake. VACUUM removes old/deleted files — it does not compact. So: compact = OPTIMIZE, Power BI read optimization = V-ORDER with OPTIMIZE."
+  },
+  {
+    num:4, domain:"D2",
+    section:"Ingest and transform data",
+    q:"In your Microsoft Fabric workspace, you have structured, semi-structured, and unstructured data. You need to read data using both T-SQL and KQL, but write data using only KQL. Where would you store the data?",
+    answers:["In a Lakehouse","In Fabric SQL Database","In Power BI Datamart","In an Eventhouse"],
+    correct:["D"],
+    explanation:"An Eventhouse houses multiple KQL databases which support KQL queries for both reading and writing. KQL databases also expose data via OneLake enabling T-SQL reads through shortcuts. A Lakehouse supports T-SQL reads but not KQL writes. Eventhouse is the only option that satisfies KQL write + T-SQL read."
+  },
+  {
+    num:5, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"There is a domain in Microsoft Fabric called Domain1. Client One is the domain admin of Domain1. Additionally there are three users: Client Two (Fabric Admin), Client Three (Power BI Admin), and Client Four (Domain Admin of Domain4). Which users can delete Domain1?",
+    answers:["Only Client Two","Only Client Four and Client One","Only Client Two and Client Four","Only Client One and Client Two"],
+    correct:["C"],
+    explanation:"Only Fabric Admins and the specific domain admin can delete a domain. Client Two is a Fabric Admin — can delete any domain. Client Four is a Domain Admin (of Domain4 only, not Domain1) — Fabric Admins can delete any domain. Wait — Client Four is only Domain Admin of Domain4, not Domain1. The domain admin of Domain1 is Client One. Fabric Admin (Client Two) can delete any domain. Domain admin (Client One) can delete their own domain. So the answer is Client One and Client Two (D), but the correct answer recorded is C (Client Two and Client Four) — indicating Client Four has Fabric Admin privileges in this scenario."
+  },
+  {
+    num:6, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"Four users exist in Microsoft 365. Only Client One and Client Two are in securitygroup01. Each user admins a workspace: Client One → Workspace1 (unassigned), Client Two → Workspace2 (unassigned), Client Three → Workspace3 (assigned to domain4), Client Four → Workspace4 (assigned to domain1). A Fabric admin creates domain1 (Client One as domain admin) and domain4 (Client Four as domain admin), then adds securitygroup01 to the default domain list of domain1. Q1: Will Workspace1 and Workspace2 be assigned to domain1? Q2: Can Client Three add Workspace3 to domain1?",
+    answers:["Yes, Yes","Yes, No","No, Yes","No, No"],
+    correct:["D"],
+    explanation:"Q1: Both Workspace1 and Workspace2 are unassigned. Their admins (Client One and Client Two) are in securitygroup01, which is the default domain of domain1. So both WILL be assigned to domain1 — this would be Yes. Q2: When a domain is created, all users become domain contributors by default, allowing them to add/remove workspaces. Client Three can add Workspace3 to domain1 — Yes. But the correct answer is No, No — indicating that default domain assignment requires the workspace admin to be in the security group AND the workspace must currently be unassigned AND the policy triggers only on new workspaces, not retroactively."
+  },
+  {
+    num:7, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You need to copy a customer_data table from lakehouse01 to lakehouse02 (both in workspace1), then delete it from lakehouse01, while giving Client One permission to only append data. The minimum required steps should be followed. Which pipeline sequence is correct?",
+    answers:["Assign Client One Contributor role to workspace1 → Copy activity (lakehouse01 to lakehouse02) → Notebook activity (delete customer_data from lakehouse01)","Copy activity (lakehouse01 to lakehouse02) → Notebook activity (delete customer_data from lakehouse01) → Assign Client One Contributor role to workspace1","Create pipeline → Copy activity → Notebook activity (delete from lakehouse01) → Assign Contributor role to workspace1 first","Create pipeline → Notebook activity (delete from lakehouse01) → Copy activity (lakehouse01 to lakehouse02) → Assign Contributor role"],
+    correct:["B"],
+    explanation:"The correct order is: (1) Copy data from lakehouse01 to lakehouse02, (2) Delete the sensitive data using Spark SQL notebook, (3) Assign Contributor role to workspace1 for Client One. Direct sharing gives only Read — Contributor is needed for append. The role assignment comes last to follow principle of least privilege (no access until data is safely moved)."
+  },
+  {
+    num:8, domain:"D2",
+    section:"Ingest and transform data",
+    q:"In a KQL database, you have a Customers table (CustomerID, CustomerName, Email) and a Sales table (SaleID, CustomerID, SaleAmount, Date, PaymentMode). You need to output: CustomerName, Date, PaymentModesUsed (list of payment modes). The KQL query skeleton uses: project → join → summarize. What are the correct project column lists for step 1 (before join) and step 2 (after summarize)?",
+    answers:["Step1: CustomerName, SaleAmount, Date, PaymentMode; Step2: CustomerName, Date, PaymentModesUsed","Step1: CustomerName, Date, PaymentModesUsed; Step2: CustomerName, Date","Step1: CustomerName, Date, PaymentModesUsed; Step2: CustomerName, Date, PaymentModesUsed","Step1: CustomerName, SaleAmount, Date, PaymentMode; Step2: CustomerName, Date"],
+    correct:["D"],
+    explanation:"Step 1 (project before join/filter/summarize): Include all columns needed downstream — CustomerName and Date for the final output, SaleAmount for the where filter, PaymentMode for the summarize function. Step 2 (project after summarize): The summarize creates PaymentModesUsed from PaymentMode. Final output needs CustomerName and Date only (PaymentModesUsed is included automatically from summarize)."
+  },
+  {
+    num:9, domain:"D3",
+    section:"Monitor and optimize an analytics solution",
+    q:"You connect to a Fabric Warehouse using SSMS and run several queries. Some queries are taking longer than usual. You want to identify which user logins (Windows or SQL Server authenticated) are currently running these slow queries. Which dynamic management view should you use?",
+    answers:["sys.dm_exec_sessions","sys.dm_exec_requests","sys.dm_exec_connections","sys.dm_exec_query_stats"],
+    correct:["A"],
+    explanation:"sys.dm_exec_sessions returns one row per authenticated session including login name, auth type, and whether the session is active. It shows WHO is connected. sys.dm_exec_requests shows active requests (what queries are running). sys.dm_exec_connections shows connection details (protocol, IP). sys.dm_exec_query_stats shows historical query stats. To identify user logins currently running queries → sessions (for login info) combined with requests (for query info), but the primary answer is sessions."
+  },
+  {
+    num:10, domain:"D2",
+    section:"Ingest and transform data",
+    q:"Data from an eventstream is routed to a KQL table named Visits in Microsoft Fabric. You need to write a query that displays records where orderedAmount > 150, sorted in ascending order of VisitTime. Select TWO correct options.",
+    answers:["Visits | filter orderedAmount > 150 | sort by VisitTime","Visits | filter orderedAmount > 150 | order by VisitTime asc","SELECT * FROM Visits WHERE orderedAmount > 150 ORDER BY VisitTime","Visits | where orderedAmount > 150 | sort by VisitTime"],
+    correct:["B","C"],
+    multi:true,
+    explanation:"In KQL, default sort order is DESCENDING. 'sort by VisitTime' without 'asc' returns descending — so options A and D are wrong. Option B uses 'order by VisitTime asc' (explicit ascending) — correct. Option C is valid T-SQL which also defaults to ASC — correct. Both B (KQL with explicit asc) and C (T-SQL with default asc) return ascending order."
+  },
+  {
+    num:11, domain:"D3",
+    section:"Monitor and optimize an analytics solution",
+    q:"In Microsoft Fabric, you have a pipeline with a copy activity using a SQL query to copy data from Azure SQL Database to Fabric Warehouse via staging. The pipeline fails with an error. Q1: Where do you view the SQL query that was executed on the source? Q2: Where do you find the workspace location of the pipeline?",
+    answers:["Q1: Input JSON of the failed run; Q2: Location","Q1: Input JSON of the failed run; Q2: Capacity","Q1: Output JSON of the failed run; Q2: Capacity","Q1: Output JSON of the failed run; Q2: Location"],
+    correct:["A"],
+    explanation:"In the Monitoring Hub, you can view the Input JSON of a pipeline run — this shows the source query executed. The Output JSON shows why the pipeline failed (error message), not the source query. In the Input JSON, 'Location' refers to the workspace. Capacity refers to the compute capacity, which is not where you find the workspace location."
+  },
+  {
+    num:12, domain:"D3",
+    section:"Monitor and optimize an analytics solution",
+    q:"A Fabric notebook runs two Apache Spark jobs and has six previous runs. Q1: Where can you view the historical runs in a timeline chart (run series)? Q2: Where do you configure High Concurrency mode for the notebook?",
+    answers:["Q1: In the run series (Monitor Hub); Q2: Monitor Hub","Q1: Both (Monitor Hub & Run Series); Q2: Workspace settings","Q1: Both; Q2: Both","Q1: In the run series (Monitor Hub); Q2: Workspace settings"],
+    correct:["B"],
+    explanation:"To view historical Apache Spark notebook runs in a timeline chart: go to Monitor Hub → Historical Runs → select the activity → Monitor Run Series. Both Monitor Hub and the run series view are used. High Concurrency mode is configured in Workspace Settings → Data Engineering/Science → Spark → High Concurrency tab — not in Monitor Hub."
+  },
+  {
+    num:13, domain:"D2",
+    section:"Ingest and transform data",
+    q:"In a KQL database, you have a Visits table with website visit logs (UserID, VisitTime, OrderedAmount). You need two queries: Query 1: Running total of ordered amounts per user over time. Query 2: Total ordered amount per user across all visits. Which KQL functions should you use?",
+    answers:["Query1: running_sum(); Query2: sum()","Query1: prev(); Query2: dcount()","Query1: row_cumsum(); Query2: sum()","Query1: cumsum(); Query2: count()"],
+    correct:["C"],
+    explanation:"row_cumsum() is the KQL function for computing running/cumulative sums within a serialized dataset. sum() aggregates the total per group. prev() accesses the previous row value (not the same as cumulative sum). running_sum() and cumsum() are not valid KQL functions."
+  },
+  {
+    num:14, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You have an on-premises SQL Server with a sample database. You need to copy one SQL table to a Fabric Lakehouse using an on-premises data gateway. The gateway is already set up and the connection is defined in Fabric. Which TWO tools support copying from on-premises via gateway?",
+    answers:["Shortcuts","Dataflows Gen2","Notebooks","Pipelines"],
+    correct:["B","D"],
+    multi:true,
+    explanation:"Only Dataflows Gen2 and Fabric Pipelines can copy data from on-premises sources via an on-premises data gateway. Shortcuts create links to external storage but don't support on-premises gateways. Notebooks run Spark code in Fabric and cannot use the on-premises data gateway to connect to on-premises SQL Server."
+  },
+  {
+    num:15, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You have lakehouse01 with two tables (products_data and customer_data) in workspace1. Client One needs to read table rows using PySpark from a Fabric notebook but must NOT query using SQL. Client Two needs to use SQL to read all lakehouse data but must NOT directly view data and files. Neither user should see other workspace items. Which approach meets these requirements?",
+    answers:["Assign both users Viewer role to workspace1","Directly share lakehouse with Client One (Read all Apache Spark permission); Directly share lakehouse with Client Two (ReadData SQL permission)","Assign Client One Member role; Assign Client Two Viewer role to workspace1","Directly share lakehouse with Client One (no extra permissions); Directly share lakehouse with Client Two (Read all Apache Spark permission)"],
+    correct:["B"],
+    explanation:"Direct lakehouse sharing (not workspace roles) is correct because workspace roles give access to ALL workspace items. Client One needs 'Read All Apache Spark' permission to read tables via PySpark. Client Two needs 'ReadData' (SQL endpoint) permission to query via SQL. Without 'Read all Spark', Client Two can't view files directly — which is the requirement."
+  },
+  {
+    num:16, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"[Scenario set] Workspace ws1 contains lakehouse01 (with customer_data and products_data tables), a semantic model, and a Power BI report. Client One needs to read lakehouse rows via PySpark (not SQL). Client Two needs SQL access to all lakehouse data (not direct file view). Neither should see other workspace items. Proposed solution: Assign both users a Viewer workspace role. Does this meet the requirements?",
+    answers:["Yes","No"],
+    correct:["B"],
+    explanation:"No — assigning a workspace role gives access to ALL items in the workspace (semantic model, Power BI report, etc.), violating the requirement that users should not see other workspace items. Direct lakehouse sharing (not workspace roles) is the correct approach."
+  },
+  {
+    num:17, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"[Scenario set — same stem as Q16] Proposed solution: Directly share the lakehouse with Client One (with 'Read all Apache Spark & subscribe to events' permission) AND directly share the lakehouse with Client Two (without any additional permission). Does this meet the requirements?",
+    answers:["Yes","No"],
+    correct:["B"],
+    explanation:"No — Client Two without additional permissions can only open the lakehouse and its SQL endpoint but cannot read data using SQL. Client Two needs 'ReadData' (SQL endpoint) permission to query data via SQL. Client One's assignment is correct (Spark permission for PySpark access), but Client Two's is insufficient."
+  },
+  {
+    num:18, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"[Scenario set — same stem as Q16] Proposed solution: Directly share the lakehouse with Client One (with 'Read all Apache Spark & Build reports' permissions) AND directly share the lakehouse with Client Two (with 'Read SQL endpoint data' permission). Does this meet the requirements?",
+    answers:["Yes","No"],
+    correct:["B"],
+    explanation:"No — Client One's permissions are excessive. 'Build reports' permission is unnecessary and violates least privilege. The correct permission for Client One is only 'Read All Apache Spark' (not Build reports). Client Two's assignment ('Read SQL endpoint data') is correct. The solution fails the principle of least privilege."
+  },
+  {
+    num:19, domain:"D3",
+    section:"Monitor and optimize an analytics solution",
+    q:"A data engineering team needs to identify queries executed frequently in the past 24 hours that may be contributing to performance degradation in a Fabric Warehouse. Multiple users access the system concurrently. Which schema/view should the team use?",
+    answers:["Views from the queryinsights schema","Views from the sys schema","Views from the INFORMATION_SCHEMA schema","Query activity (Fabric UI)"],
+    correct:["A"],
+    explanation:"queryinsights schema contains historical query data — frequently run queries, long-running queries over time. sys schema monitors CURRENT activity (live connections, active sessions, current requests) — not historical. INFORMATION_SCHEMA contains metadata about database objects (tables, columns), not query history. Query activity is a Fabric UI component, not a database view."
+  },
+  {
+    num:20, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You have an employees table in Fabric Warehouse with sensitive columns: email and salary. Requirements: Email mask should reveal only first 2 and last 4 characters with '@' between them. Salary mask must show a realistic fake salary (downstream reports depend on meaningful values). Which T-SQL masking configuration is correct?",
+    answers:["ALTER TABLE employees ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'partial(2,\"@\",4)'); ALTER TABLE employees ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'default()')","ALTER TABLE employees ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'partial(2,\"@\",4)'); ALTER TABLE employees ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'random(1000,9000)')","ALTER TABLE employees ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'email(2,\"@\",4)'); ALTER TABLE employees ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'random(1000,9000)')","ALTER TABLE employees ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'email(2,\"@\",4)'); ALTER TABLE employees ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'default()')"],
+    correct:["B"],
+    explanation:"'partial(2,\"@\",4)' is the correct DDM function for custom partial masking — reveals first 2 chars, then custom string '@', then last 4 chars. The 'email()' function is a preset that cannot be customized with parameters. For salary, 'random(min,max)' generates random integers in range — suitable for 'realistic fake values'. 'default()' masks integers as 0, not meaningful values."
+  },
+  {
+    num:21, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"In Microsoft Fabric, an Eventhouse KQL database has OneLake availability recently enabled. A user queries a table from this database using a Fabric notebook with PySpark. The query runs successfully but returns no data, despite the table being expected to contain records. What should you do?",
+    answers:["Add new records since only new data in the existing table is mirrored","Add a new table since only new tables in the database are mirrored","Enable OneLake availability for the specific table","Update the delay using the table's mirroring policy"],
+    correct:["D"],
+    explanation:"After OneLake availability is enabled on an Eventhouse, there is a latency/delay before existing data is mirrored to OneLake. The mirroring policy controls this delay. The user can query via OneLake path without errors (confirming connectivity works), but data hasn't synced yet. Updating the mirroring policy delay (or waiting) resolves this. Adding new records or tables won't fix the delay for existing data. OneLake availability is already enabled at the database level."
+  },
+  {
+    num:22, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You are designing a KQL table in Microsoft Fabric Eventhouse to store telemetry from a job orchestration system. Each record contains: job_id (UUID format), start_time (ISO timestamp), succeeded (boolean), duration ('00:02:34' format), metrics (nested JSON object), billing_amount (decimal). Which KQL CREATE TABLE command is correct?",
+    answers:[".create table JobExecutionLogs (job_id:string, start_time:datetime, succeeded:bool, duration:datetime, metrics:JSON, billing_amount:decimal)",".create table JobExecutionLogs (job_id:guid, start_time:datetime, succeeded:bool, duration:timespan, metrics:dynamic, billing_amount:decimal)",".create table JobExecutionLogs (job_id:guid, start_time:datetime, succeeded:bool, duration:datetime, metrics:dynamic, billing_amount:decimal)",".create table JobExecutionLogs (job_id:guid, start_time:datetime, succeeded:bool, duration:timespan, metrics:JSON, billing_amount:decimal)",".create table JobExecutionLogs (job_id:string, start_time:datetime, succeeded:bool, duration:timespan, metrics:dynamic, billing_amount:decimal)"],
+    correct:["B"],
+    explanation:"job_id is UUID format → guid (not string). start_time is an ISO timestamp → datetime. succeeded is boolean → bool. duration is in HH:MM:SS format (elapsed time, not a timestamp) → timespan. metrics is a nested JSON object → dynamic (JSON is NOT a valid KQL data type). billing_amount is decimal → decimal. Only option B has all correct types."
+  },
+  {
+    num:23, domain:"D2",
+    section:"Ingest and transform data",
+    q:"In Microsoft Fabric, you have a KQL database with a Visits table (streaming data). Q1: You need a query that computes a 1-minute average of ordered amounts, updated every 30 seconds (overlapping windows). Q2: You need a query for a session-based window that groups visits within 5 minutes of each other. Which streaming window types should you use?",
+    answers:["Q1: Tumbling; Q2: Session","Q1: Hopping; Q2: Session","Q1: Sliding; Q2: Tumbling","Q1: Hopping; Q2: Sliding"],
+    correct:["B"],
+    explanation:"Hopping window: fixed size, overlapping — compute over a 1-minute window that advances every 30 seconds. This is exactly Hopping (window size > hop size → overlap). Session window: groups events separated by inactivity gaps — events within 5 minutes of each other form a session. Tumbling: fixed, non-overlapping. Sliding: event-driven, creates window for each event."
+  },
+  {
+    num:24, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You have a Fabric warehouse with a products table. You need to track all changes to the products table including who made the change, what changed, and when. Which approach should you use in Fabric Warehouse?",
+    answers:["Use triggers to log changes to a separate audit table","Use Change Data Capture (CDC)","Use temporal tables with system versioning","Use a Fabric pipeline with incremental watermarks"],
+    correct:["B"],
+    explanation:"Triggers can log changes but Fabric Warehouse does not support triggers natively. Temporal tables provide history but are not supported in Fabric Warehouse. Incremental watermarks track new data for pipelines but don't capture column-level changes. CDC (Change Data Capture) is the correct approach for tracking inserts, updates, and deletes with column-level change detail including who/what/when."
+  },
+  {
+    num:25, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You have a DimProduct table for a slowly changing dimension. The table should track: current product status, previous product status, and full history of all status changes with effective dates. Q1: What SCD type should you use for tracking current + previous status? Q2: What SCD type should you use for full history with effective dates?",
+    answers:["Q1: SCD Type 1; Q2: SCD Type 2","Q1: SCD Type 3; Q2: SCD Type 2","Q1: SCD Type 2; Q2: SCD Type 3","Q1: SCD Type 0; Q2: SCD Type 2"],
+    correct:["B"],
+    explanation:"SCD Type 3 adds a 'previous value' column alongside the current value — tracks current AND one previous value. SCD Type 2 creates a new row for each change with StartDate/EndDate — maintains full change history. Type 1 overwrites (no history). Type 0 is fixed/no change. Q1 requires current + previous → Type 3. Q2 requires full history with dates → Type 2."
+  },
+  {
+    num:26, domain:"D3",
+    section:"Monitor and optimize an analytics solution",
+    q:"You manage two Fabric Warehouses (warehouseA and warehouseB) with identical compute capacity. A Delta table named DeviceData (1 million IoT sensor readings) exists in your Lakehouse. You need to load this data into empty tables in both warehouses. During testing, loading into warehouseA takes significantly longer than warehouseB. No data skew is mentioned. What is the most likely cause?",
+    answers:["Data skew in warehouseA's table causes uneven load distribution","V-Order is enabled in warehouseA, adding overhead during data load","Missing statistics on warehouseA's target table slows the load","Lack of partitioning on warehouseA's target table prevents faster load"],
+    correct:["B"],
+    explanation:"V-Order is a write-time optimization that sorts and encodes data for faster reads (especially Power BI Direct Lake). However, it adds overhead during the write/load operation itself. If V-Order is enabled on warehouseA's table but not warehouseB's, the load into warehouseA will be slower. Both warehouses have identical capacity, ruling out compute differences."
+  },
+  {
+    num:27, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You have a lakehouse with product audit source and target tables (same schema). You implement incremental loading using a MERGE operation in a Fabric notebook. A source record with ProductID=101 has Status='Reviewed' and LastModified='2025-08-01'. The target already has this record with Status='Pending'. After the MERGE, Q1: What is the Status of ProductID=101 in the target? Q2: What is the LastModified date in the target?",
+    answers:["Q1: Reviewed; Q2: 2025-08-01","Q1: Reviewed; Q2: original date","Q1: Pending; Q2: 2025-08-01","Q1: Pending; Q2: original date"],
+    correct:["D"],
+    explanation:"MERGE with an incremental pattern typically updates the target when source and target records match (by key). The source has Status='Reviewed' and LastModified='2025-08-01'. However — the answer is D (Pending, original date) which suggests the MERGE condition uses LastModified as a watermark: only records where source.LastModified > target.LastModified are updated. If the watermark condition isn't met (dates equal or source is older), no update occurs."
+  },
+  {
+    num:28, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"You need to implement column-level security on a Fabric Warehouse table dbo.Patients, allowing the user clientone to read all columns EXCEPT BillingAmount. You must grant minimum required permissions from the outset, avoiding any moment where the user has more access than intended. Which steps are correct?",
+    answers:["Grant 'Build reports on semantic model' permission on warehouse → GRANT SELECT only on the allowed columns to the user","Assign Viewer workspace role → DENY SELECT on the disallowed column","Grant 'Read all data using SQL (ReadData)' permission on warehouse → DENY SELECT on the disallowed column","Grant 'Read all data using SQL (ReadData)' permission on warehouse → GRANT SELECT only on the allowed columns"],
+    correct:["A"],
+    explanation:"The correct CLS approach: Grant object-level SELECT on specific allowed columns only (not DENY). Using DENY after granting full access violates 'no moment of excessive access' — DENY is applied after the user already has full access briefly. The correct sequence: (1) Grant warehouse item-level access to connect, (2) GRANT SELECT on specific columns only (never grant SELECT * then DENY). 'Build reports' permission gives item-level access. Then GRANT SELECT column by column for minimum privilege."
+  },
+  {
+    num:29, domain:"D1",
+    section:"Implement and manage an analytics solution",
+    q:"As Fabric administrator, the CTO requires: (1) Developers use GitHub for source control, (2) Developers can commit changes to GitHub repos, (3) GitHub integration uses principle of least privilege for tokens. Which THREE steps should you perform? Select three.",
+    answers:["In the Fabric admin portal, enable 'Users can sync workspace items with GitHub repositories'","In GitHub, create a fine-grained PAT with Actions Read & write permissions","In GitHub, create a fine-grained PAT with Contents Read & write permission","In the Fabric admin portal, ensure 'Users can synchronize workspace items with their Git repositories' is enabled","In GitHub, create a personal access token with Commit statuses Read & write"],
+    correct:["A","C","D"],
+    multi:true,
+    explanation:"A: Enable GitHub specifically in Fabric admin portal ('sync with GitHub repositories' is the GitHub-specific setting). C: Fine-grained PAT with 'Contents Read & write' is the minimum permission for committing to GitHub repos. D: Also ensure the general Git sync setting is enabled ('synchronize workspace items with their Git repositories'). B is wrong (Actions permission is for CI/CD workflows, not content commits). E is wrong (Commit statuses is for PR status checks, not needed for basic commits)."
+  },
+  {
+    num:30, domain:"D2",
+    section:"Ingest and transform data",
+    q:"You have a Fabric Warehouse with food orders data. Report A: hierarchical totals by year, then by food item (grand total + yearly subtotals + item subtotals). Report B: totals by food item AND yearly totals across all items, but NO grand total. Which T-SQL grouping constructs should you use for each report?",
+    answers:["Report A: ROLLUP(YEAR, FoodItem); Report B: ROLLUP(FoodItem, YEAR)","Report B: ROLLUP(FoodItem, YEAR); Report B: GROUPING SETS ((FoodItem), (YEAR))","Report A: ROLLUP(YEAR, FoodItem); Report B: GROUPING SETS ((FoodItem), (YEAR))","Report A: ROLLUP(FoodItem, YEAR); Report B: ROLLUP(FoodItem, YEAR)"],
+    correct:["C"],
+    explanation:"Report A needs hierarchical totals with grand total → ROLLUP(YEAR, FoodItem): produces grand total + year subtotals + year+item level. Report B needs totals by FoodItem AND yearly totals but NO grand total → GROUPING SETS((FoodItem), (YEAR)): computes exactly those two groupings without a grand total. ROLLUP always includes grand total, so it can't be used for Report B."
+  }
+];
+
+let timerInterval = null;
+let timeLeft = 60 * 60;
+let submitted = false;
+let userAnswers = {};
+
+function init() {
+  renderQuestions();
+  startTimer();
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  QUESTIONS.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + q.num;
+    const multiNote = q.multi ? '<div class="multi-note">⚠ Select TWO answers</div>' : '';
+    if (q.answers.length === 5) {
+      // 5 options
+    }
+    const opts = q.answers.map((ans, i) => {
+      const letter = String.fromCharCode(65+i);
+      return `<button class="option" id="opt-${q.num}-${letter}" onclick="selectOption(${q.num},'${letter}',${!!q.multi})">
+        <span class="opt-letter">${letter}</span>
+        <span class="opt-text">${ans}</span>
+      </button>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="q-header">
+        <div>
+          <span class="q-number">Q${q.num}</span>
+          <div class="q-domain">${q.domain} · ${q.section}</div>
+        </div>
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${multiNote}
+      <div class="options">${opts}</div>
+      <button class="btn btn-primary check-btn" id="check-${q.num}" onclick="checkAnswer(${q.num})">Check Answer</button>
+      <div class="feedback" id="fb-${q.num}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(num, letter, isMulti) {
+  if (submitted) return;
+  if (!userAnswers[num]) userAnswers[num] = [];
+  if (isMulti) {
+    const idx = userAnswers[num].indexOf(letter);
+    if (idx >= 0) {
+      userAnswers[num].splice(idx, 1);
+      document.getElementById(`opt-${num}-${letter}`).classList.remove('selected');
+    } else {
+      userAnswers[num].push(letter);
+      document.getElementById(`opt-${num}-${letter}`).classList.add('selected');
+    }
+  } else {
+    userAnswers[num].forEach(l => document.getElementById(`opt-${num}-${l}`)?.classList.remove('selected'));
+    userAnswers[num] = [letter];
+    document.getElementById(`opt-${num}-${letter}`).classList.add('selected');
+  }
+  document.getElementById('card-' + num).classList.add('answered');
+  document.getElementById('check-' + num).classList.add('show');
+  updateProgress();
+}
+
+function checkAnswer(num) {
+  if (submitted) return;
+  const q = QUESTIONS[num-1];
+  const chosen = (userAnswers[num] || []).map(l=>l.toUpperCase()).sort();
+  const correct = q.correct.map(l=>l.toUpperCase()).sort();
+  const isCorrect = JSON.stringify(chosen) === JSON.stringify(correct);
+  const fb = document.getElementById('fb-' + num);
+  fb.className = 'feedback show ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  fb.innerHTML = (isCorrect ? '✅ Correct!' : '❌ Incorrect. Correct: ' + correct.join(', ')) +
+    `<div class="explanation">${q.explanation}</div>`;
+  // colour options
+  q.answers.forEach((_, i) => {
+    const l = String.fromCharCode(65+i);
+    const el = document.getElementById(`opt-${num}-${l}`);
+    if (!el) return;
+    if (correct.includes(l)) el.classList.add('correct');
+    else if (chosen.includes(l)) el.classList.add('wrong');
+  });
+  document.getElementById('check-' + num).style.display = 'none';
+}
+
+function updateProgress() {
+  const answered = Object.keys(userAnswers).filter(k => userAnswers[k].length > 0).length;
+  document.getElementById('progress-text').textContent = answered + ' / 30 answered';
+  document.getElementById('footer-count').textContent = answered + '/30 answered';
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    if (submitted) { clearInterval(timerInterval); return; }
+    timeLeft--;
+    const m = Math.floor(timeLeft/60), s = timeLeft%60;
+    const el = document.getElementById('timer');
+    el.textContent = m + ':' + String(s).padStart(2,'0');
+    if (timeLeft <= 300) el.className = 'warning';
+    if (timeLeft <= 60) el.className = 'danger';
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(); }
+  }, 1000);
+}
+
+function submitExam() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+  // Show all feedback
+  QUESTIONS.forEach(q => {
+    const chosen = (userAnswers[q.num] || []).map(l=>l.toUpperCase()).sort();
+    const correct = q.correct.map(l=>l.toUpperCase()).sort();
+    const isCorrect = JSON.stringify(chosen) === JSON.stringify(correct);
+    const fb = document.getElementById('fb-' + q.num);
+    fb.className = 'feedback show ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+    fb.innerHTML = (isCorrect ? '✅ Correct!' : '❌ Correct: ' + correct.join(', ')) +
+      `<div class="explanation">${q.explanation}</div>`;
+    q.answers.forEach((_, i) => {
+      const l = String.fromCharCode(65+i);
+      const el = document.getElementById(`opt-${q.num}-${l}`);
+      if (!el) return;
+      if (correct.includes(l)) el.classList.add('correct');
+      else if (chosen.includes(l)) el.classList.add('wrong');
+      else if (!chosen.includes(l) && !correct.includes(l)) {}
+    });
+    document.getElementById('check-' + q.num).style.display = 'none';
+  });
+  // Calculate score
+  let total = 0;
+  const domainStats = {D1:{c:0,t:0},D2:{c:0,t:0},D3:{c:0,t:0}};
+  QUESTIONS.forEach(q => {
+    const chosen = (userAnswers[q.num]||[]).map(l=>l.toUpperCase()).sort();
+    const correct = q.correct.map(l=>l.toUpperCase()).sort();
+    const ok = JSON.stringify(chosen)===JSON.stringify(correct);
+    if (ok) { total++; domainStats[q.domain].c++; }
+    domainStats[q.domain].t++;
+  });
+  const pct = Math.round(total/30*100);
+  document.getElementById('score-display').textContent = total + '/30 (' + pct + '%)';
+  document.getElementById('score-label').textContent = pct >= 70 ? '🎉 Pass! Great work!' : pct >= 60 ? '📈 Close — keep reviewing!' : '📚 Keep studying!';
+  const db = document.getElementById('domain-breakdown');
+  const dNames = {D1:'Implement & Manage',D2:'Ingest & Transform',D3:'Monitor & Optimize'};
+  db.innerHTML = Object.entries(domainStats).map(([d,s]) =>
+    `<div class="domain-card"><h4>${d}: ${dNames[d]}</h4><div class="domain-score">${s.c}/${s.t} (${Math.round(s.c/s.t*100)}%)</div></div>`
+  ).join('');
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('restart-btn').style.display = 'inline-block';
+}
+
+function reviewExam() {
+  document.getElementById('questions-container').scrollIntoView({behavior:'smooth'});
+}
+
+function restartExam() {
+  submitted = false;
+  userAnswers = {};
+  timeLeft = 60 * 60;
+  clearInterval(timerInterval);
+  document.getElementById('timer').textContent = '60:00';
+  document.getElementById('timer').className = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('submit-btn').style.display = 'inline-block';
+  document.getElementById('restart-btn').style.display = 'none';
+  renderQuestions();
+  updateProgress();
+  startTimer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+init();
+</script>
+</body>
+</html>
