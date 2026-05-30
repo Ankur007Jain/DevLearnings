@@ -396,11 +396,14 @@ result = spark.sql("SELECT * FROM tablename WHERE year = 2026")</div>
 
         <h3>High Concurrency Mode</h3>
         <ul>
-          <li>Same Spark session shared by multiple notebooks simultaneously</li>
-          <li>36x faster session start vs standard</li>
+          <li>Same Spark session shared by multiple notebooks simultaneously — each gets its own REPL core for isolation</li>
+          <li>Up to <strong>36x faster</strong> session start vs standard (for custom pools)</li>
+          <li>Default: <strong>5 notebooks per session</strong>; configurable up to <strong>50</strong> via <code>spark.highConcurrency.max</code> in Environment Spark Properties</li>
+          <li><strong>Session sharing requires:</strong> same user boundary, same default Lakehouse, same Spark compute settings</li>
+          <li><strong>Billing:</strong> only the notebook that <em>initiates</em> the shared session is billed; subsequent notebooks sharing it are NOT billed separately</li>
           <li>Enable: <strong>Workspace Settings → Data Engineering/Science → Spark settings → High Concurrency tab</strong></li>
         </ul>
-        <div class="gotcha"><strong>⚠️ High Concurrency location:</strong> Workspace Settings → Data Engineering/Science tab → Spark settings.</div>
+        <div class="gotcha"><strong>⚠️ High Concurrency billing:</strong> Only the initiating notebook is billed for Spark compute. Shared notebooks (up to 5 by default, 50 max) don't incur separate charges. Session sharing requires same user + same default Lakehouse + same Spark compute settings.</div>
 
         <h3>Spark Structured Streaming in Notebooks</h3>
         <div class="code-block">
@@ -457,7 +460,7 @@ df.writeStream \
           <li>Files &gt; 1GB are NOT cached</li>
           <li>If external file changes: new version is read, cache updated</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Shortcut caching:</strong> Works for S3, GCS, S3-compatible — <strong>NOT for ADLS Gen2 or other Fabric items</strong>. This is a frequent exam trap.</div>
+        <div class="gotcha"><strong>⚠️ Shortcut caching:</strong> Works for <strong>S3, GCS, S3-compatible, and On-Premises Data Gateway (OPDG)</strong> shortcuts — <strong>NOT for ADLS Gen2, Azure Blob, or native Fabric item shortcuts</strong>. This is a frequent exam trap.</div>
 
         <h3>File Partitioning</h3>
         <ul>
@@ -991,9 +994,11 @@ dataformat=csv
         <h3>Fabric Capacity Metrics App</h3>
         <ul>
           <li>Install from AppSource — monitors capacity usage</li>
-          <li><strong>Two tabs: Compute + Storage</strong></li>
-          <li><strong>Compute tab</strong>: CU (Capacity Unit) usage over time, throttling, smoothing, per-item breakdowns</li>
-          <li><strong>Storage tab</strong>: OneLake storage consumption by workspace/item</li>
+          <li>Multi-page app with dedicated views for different monitoring needs</li>
+          <li><strong>Key pages:</strong> Health, Compute, Storage, Timepoint, Timepoint Summary, Timepoint Item Detail, Autoscale compute for Spark, Plan capacity, Monitor paused capacity</li>
+          <li><strong>Compute page</strong>: CU (Capacity Unit) usage over time, throttling, smoothing, per-item breakdowns</li>
+          <li><strong>Storage page</strong>: OneLake storage consumption by workspace/item</li>
+          <li><strong>Timepoint page</strong>: drill into a specific point in time to see which items were consuming CUs</li>
           <li>Performance delta: compares fast operations (&lt;200ms) now vs 7 days ago — higher = better performance</li>
           <li>High CU: heavily used capacity or many operations running</li>
         </ul>
@@ -1114,7 +1119,7 @@ dataformat=csv
           <li>Change indicator icon: appears when content changed since last deployment</li>
           <li>Unsupported items: shown in UI but cannot be deployed (e.g., some custom items)</li>
           <li>What IS copied: item definitions, schema, code, connection config structure</li>
-          <li>What is NOT copied: credentials, data, some sensitivity label settings</li>
+          <li>What is NOT copied: credentials, data, sensitivity label settings, <strong>endorsement settings</strong>, refresh schedules</li>
         </ul>
 
         <h3>Git Integration</h3>
@@ -1150,8 +1155,9 @@ dataformat=csv
           <li>Fix: upgrade to higher SKU (F8, F16, F32…) or reduce model size</li>
           <li>V-Order does NOT cause fallback — it affects read speed only</li>
           <li>Cross-workspace lakehouse: supported, no fallback</li>
+          <li><strong>RLS or CLS on a Warehouse</strong> causes fallback to DirectQuery to enforce security</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Direct Lake fallback cause = frame limit exceeded by data volume.</strong> V-Order, cross-workspace access, or partition count do NOT cause fallback.</div>
+        <div class="gotcha"><strong>⚠️ Direct Lake fallback triggers:</strong> (1) Frame limit exceeded by data volume, (2) <strong>Row-Level Security (RLS)</strong> applied to Warehouse, (3) <strong>Column-Level Security (CLS)</strong> applied to Warehouse. When RLS/CLS are active, Power BI queries fall back to DirectQuery to enforce security. V-Order, cross-workspace access, and partition count do NOT cause fallback.</div>
       </div>
     </div>
   </div>
