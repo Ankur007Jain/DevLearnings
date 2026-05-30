@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Phillip Burton Course Notes</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+  .pb-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+  .pb-btn { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer; color:var(--muted); transition:all 0.15s; }
+  .pb-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .pb-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .pb-section { display:none; }
+  .pb-section.active { display:block; }
+  .topic-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:16px; }
+  .topic-title { font-size:15px; font-weight:800; color:var(--text); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .topic-body { font-size:13px; color:var(--text); line-height:1.7; }
+  .topic-body ul { margin:8px 0 8px 20px; }
+  .topic-body li { margin-bottom:4px; }
+  .gotcha { background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:10px 14px; margin:10px 0; font-size:12px; }
+  .gotcha strong { color:#c2410c; }
+  .tip { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin:10px 0; font-size:12px; }
+  .tip strong { color:#166534; }
+  .code-block { background:#1e293b; color:#e2e8f0; border-radius:8px; padding:14px; font-family:monospace; font-size:12px; line-height:1.6; margin:10px 0; overflow-x:auto; white-space:pre-wrap; }
+  .tag { display:inline-block; font-size:10px; font-weight:700; padding:1px 7px; border-radius:4px; margin-right:4px; }
+  .tag-d1 { background:#dbeafe; color:#1e40af; }
+  .tag-d2 { background:#ede9fe; color:#5b21b6; }
+  .tag-d3 { background:#dcfce7; color:#166534; }
+  .tag-exam { background:#fef3c7; color:#92400e; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:700px){ .two-col { grid-template-columns:1fr; } }
+  h3 { font-size:14px; font-weight:700; color:var(--accent); margin:14px 0 6px; }
+  .source-note { font-size:11px; color:var(--muted); font-style:italic; margin-bottom:16px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🎯</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">RETAKE</span>
+  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+</div>
+<nav class="tabs">
+  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+  <a href="dp700_notes.html" class="tab-btn">📚 Study Notes</a>
+  <a href="dp700_exam.html" class="tab-btn">✏️ Mock Exam</a>
+  <a href="dp700_kql.html" class="tab-btn">🔷 KQL Lab</a>
+  <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+  <a href="dp700_mock2.html" class="tab-btn">📝 Full Mock</a>
+  <a href="dp700_mock3.html" class="tab-btn">🔬 Mock 3</a>
+  <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+  <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+  <a href="dp700_pb_notes.html" class="tab-btn active">📖 PB Notes</a>
+</nav>
+
+<div class="page">
+  <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:700;color:#93c5fd;text-transform:uppercase;margin-bottom:4px">📖 Phillip Burton Course Notes</div>
+    <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Condensed notes from all 163 video lectures</div>
+    <div style="font-size:12px;color:#bfdbfe;">Microsoft DP-700 prep: Fabric Data Engineer Associate (Udemy, updated April 2026) · 17.5 hours → key points only</div>
+  </div>
+
+  <div class="pb-nav" id="pbNav">
+    <button class="pb-btn active" onclick="showSection('s-fabric')">🏗️ Fabric Basics</button>
+    <button class="pb-btn" onclick="showSection('s-dataflow')">🔄 Dataflow Gen2</button>
+    <button class="pb-btn" onclick="showSection('s-pipeline')">⚙️ Pipelines</button>
+    <button class="pb-btn" onclick="showSection('s-notebook')">📓 Notebooks</button>
+    <button class="pb-btn" onclick="showSection('s-lakehouse')">🏠 Lakehouse</button>
+    <button class="pb-btn" onclick="showSection('s-warehouse')">🏛️ Warehouse</button>
+    <button class="pb-btn" onclick="showSection('s-kql')">🔷 KQL</button>
+    <button class="pb-btn" onclick="showSection('s-streaming')">⚡ Streaming</button>
+    <button class="pb-btn" onclick="showSection('s-monitor')">📊 Monitor & Settings</button>
+    <button class="pb-btn" onclick="showSection('s-security')">🔐 Security & Pipelines</button>
+  </div>
+
+  <!-- ═══ FABRIC BASICS ═══ -->
+  <div id="s-fabric" class="pb-section active">
+    <p class="source-note">Sections 1–2 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🏗️ Microsoft Fabric — Architecture Overview</div>
+      <div class="topic-body">
+        <h3>What is Fabric?</h3>
+        <ul>
+          <li>Unified analytics platform combining data engineering, data science, data warehousing, real-time analytics, and BI</li>
+          <li>Built on top of OneLake — a single logical data lake for the entire organization</li>
+          <li>All data stored in Delta Parquet format by default</li>
+          <li>Requires a <strong>Fabric Capacity</strong> (provides CPU/memory) — created in Azure Portal</li>
+        </ul>
+        <h3>Fabric Capacity</h3>
+        <ul>
+          <li>Required for everything except Power BI</li>
+          <li>Created in Azure Portal → Microsoft Fabric resource</li>
+          <li>SKUs: F2, F4, F8, F16, F32, F64, F128, F256, F512, F1024, F2048</li>
+          <li>Pause/Resume from: <strong>Azure Portal → Microsoft Fabric</strong> (not from Fabric workspace)</li>
+          <li>Trial: 60 days, requires work/school email</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Exam trap:</strong> You pause Fabric capacity from <strong>Azure Portal → Microsoft Fabric</strong>, not from inside the Fabric workspace itself.</div>
+
+        <h3>Workspaces</h3>
+        <ul>
+          <li>Must be assigned to a Fabric capacity (or Trial capacity) to use Fabric features</li>
+          <li>Roles: Admin, Member, Contributor, Viewer</li>
+          <li>Min to run notebook: <strong>Contributor</strong></li>
+          <li>Min to VIEW notebook outputs: Viewer</li>
+          <li>Min to compare deployment pipeline stages: <strong>Contributor + pipeline admin</strong></li>
+          <li>Assigning workspace to pipeline stage requires: <strong>Workspace Admin</strong></li>
+        </ul>
+
+        <h3>Fabric Item Types</h3>
+        <div class="two-col">
+          <div>
+            <strong>Data stores:</strong>
+            <ul>
+              <li>Lakehouse — Delta tables + Files</li>
+              <li>Warehouse — T-SQL only, full DW</li>
+              <li>Eventhouse — KQL databases</li>
+              <li>KQL Database — time-series analytics</li>
+            </ul>
+          </div>
+          <div>
+            <strong>Compute/ETL:</strong>
+            <ul>
+              <li>Notebook — PySpark/SQL/Scala</li>
+              <li>Dataflow Gen2 — Power Query no-code</li>
+              <li>Data Pipeline — orchestration</li>
+              <li>Spark Job Definition — standalone Spark</li>
+              <li>Eventstream — real-time streaming</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>OneLake</h3>
+        <ul>
+          <li>Single data lake for entire organization — one per tenant</li>
+          <li>All lakehouses and warehouses store data here automatically</li>
+          <li>Accessible via OneLake File Explorer app on Windows</li>
+          <li>Shortcuts allow accessing external data without copying it</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DATAFLOW GEN2 ═══ -->
+  <div id="s-dataflow" class="pb-section">
+    <p class="source-note">Sections 3–4 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🔄 Dataflow Gen2 — Core Concepts</div>
+      <div class="topic-body">
+        <h3>Creating a Dataflow Gen2</h3>
+        <ul>
+          <li>Workspace → New → Dataflow Gen2</li>
+          <li>From Lakehouse → Get Data → New Dataflow Gen2</li>
+          <li>Uses Power Query interface</li>
+          <li>If Git connected: <strong>Save and Run</strong> (no Publish button)</li>
+        </ul>
+
+        <h3>Data Destinations (where data goes)</h3>
+        <ul>
+          <li>✅ Lakehouse (Tables)</li>
+          <li>✅ Warehouse</li>
+          <li>✅ Azure SQL Database</li>
+          <li>✅ Azure Data Explorer / Eventhouse</li>
+          <li>✅ Azure Blob Storage</li>
+          <li>❌ <strong>Dataverse — NOT a destination</strong> (only a source)</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Exam trap:</strong> Dataverse is available as a SOURCE but NOT as a destination in Dataflow Gen2.</div>
+
+        <h3>Scheduling</h3>
+        <ul>
+          <li>Minimum frequency: <strong>30 minutes</strong></li>
+          <li>Access: Home → Schedule, or workspace ⋯ → Schedule</li>
+          <li>Can set start/end dates and times</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Exam trap:</strong> Dataflow Gen2 minimum schedule = <strong>30 minutes</strong>. Pipelines minimum = <strong>1 minute</strong>.</div>
+
+        <h3>Fast Copy</h3>
+        <ul>
+          <li>Improves throughput for supported connectors (Azure SQL, etc.)</li>
+          <li>Enable via: <strong>Home → Options → Scale tab → "Allow use of fast copy connectors"</strong></li>
+          <li>Uses staging internally</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Path to Fast Copy:</strong> Home → Options → Scale tab. NOT Transform tab, NOT right-click.</div>
+
+        <h3>Incremental Refresh</h3>
+        <ul>
+          <li>Access: <strong>Right-click on the query → Incremental refresh</strong></li>
+          <li>Loads only new/changed data based on date/time range</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Path to Incremental Refresh:</strong> Right-click on the query — NOT Home → Options.</div>
+
+        <h3>Monitoring</h3>
+        <ul>
+          <li>Refresh history: <strong>Home → Refresh History</strong></li>
+          <li>Shows each refresh run, status, duration, rows loaded</li>
+        </ul>
+
+        <h3>Transformations in Dataflow Gen2</h3>
+        <ul>
+          <li>Remove columns: Home → Remove Columns</li>
+          <li>Remove rows: Home → Remove Rows → Remove Errors / Remove Duplicates / Remove Blank Rows</li>
+          <li>Change type: click column header type icon, or Transform → Data Type</li>
+          <li>Replace values: Transform → Replace Values</li>
+          <li>Split column: Transform → Split Column</li>
+          <li>Group By: Transform → Group By</li>
+        </ul>
+
+        <h3>Merge Queries (Joins)</h3>
+        <ul>
+          <li><strong>Inner join</strong> — only matching rows from both tables</li>
+          <li><strong>Left outer</strong> — all rows from left + matching from right (nulls for no match)</li>
+          <li><strong>Right outer</strong> — all rows from right + matching from left</li>
+          <li><strong>Full outer</strong> — all rows from both (nulls where no match)</li>
+          <li><strong>Left anti</strong> — rows in left that have NO match in right</li>
+          <li><strong>Right anti</strong> — rows in right that have NO match in left</li>
+          <li><strong>Merge Queries as New</strong> — creates a third query without modifying originals</li>
+        </ul>
+
+        <h3>Identifying Missing Data</h3>
+        <ul>
+          <li>Null values appear in merged results where no match found</li>
+          <li>Use Right outer or Full outer to see unmatched rows</li>
+          <li>Remove Errors: Home → Remove Rows → Remove Errors</li>
+          <li>Duplicate a query: keep errors in one copy, remove in another</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PIPELINES ═══ -->
+  <div id="s-pipeline" class="pb-section">
+    <p class="source-note">Section 6 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">⚙️ Data Pipelines — Activities & Configuration</div>
+      <div class="topic-body">
+        <h3>Common Pipeline Activities</h3>
+        <div class="two-col">
+          <ul>
+            <li>Copy Data (Copy Activity)</li>
+            <li>Dataflow (runs a Dataflow Gen2)</li>
+            <li>Notebook</li>
+            <li>Stored Procedure</li>
+          </ul>
+          <ul>
+            <li>For Each (loop)</li>
+            <li>If Condition (branching)</li>
+            <li>Wait</li>
+            <li>Lookup</li>
+            <li>Delete Data</li>
+          </ul>
+        </div>
+
+        <h3>Copy Activity — Tab Reference</h3>
+        <ul>
+          <li><strong>General tab</strong> — Name, Description, Timeout (default 12h), Retry count, Retry interval</li>
+          <li><strong>Source tab</strong> — Connection, table/query/stored proc, partition options</li>
+          <li><strong>Destination tab</strong> — Connection, table, write method, <strong>Enable partitions</strong> (for file partitioning)</li>
+          <li><strong>Settings tab</strong> — <strong>Enable staging</strong> (for COPY INTO), logging, data consistency</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Timeout/Retry:</strong> General tab. <strong>Staging:</strong> Settings tab. <strong>File partitioning:</strong> Destination tab → Enable partitions.</div>
+
+        <h3>Copy Tool vs Copy Activity</h3>
+        <ul>
+          <li><strong>Copy tool (assistant)</strong> — can select multiple tables at once, wizard-driven</li>
+          <li><strong>Copy Activity</strong> — one table per activity (but can reconfigure), more control</li>
+          <li>COPY INTO: only from <strong>Azure Storage Account</strong> (not from other sources)</li>
+        </ul>
+
+        <h3>Scheduling Pipelines</h3>
+        <ul>
+          <li>Minimum frequency: <strong>1 minute</strong></li>
+          <li>Access: Home → Schedule, or Run → Schedule</li>
+          <li>Also: workspace ⋯ → Schedule</li>
+          <li>Options: Minutely, Hourly, Daily, Weekly, Monthly</li>
+        </ul>
+
+        <h3>Incremental Load Pipeline Pattern</h3>
+        <div class="tip"><strong>✅ Correct pattern:</strong> Lookup (current watermark) → Lookup (max watermark from source) → Copy Data (WHERE timestamp > watermark) → Stored Procedure (update watermark)</div>
+        <div class="gotcha"><strong>⚠️ Exam trap:</strong> There is NO Delete activity in an incremental load pipeline. The watermark table is updated by a Stored Procedure, not a Delete activity.</div>
+
+        <h3>Monitoring Pipeline Runs</h3>
+        <ul>
+          <li>Run → View Run History — shows each activity status</li>
+          <li>Status icons: Queued → In Progress → Succeeded / Failed</li>
+          <li>Click a run to see per-activity details and durations</li>
+          <li>Monitor hub in workspace also shows all pipeline runs</li>
+        </ul>
+
+        <h3>Pipeline Parameters</h3>
+        <ul>
+          <li>Add parameters in Pipeline canvas → Parameters tab (bottom)</li>
+          <li>Pass to Notebook activity: <strong>Settings tab → Base parameters</strong></li>
+          <li>Dynamic content: use @pipeline().parameters.paramName syntax</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Notebook parameters in pipeline:</strong> Settings tab → Base parameters (NOT General tab).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NOTEBOOKS ═══ -->
+  <div id="s-notebook" class="pb-section">
+    <p class="source-note">Sections 7–11 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">📓 Notebooks — PySpark, SQL & Automation</div>
+      <div class="topic-body">
+        <h3>Reading Data</h3>
+        <div class="code-block">
+# Read from Files section
+df = spark.read.format('csv').option('header','true').load('Files/folder/file.csv')
+df = spark.read.format('parquet').load('Files/folder/')
+df = spark.read.format('delta').load('Tables/tablename')
+
+# Read as streaming (Auto Loader)
+df = spark.readStream.format('cloudFiles').option('cloudFiles.format','parquet').load('Files/folder/')
+# OR stream from Delta table
+df = spark.readStream.format('delta').load('Tables/tablename')</div>
+        <div class="gotcha"><strong>⚠️ Streaming read:</strong> Use <code>spark.readStream</code> with <code>cloudFiles</code> for continuously arriving files. <code>spark.read</code> is batch (one-time).</div>
+
+        <h3>Writing Data</h3>
+        <div class="code-block">
+# Write to Delta table (overwrite)
+df.write.format('delta').mode('overwrite').saveAsTable('tablename')
+
+# Append to existing table
+df.write.format('delta').mode('append').saveAsTable('tablename')
+
+# Write to Files section
+df.write.format('parquet').save('Files/output/')
+
+# Write streaming
+df.writeStream.format('delta').outputMode('append').option('checkpointLocation','Files/checkpoint/').start('Tables/tablename')</div>
+
+        <h3>DataFrame Operations</h3>
+        <div class="code-block">
+# Select columns
+df.select('col1', 'col2')
+df[['col1', 'col2']]
+
+# Filter rows
+df.filter(df['col'] > 100)
+df.where(df['status'] == 'Active')
+
+# Add column
+df.withColumn('new_col', df['price'] * df['qty'])
+
+# Cast data type
+df.withColumn('col', df['col'].cast('integer'))
+
+# Group and aggregate
+df.groupBy('category').agg({'sales': 'sum', 'qty': 'avg'})
+
+# Sort
+df.orderBy('date', ascending=False)
+
+# Handle nulls
+df.dropna()                      # drop rows with any null
+df.dropna(subset=['col1'])       # drop rows where col1 is null
+df.fillna(0)                     # replace nulls with 0
+df.fillna({'col1': 0, 'col2': 'Unknown'})
+
+# Join
+df1.join(df2, on='key', how='inner')   # inner, left, right, outer</div>
+
+        <h3>Using SQL in Notebooks</h3>
+        <div class="code-block">
+# Run SQL magic
+%%sql
+SELECT category, SUM(sales) as total
+FROM tablename
+GROUP BY category
+ORDER BY total DESC
+
+# Or via spark.sql()
+result = spark.sql("SELECT * FROM tablename WHERE year = 2026")</div>
+
+        <h3>Scheduling Notebooks</h3>
+        <ul>
+          <li>Run → Schedule (same pane as pipelines and dataflows)</li>
+          <li>Can schedule by minute, hourly, daily, weekly</li>
+          <li>View runs: Run → View Recent Runs</li>
+        </ul>
+
+        <h3>Notebook in Pipeline</h3>
+        <ul>
+          <li>Add Notebook activity to pipeline</li>
+          <li>Pass parameters: <strong>Settings tab → Base parameters</strong></li>
+          <li>In notebook: use <code>mssparkutils.notebook.getParam('paramName')</code></li>
+        </ul>
+
+        <h3>High Concurrency Mode</h3>
+        <ul>
+          <li>Same Spark session shared by multiple notebooks simultaneously</li>
+          <li>36x faster session start vs standard</li>
+          <li>Enable: <strong>Workspace Settings → Data Engineering/Science → Spark settings → High Concurrency tab</strong></li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ High Concurrency location:</strong> Workspace Settings → Data Engineering/Science tab → Spark settings.</div>
+
+        <h3>Spark Structured Streaming in Notebooks</h3>
+        <div class="code-block">
+# Read streaming data
+df = spark.readStream.format('delta').load('Tables/events')
+
+# Write with checkpoint
+df.writeStream \
+  .format('delta') \
+  .outputMode('append') \
+  .option('checkpointLocation', 'Files/checkpoints/events') \
+  .start('Tables/processed_events')</div>
+
+        <h3>Spark Job Definition</h3>
+        <ul>
+          <li>Runs a standalone Python/Scala/R Spark script (not interactive notebook)</li>
+          <li>Upload .py file as the main definition file</li>
+          <li>Good for production batch jobs</li>
+          <li>Uses <code>spark.readStream</code> for streaming from a folder of files</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LAKEHOUSE ═══ -->
+  <div id="s-lakehouse" class="pb-section">
+    <p class="source-note">Sections 10, 12–13 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🏠 Lakehouse — Structure, Shortcuts & Optimization</div>
+      <div class="topic-body">
+        <h3>Lakehouse Structure</h3>
+        <ul>
+          <li><strong>Tables/</strong> — managed Delta tables, auto-discovered schema, queryable via SQL endpoint</li>
+          <li><strong>Files/</strong> — raw files (CSV, Parquet, JSON, etc.), not auto-queried by SQL</li>
+          <li>SQL analytics endpoint: <strong>READ ONLY</strong> — cannot CREATE, INSERT, UPDATE, DELETE</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ SQL endpoint is READ ONLY.</strong> To write/create tables use Spark notebooks or Dataflow Gen2. Only Warehouse supports full T-SQL write operations.</div>
+
+        <h3>Shortcuts</h3>
+        <ul>
+          <li>Create: Files folder → New shortcut (or Tables → New shortcut)</li>
+          <li>Sources: ADLS Gen2, Amazon S3, Google Cloud Storage, OneLake, S3-compatible, On-premises Data Gateway</li>
+          <li>No data is copied — shortcut reads data in-place from external source</li>
+          <li>ADLS Gen2 shortcuts: data stays in Azure, Fabric reads it directly</li>
+        </ul>
+
+        <h3>Shortcut Caching</h3>
+        <ul>
+          <li>Reduces egress charges from external cloud reads</li>
+          <li>Enable: <strong>Workspace Settings → OneLake → Cache for shortcuts</strong></li>
+          <li>✅ Supported: <strong>Amazon S3, Google Cloud Storage (GCS), S3-compatible</strong>, On-premises Data Gateway</li>
+          <li>❌ NOT supported: <strong>ADLS Gen2</strong>, Fabric Lakehouse shortcuts (already on Azure)</li>
+          <li>Files &gt; 1GB are NOT cached</li>
+          <li>If external file changes: new version is read, cache updated</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Shortcut caching:</strong> Works for S3, GCS, S3-compatible — <strong>NOT for ADLS Gen2 or other Fabric items</strong>. This is a frequent exam trap.</div>
+
+        <h3>File Partitioning</h3>
+        <ul>
+          <li>Splits output files by column value (e.g., year, country)</li>
+          <li>Implemented via: <strong>Pipeline → Copy Activity → Destination tab → Enable partitions → select column</strong></li>
+          <li>Creates folder structure: <code>Files/tablename/year=2024/month=01/</code></li>
+          <li>Improves query performance via partition pruning</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ File partitioning path:</strong> Pipeline Copy Activity → <strong>Destination tab</strong> → Enable partitions.</div>
+
+        <h3>Delta Table Optimization</h3>
+        <ul>
+          <li><strong>OPTIMIZE</strong> — compacts many small Parquet files into larger ones (~128MB target). Fixes "small files problem" from streaming writes.</li>
+          <li><strong>VACUUM</strong> — removes old/deleted files after retention period (default 7 days). Run after OPTIMIZE.</li>
+          <li><strong>V-Order</strong> — write-time sorting/encoding optimization
+            <ul>
+              <li>✅ Improves read speed 10–50% (Power BI DirectLake, SQL, Spark)</li>
+              <li>❌ Decreases write speed ~15%</li>
+              <li>ON by default in Fabric</li>
+            </ul>
+          </li>
+          <li><strong>ZORDER</strong> — sorts data within files by column for predicate pushdown: <code>OPTIMIZE table ZORDER BY (col)</code></li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ OPTIMIZE vs VACUUM:</strong> OPTIMIZE = compact files. VACUUM = delete old files. V-Order = improves reads, hurts writes slightly.</div>
+
+        <div class="code-block">
+-- Run OPTIMIZE on Delta table
+OPTIMIZE delta.`/path/to/table`
+-- or from Lakehouse: right-click table → Maintenance → OPTIMIZE
+
+-- Run VACUUM (removes files older than retention period)
+VACUUM delta.`/path/to/table` RETAIN 168 HOURS  -- 7 days default
+
+-- OPTIMIZE with ZORDER for query column
+OPTIMIZE tablename ZORDER BY (OrderDate, Region)</div>
+
+        <h3>Delta Lake Copy-on-Write</h3>
+        <ul>
+          <li>UPDATE/DELETE writes new Parquet files for changed rows</li>
+          <li>Old files marked as tombstoned in transaction log</li>
+          <li>Old files REMAIN on disk until VACUUM runs</li>
+          <li>This is why storage grows after UPDATE — expected behavior</li>
+        </ul>
+
+        <h3>OneLake Data Access Roles (OLDAR)</h3>
+        <ul>
+          <li>Path-based access control within a lakehouse</li>
+          <li>Enable: Lakehouse → Manage → Security (OneLake Data Access)</li>
+          <li>Create roles with folder-level path rules (e.g., Files/raw/ or Tables/sales/)</li>
+          <li>Assign users/security groups to roles</li>
+          <li>More granular than workspace roles (which apply to all items)</li>
+        </ul>
+
+        <h3>Lakehouse Access Permissions</h3>
+        <ul>
+          <li><strong>Read</strong> — can connect to SQL analytics endpoint</li>
+          <li><strong>ReadAll</strong> (OneLake) — can read ALL Delta files via Spark/OneLake (needed for PySpark)</li>
+          <li><strong>No workspace role needed</strong> for item-level permissions (share the lakehouse directly)</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ PySpark read access:</strong> Grant lakehouse item permission: Read + ReadAll. No workspace role needed. ReadAll = Spark can read table files. Without ReadAll, Spark can see the item but not the data.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ WAREHOUSE ═══ -->
+  <div id="s-warehouse" class="pb-section">
+    <p class="source-note">Sections 14–16 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🏛️ Data Warehouse — T-SQL, SCD, DDM & Security</div>
+      <div class="topic-body">
+        <h3>Warehouse vs Lakehouse SQL Endpoint</h3>
+        <ul>
+          <li>Warehouse: supports <strong>CREATE, INSERT, UPDATE, DELETE, MERGE</strong> — full DW</li>
+          <li>Lakehouse SQL endpoint: <strong>READ ONLY</strong> — SELECT only, no writes</li>
+          <li>Cross-database: <code>[warehouse_name].[schema].[table]</code></li>
+        </ul>
+
+        <h3>Slowly Changing Dimensions (SCD)</h3>
+        <div class="two-col">
+          <div>
+            <strong>Type 0</strong> — No change. Original data always preserved. No updates allowed.<br><br>
+            <strong>Type 1</strong> — Overwrite. Latest value only. No history tracked.
+          </div>
+          <div>
+            <strong>Type 2</strong> — Full history. New row per change with StartDate, EndDate, IsCurrent. Point-in-time queries possible.<br><br>
+            <strong>Type 3</strong> — Previous value. Only one prior version stored in a column.
+          </div>
+        </div>
+        <div class="gotcha"><strong>⚠️ SCD Type 2:</strong> Adds a NEW ROW for each change with Start Date + End Date. Type 1 overwrites (no history). Type 3 = one "previous value" column. Type 0 = no changes ever.</div>
+
+        <h3>Dynamic Data Masking (DDM)</h3>
+        <ul>
+          <li>Masks data for unauthorized users — they see masked values (not an error)</li>
+          <li>Owner/sysadmin always sees real data</li>
+        </ul>
+        <div class="code-block">
+-- Mask entire column by data type (email → XXXX@XXXX.com, numbers → 0)
+ALTER TABLE t ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'default()')
+
+-- Email masking: first letter + XXX@XXXX.com
+ALTER TABLE t ALTER COLUMN email ADD MASKED WITH (FUNCTION = 'email()')
+
+-- Partial: show first 2 chars, then "xxxxxx", then last 0 chars
+ALTER TABLE t ALTER COLUMN name ADD MASKED WITH (FUNCTION = 'partial(2,"xxxxxx",0)')
+
+-- Random: show random number between 1 and 1000
+ALTER TABLE t ALTER COLUMN salary ADD MASKED WITH (FUNCTION = 'random(1,1000)')</div>
+        <div class="gotcha"><strong>⚠️ DDM partial():</strong> partial(prefixSize, "padding", suffixSize). For first 2 + last 4: partial(2,"xxxx",4). For salary use random(). Cannot mask yourself or sysadmin.</div>
+
+        <h3>GRANT / DENY / REVOKE</h3>
+        <div class="code-block">
+-- Grant SELECT on table
+GRANT SELECT ON dbo.TableName TO [role_or_user]
+
+-- Grant SELECT on specific columns only (Column-Level Security)
+GRANT SELECT ON dbo.TableName (col1, col2) TO [role_or_user]
+
+-- Deny (actively blocks, overrides GRANT)
+DENY SELECT ON dbo.TableName TO [role_or_user]
+
+-- Revoke (removes effect of both GRANT and DENY)
+REVOKE SELECT ON dbo.TableName FROM [role_or_user]</div>
+        <div class="gotcha"><strong>⚠️ REVOKE removes BOTH grant and deny.</strong> You cannot DENY/GRANT to: sysadmin, dbo, db_owner, information_schema, sys, or yourself.</div>
+
+        <h3>Row-Level Security (RLS)</h3>
+        <div class="code-block">
+-- Step 1: Create filter predicate function (WITH SCHEMABINDING required)
+CREATE FUNCTION dbo.fn_security(@username AS sysname)
+RETURNS TABLE WITH SCHEMABINDING AS
+RETURN SELECT 1 AS result
+WHERE @username = DATABASE_PRINCIPAL_ID()
+   OR SYSTEM_USER = @username
+
+-- Step 2: Create security policy
+CREATE SECURITY POLICY SalesFilter
+ADD FILTER PREDICATE dbo.fn_security(SalesPersonID)
+ON dbo.SalesTable
+WITH (STATE = ON)</div>
+        <div class="gotcha"><strong>⚠️ RLS requires a SECURITY POLICY with FILTER PREDICATE.</strong> Cannot block sysadmin/dbo/yourself.</div>
+
+        <h3>Column-Level Security (CLS)</h3>
+        <ul>
+          <li>Grant SELECT only on specific columns</li>
+          <li>Users without column-level grant get permission error (not masked data — that's DDM)</li>
+        </ul>
+        <div class="code-block">GRANT SELECT ON dbo.Employee(EmployeeID, Name) TO [AuditorRole]
+-- Auditor can't SELECT Salary or Email — permission error if they try</div>
+
+        <h3>Object-Level Security (OLS)</h3>
+        <ul>
+          <li>Simply do NOT grant SELECT on the table to the role</li>
+          <li>Users without GRANT cannot see or query the table at all</li>
+          <li>Different from RLS (row filtering) and CLS (column limiting)</li>
+        </ul>
+
+        <h3>queryinsights Views</h3>
+        <ul>
+          <li><code>sys.dm_exec_requests</code> — queries <strong>currently running RIGHT NOW</strong></li>
+          <li><code>queryinsights.exec_requests_history</code> — all completed queries (30-day, ~15min delay)</li>
+          <li><code>queryinsights.long_running_queries</code> — queries exceeding duration threshold</li>
+          <li><code>queryinsights.frequently_run_queries</code> — most-executed query patterns</li>
+          <li><code>queryinsights.exec_sessions_history</code> — session activity</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Real-time = sys.dm_exec_requests. History = queryinsights views.</strong> queryinsights has ~15 min delay and 30-day retention.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ KQL ═══ -->
+  <div id="s-kql" class="pb-section">
+    <p class="source-note">Sections 17–20 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🔷 KQL — Kusto Query Language Reference</div>
+      <div class="topic-body">
+        <h3>KQL Query Structure</h3>
+        <ul>
+          <li>Each <code>|</code> (pipe) passes the result of the previous operation to the next</li>
+          <li>Unlike SQL: no strict clause order — operations execute in pipe order</li>
+          <li>Table name comes first (no FROM keyword)</li>
+        </ul>
+        <div class="code-block">
+// Basic structure
+TableName
+| operator1 ...
+| operator2 ...
+| operator3 ...</div>
+
+        <h3>Select & Project</h3>
+        <div class="code-block">
+// Select specific columns
+TableName | project col1, col2, col3
+
+// Remove columns (keep all others)
+TableName | project-away col1, col2
+
+// Rename columns
+TableName | project-rename NewName = OldName
+
+// Add calculated column
+TableName | extend FullName = FirstName + " " + LastName
+
+// Unique values
+TableName | distinct col1, col2
+
+// Count total rows
+TableName | count</div>
+
+        <h3>Filter & Limit</h3>
+        <div class="code-block">
+// Filter rows (use 'where' not 'filter')
+TableName | where col > 100
+TableName | where col == "value"
+TableName | where col contains "substring"
+TableName | where col startswith "prefix"
+TableName | where col !~ "value"    // case-insensitive not-equal
+
+// Limit rows
+TableName | take 10
+TableName | limit 10    // same as take
+
+// Sort (default is descending)
+TableName | order by col asc
+TableName | sort by col desc</div>
+        <div class="gotcha"><strong>⚠️ Use <code>where</code> not <code>filter</code> in KQL.</strong> Default sort order is DESCENDING — add <code>asc</code> for ascending.</div>
+
+        <h3>Time Filters</h3>
+        <div class="code-block">
+// Filter last 30 minutes
+TableName | where Timestamp > ago(30m)
+
+// Filter last 7 days
+TableName | where Timestamp > ago(7d)
+
+// Filter specific date range
+TableName | where Timestamp between (datetime(2026-01-01) .. datetime(2026-02-01))
+
+// Time buckets (bin)
+TableName | summarize count() by bin(Timestamp, 1h)
+TableName | summarize count() by bin(Timestamp, 1d)</div>
+
+        <h3>Aggregation</h3>
+        <div class="code-block">
+// Summarize (GROUP BY equivalent)
+TableName | summarize count() by Category
+TableName | summarize avg(Temperature), max(Temperature) by DeviceId
+TableName | summarize TotalSales = sum(Sales) by Region, Year
+
+// Count distinct
+TableName | summarize dcount(UserId) by Country
+
+// Percentile
+TableName | summarize percentile(Duration, 95) by Service</div>
+
+        <h3>String Functions</h3>
+        <div class="code-block">
+// Case conversion
+| extend Upper = toupper(col), Lower = tolower(col)
+
+// Length
+| extend Len = strlen(col)
+
+// Substring
+| extend Sub = substring(col, 0, 5)   // start at 0, take 5 chars
+
+// Split string into array
+| extend Parts = split(col, ",")
+
+// Replace
+| extend Clean = replace_regex(col, @"\s+", " ")
+
+// Contains check
+| where col contains "substring"
+| where col matches regex @"^\d{4}-\d{2}-\d{2}$"</div>
+
+        <h3>DateTime Functions</h3>
+        <div class="code-block">
+// Current time
+| extend Now = now()
+
+// Extract parts
+| extend Year = datetime_part("year", Timestamp)
+| extend Month = datetime_part("month", Timestamp)
+
+// Add time
+| extend NextWeek = datetime_add("week", 1, Timestamp)
+
+// Difference
+| extend AgeDays = datetime_diff("day", now(), BirthDate)</div>
+
+        <h3>Variables & Functions</h3>
+        <div class="code-block">
+// Let statement (variable)
+let threshold = 100;
+TableName | where Sales > threshold
+
+// Let with table
+let recentData = TableName | where Timestamp > ago(1h);
+recentData | summarize count() by Region
+
+// User-defined function
+.create function MyFunc(param: string) {
+    TableName | where Category == param
+}
+// Call it:
+MyFunc("Electronics")</div>
+
+        <h3>Joins & Union</h3>
+        <div class="code-block">
+// Join two tables
+Table1
+| join kind=inner Table2 on $left.Key == $right.Key
+
+// Join kinds: inner, leftouter, rightouter, fullouter, leftanti, rightanti, leftsemi
+
+// Union (combine rows from multiple tables)
+union Table1, Table2
+union withsource=TableName Table1, Table2   // adds column with source table name</div>
+
+        <h3>KQL Database Commands</h3>
+        <div class="code-block">
+// Continuous export (stream data out to ADLS Gen2)
+.create-or-alter continuous-export MyExport
+over (TableName)
+to table ExternalTable
+
+// Create external table
+.create external table ExtTable (col1: string, col2: datetime)
+kind=adl
+dataformat=csv
+(h@'https://storage.dfs.core.windows.net/container;key')
+
+// Create materialized view (pre-aggregated)
+.create materialized-view MyView on table SourceTable
+{
+    SourceTable | summarize count() by bin(Timestamp, 1h), DeviceId
+}</div>
+        <div class="gotcha"><strong>⚠️ Continuous export = <code>.create-or-alter continuous-export</code></strong>. Different from <code>.export to storage</code> (one-time ad-hoc export).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STREAMING ═══ -->
+  <div id="s-streaming" class="pb-section">
+    <p class="source-note">Sections 21–22 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">⚡ Streaming — Eventstream, Eventhouse & Activator</div>
+      <div class="topic-body">
+        <h3>Choosing a Streaming Engine</h3>
+        <div class="two-col">
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;">
+            <strong>Eventstream</strong><br>
+            No-code interface like a pipeline<br>
+            Real-time event routing + filtering<br>
+            Millions of events/second<br>
+            IoT, telemetry, clickstream<br>
+            Can transform BEFORE destination
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+            <strong>Spark Structured Streaming</strong><br>
+            Code-based (PySpark)<br>
+            More complex transformations<br>
+            Uses readStream / writeStream<br>
+            Good for custom logic
+          </div>
+        </div>
+        <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:12px;margin-top:8px;">
+          <strong>Eventhouse / KQL Database</strong><br>
+          Time-series analytics, historical analysis<br>
+          Best for: time-series, log analytics, IoT data<br>
+          Query with KQL for real-time + historical
+        </div>
+
+        <h3>Eventstream Sources</h3>
+        <ul>
+          <li>Azure Event Hub</li>
+          <li>Azure IoT Hub</li>
+          <li>Azure Service Bus</li>
+          <li>Custom App (SDK)</li>
+          <li>Kafka</li>
+          <li>Amazon Kinesis</li>
+          <li>Google Pub/Sub</li>
+          <li>Sample data (built-in)</li>
+        </ul>
+
+        <h3>Eventstream Destinations</h3>
+        <ul>
+          <li>✅ Lakehouse</li>
+          <li>✅ KQL Database / Eventhouse</li>
+          <li>✅ Warehouse</li>
+          <li>✅ Activator (Reflex)</li>
+          <li>✅ Custom App (SDK)</li>
+          <li>✅ Eventstream (chain)</li>
+        </ul>
+
+        <h3>Eventstream Processor Nodes (transform IN FLIGHT)</h3>
+        <ul>
+          <li><strong>Filter</strong> — pass only matching events (e.g., Status = 'Error')</li>
+          <li><strong>Aggregate</strong> — compute aggregates over time windows</li>
+          <li><strong>Group By</strong> — partition stream by column</li>
+          <li><strong>Manage Fields</strong> — add/remove/rename columns</li>
+          <li><strong>Union</strong> — combine two streams</li>
+          <li><strong>Expand</strong> — flatten arrays/JSON</li>
+        </ul>
+        <div class="tip"><strong>✅ To filter events before destination:</strong> Add a Filter processor node BETWEEN the source node and destination node in the Eventstream editor.</div>
+
+        <h3>Windowing Functions in Eventstream</h3>
+        <div class="two-col">
+          <div>
+            <strong>Tumbling</strong> — fixed-size, non-overlapping windows. Each event belongs to exactly one window.<br><br>
+            <strong>Hopping</strong> — fixed-size, overlapping windows. Window starts every X seconds and lasts Y seconds. Events can belong to multiple windows.
+          </div>
+          <div>
+            <strong>Sliding</strong> — window slides with events. New window created when event enters or leaves.<br><br>
+            <strong>Session</strong> — groups events with no more than X seconds gap between them. Window closes after inactivity.
+          </div>
+        </div>
+        <div class="gotcha"><strong>⚠️ Window that starts every 5s and lasts 10s = Hopping window</strong> (overlapping). Tumbling = non-overlapping fixed. Session = based on inactivity gap.</div>
+
+        <h3>Adjusting Eventstream Throughput</h3>
+        <ul>
+          <li>Method 1: <strong>Workspace ⋯ → Settings → Eventstream throughput</strong></li>
+          <li>Method 2: <strong>Eventstream Home → wheel/settings icon → Throughput</strong></li>
+          <li>Can only increase: Low → Medium → High. Cannot decrease without deleting and recreating.</li>
+          <li>Retention: default 1 day (24h), max 90 days</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ TWO ways to change throughput:</strong> Workspace settings OR eventstream Home wheel icon.</div>
+
+        <h3>Activator (Reflex)</h3>
+        <ul>
+          <li>Event-driven automation — monitors data and triggers actions when conditions are met</li>
+          <li>Triggers: Teams message, email, Power Automate flow, pipeline run</li>
+          <li>NOT a scheduler — it's event/condition-driven</li>
+          <li>Can be created from: <strong>Eventstream, KQL queryset, Power BI report</strong></li>
+          <li>❌ <strong>Cannot be created directly from Lakehouse</strong></li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Activator cannot be created from a Lakehouse</strong>. Use Eventstream → Activator destination, or from KQL queryset, or from Power BI report.</div>
+
+        <h3>OneLake Event-Driven Pipeline</h3>
+        <ul>
+          <li>Trigger pipeline when files are added to a lakehouse folder (no polling)</li>
+          <li>Architecture: Files added → Eventstream monitors OneLake events → Activator checks condition → Triggers pipeline</li>
+          <li>Alternative to scheduled pipeline — runs on demand when data arrives</li>
+        </ul>
+
+        <h3>Eventhouse Status Monitoring</h3>
+        <ul>
+          <li><strong>Running</strong> — operating optimally</li>
+          <li><strong>Maintenance</strong> — temporarily unavailable (suspended capacity)</li>
+          <li><strong>Suspended</strong> — capacity admin must reverse this</li>
+          <li><strong>Unknown</strong> — unavailable for unknown reasons</li>
+          <li><strong>Missing capacity</strong> — Fabric compute capacity exceeded</li>
+        </ul>
+        <ul>
+          <li><strong>Hot cache</strong> — frequently accessed data in RAM (fast)</li>
+          <li><strong>Cold cache/storage</strong> — less-used data on disk (slower but cheaper)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MONITOR & SETTINGS ═══ -->
+  <div id="s-monitor" class="pb-section">
+    <p class="source-note">Section 23 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">📊 Workspace Settings & Monitoring</div>
+      <div class="topic-body">
+        <h3>Spark Pool Types</h3>
+        <div class="two-col">
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;">
+            <strong>Starter Pool</strong><br>
+            Quick start: 9–12 seconds<br>
+            Libraries install quickly<br>
+            Shuts down after 20 min inactivity<br>
+            Use for: development environments<br>
+            No configuration needed
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+            <strong>Custom Pool</strong><br>
+            User-defined node size/count<br>
+            Always on until manually paused<br>
+            Supports autoscale<br>
+            Use for: production environments<br>
+            Configure in workspace settings
+          </div>
+        </div>
+
+        <h3>Spark Settings Location</h3>
+        <ul>
+          <li><strong>Workspace Settings → Data Engineering/Science → Spark settings</strong></li>
+          <li>Pool tab: create/manage pools</li>
+          <li>Environment tab: default environment, runtime version</li>
+          <li>High Concurrency tab: enable high concurrency mode</li>
+        </ul>
+
+        <h3>High Concurrency Mode</h3>
+        <ul>
+          <li>Same Spark session shared by multiple notebooks simultaneously</li>
+          <li>36x faster session start vs standard spark session</li>
+          <li>Enable: <strong>Workspace Settings → Data Engineering/Science → Spark → High Concurrency tab</strong></li>
+        </ul>
+
+        <h3>Domain Workspace Settings</h3>
+        <ul>
+          <li>Domains group workspaces for governance/discovery — metadata only</li>
+          <li><strong>Domain assignment does NOT change permissions</strong> — workspace roles still control access</li>
+          <li>Domain admin can set policies (e.g., who can certify content in this domain)</li>
+          <li>Configure: Admin portal → Domains</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Assigning a workspace to a domain does NOT grant domain access permissions.</strong> Workspace roles remain the only access control mechanism.</div>
+
+        <h3>Data Workflow Settings (Apache Airflow)</h3>
+        <ul>
+          <li>Used for orchestrating DAGs (Directed Acyclic Graphs)</li>
+          <li>Configure: <strong>Workspace Settings → Data Factory → Apache Airflow runtime settings</strong></li>
+          <li>Starter pool: shuts down after 20min inactivity — for dev</li>
+          <li>Custom pool: always-on — for prod</li>
+          <li>Node sizes: Large (complex/production DAGs), Small (simple DAGs)</li>
+          <li>Autoscale: adds nodes dynamically as needed</li>
+        </ul>
+
+        <h3>Dataflow Gen2 Workspace Settings</h3>
+        <ul>
+          <li>Configure: <strong>Workspace Settings → Data Factory → Dataflow Gen2</strong></li>
+          <li>Settings for refresh behavior, staging lakehouse</li>
+        </ul>
+
+        <h3>Fabric Capacity Metrics App</h3>
+        <ul>
+          <li>Install from AppSource — monitors capacity usage</li>
+          <li><strong>Two tabs: Compute + Storage</strong></li>
+          <li><strong>Compute tab</strong>: CU (Capacity Unit) usage over time, throttling, smoothing, per-item breakdowns</li>
+          <li><strong>Storage tab</strong>: OneLake storage consumption by workspace/item</li>
+          <li>Performance delta: compares fast operations (&lt;200ms) now vs 7 days ago — higher = better performance</li>
+          <li>High CU: heavily used capacity or many operations running</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Capacity Metrics app has exactly TWO tabs: Compute and Storage.</strong></div>
+
+        <h3>Workspace Logging</h3>
+        <ul>
+          <li>Captures all item-level activity: creates, updates, deletes, runs — who did what and when</li>
+          <li>Logs stored as structured data in a designated lakehouse</li>
+          <li>Query logs in KQL (from the lakehouse)</li>
+          <li>Logging dashboards available via workspace logging feature</li>
+          <li>Enable: <strong>Workspace Settings → Workspace Logging</strong></li>
+          <li>Used for: compliance, audit trails, security investigations</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Workspace logging (new Jan 2026 objective)</strong> is for item-level audit trails. Fabric Monitor is for real-time running jobs. queryinsights is for SQL query history.</div>
+
+        <h3>Monitor Semantic Model Refresh</h3>
+        <ul>
+          <li>Monitor hub in workspace shows refresh history</li>
+          <li>Or: Workspace → semantic model ⋯ → Refresh history</li>
+          <li>Shows status (Success/Failed), duration, triggered by</li>
+        </ul>
+
+        <h3>Admin Portal — Tenant Settings</h3>
+        <ul>
+          <li>Who can change tenant settings: Fabric Admin, M365 Global Admin, Power Platform Admin</li>
+          <li>❌ Capacity Administrator <strong>CANNOT</strong> change tenant settings</li>
+          <li>Block personal workspace reassignment: requires Fabric/Global/Power Platform admin</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Capacity Administrator cannot configure tenant settings</strong> — only Fabric Admin, M365 Global Admin, or Power Platform Admin can.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECURITY & DEPLOYMENT ═══ -->
+  <div id="s-security" class="pb-section">
+    <p class="source-note">Section 24 of Phillip Burton's DP-700 course</p>
+
+    <div class="topic-card">
+      <div class="topic-title">🔐 Security, Governance & Deployment Pipelines</div>
+      <div class="topic-body">
+        <h3>Sensitivity Labels</h3>
+        <ul>
+          <li>Tell users about data sensitivity (Confidential, Public, Restricted, etc.)</li>
+          <li><strong>Do NOT affect access to Fabric content</strong></li>
+          <li>May affect access in Power BI Desktop</li>
+          <li>Applied to exported content: Excel, PDF, PowerPoint, PBIX download, Analyze in Excel, pivot table from semantic model</li>
+          <li>Apply via: item ⋯ → Settings → Sensitivity label, or Microsoft Purview catalog</li>
+          <li><strong>Downstream inheritance</strong>: items created from labelled source automatically inherit same or higher label</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Downstream label inheritance:</strong> When a "Confidential" lakehouse is used as source, the downstream report/dataset automatically inherits "Confidential". Labels propagate automatically.</div>
+
+        <h3>Endorsement</h3>
+        <div class="two-col">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+            <strong>Promoted</strong> 🏅<br>
+            Self-service endorsement<br>
+            Any workspace <strong>Member or Admin</strong> can set it<br>
+            Signals reliable, quality content<br>
+            Access: workspace ⋯ → Settings → Endorsement
+          </div>
+          <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:12px;">
+            <strong>Certified</strong> ✅<br>
+            Admin-controlled endorsement<br>
+            Requires: <strong>Fabric Admin OR delegated certifier</strong><br>
+            Certifier delegated via Admin portal → Tenant settings → Certification<br>
+            Access: workspace ⋯ → Settings → Endorsement
+          </div>
+        </div>
+        <div class="gotcha"><strong>⚠️ Promoted = any Member/Admin. Certified = Fabric admin or delegated certifier ONLY.</strong> This distinction is heavily tested.</div>
+
+        <h3>Access Control Summary</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">
+          <tr style="background:var(--accent);color:#fff;">
+            <th style="padding:6px;text-align:left;">Feature</th>
+            <th style="padding:6px;text-align:left;">Purpose</th>
+            <th style="padding:6px;text-align:left;">How to implement</th>
+          </tr>
+          <tr style="background:var(--card);">
+            <td style="padding:6px;border-bottom:1px solid var(--border);">RLS (Row-Level Security)</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">Filter rows by user</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">T-SQL: CREATE SECURITY POLICY with FILTER PREDICATE</td>
+          </tr>
+          <tr>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">CLS (Column-Level Security)</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">Block specific columns</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">T-SQL: GRANT SELECT ON table(col1,col2) TO role</td>
+          </tr>
+          <tr style="background:var(--card);">
+            <td style="padding:6px;border-bottom:1px solid var(--border);">OLS (Object-Level Security)</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">Hide entire table</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">Simply do NOT grant SELECT on the table</td>
+          </tr>
+          <tr>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">DDM (Dynamic Data Masking)</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">Show masked values</td>
+            <td style="padding:6px;border-bottom:1px solid var(--border);">ALTER TABLE…ADD MASKED WITH (FUNCTION = '...')</td>
+          </tr>
+          <tr style="background:var(--card);">
+            <td style="padding:6px;">OLDAR (OneLake Data Access Roles)</td>
+            <td style="padding:6px;">Folder-level path access</td>
+            <td style="padding:6px;">Lakehouse → Manage → Security → define role with path</td>
+          </tr>
+        </table>
+
+        <h3>Deployment Pipelines</h3>
+        <ul>
+          <li>Create: workspace → Deployment pipelines (or via Deployment pipelines hub)</li>
+          <li>Stages: Development → Test → Production (can customize names)</li>
+          <li>Assign workspace to each stage (requires: workspace <strong>Admin</strong>)</li>
+          <li>Compare stages: requires pipeline <strong>admin + Contributor</strong> on workspace</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Credentials are NEVER copied</strong> between pipeline stages. After deployment, manually reconfigure data source credentials in each stage. This is the #1 deployment pipeline trap.</div>
+
+        <ul>
+          <li>Deploy forward: Dev → Test → Prod</li>
+          <li>Deploy backward: only possible if target stage is empty (for retroactive setup)</li>
+          <li>Change indicator icon: appears when content changed since last deployment</li>
+          <li>Unsupported items: shown in UI but cannot be deployed (e.g., some custom items)</li>
+          <li>What IS copied: item definitions, schema, code, connection config structure</li>
+          <li>What is NOT copied: credentials, data, some sensitivity label settings</li>
+        </ul>
+
+        <h3>Git Integration</h3>
+        <ul>
+          <li>Supports: Azure DevOps, GitHub</li>
+          <li>GitHub setup requires 3 steps:
+            <ol>
+              <li>Connect workspace to GitHub repo via <strong>Workspace Settings → Git integration</strong></li>
+              <li>Install <strong>Microsoft Fabric GitHub App</strong> on GitHub org/repo</li>
+              <li>Authenticate with <strong>PAT or OAuth</strong></li>
+            </ol>
+          </li>
+          <li>Commit changes: <strong>Source control panel</strong> in workspace → Changes → Commit</li>
+          <li>Changes are NOT auto-committed — must be done manually</li>
+          <li>If Git connected: Save and Run instead of Publish button in Dataflow Gen2</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ GitHub needs 3 steps:</strong> Connect workspace + install Fabric GitHub App + authenticate with PAT/OAuth. M365 admin centre is NOT involved.</div>
+
+        <h3>Self-Hosted Integration Runtime (SHIR)</h3>
+        <ul>
+          <li>Required for: on-premises data sources (SQL Server, Oracle, SAP, etc.)</li>
+          <li>Installed on a machine in the private network</li>
+          <li>Creates secure OUTBOUND tunnel to Fabric — no inbound firewall rules needed</li>
+          <li>Azure IR: cloud/public endpoints only</li>
+          <li>Managed VNet IR: Azure private endpoints</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ On-premises data source + no ExpressRoute = use SHIR.</strong> SHIR creates outbound connection — no inbound firewall changes needed.</div>
+
+        <h3>Direct Lake — Fallback to DirectQuery</h3>
+        <ul>
+          <li>Direct Lake reads Delta table files directly — fastest mode for Power BI</li>
+          <li>Falls back to DirectQuery when: <strong>data volume exceeds the frame limit for the capacity SKU</strong></li>
+          <li>Fix: upgrade to higher SKU (F8, F16, F32…) or reduce model size</li>
+          <li>V-Order does NOT cause fallback — it affects read speed only</li>
+          <li>Cross-workspace lakehouse: supported, no fallback</li>
+        </ul>
+        <div class="gotcha"><strong>⚠️ Direct Lake fallback cause = frame limit exceeded by data volume.</strong> V-Order, cross-workspace access, or partition count do NOT cause fallback.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.pb-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.pb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
