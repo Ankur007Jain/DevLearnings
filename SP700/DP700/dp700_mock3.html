@@ -62,7 +62,6 @@
     <div style="font-size:48px;margin-bottom:16px">🔬</div>
     <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam 3</h2>
     <p style="color:var(--muted);margin-bottom:6px">50 questions · 100 minutes · Built from real exam sources</p>
-    <p style="font-size:12px;color:var(--d2);margin-bottom:6px">📡 Sources: ITExams, CertEmpire, OpenExamPrep, Microsoft Official Study Guide (Jan 2026)</p>
     <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
@@ -155,7 +154,6 @@
 <script>
 // ═══════════════════════════════════════════════
 // QUESTION BANK — 50 Questions
-// Sources: ITExams, CertEmpire, OpenExamPrep, MS Official Study Guide Jan 2026
 // ═══════════════════════════════════════════════
 const questions = [
 
@@ -265,7 +263,7 @@ const questions = [
           'C. Enable "Customize compute configurations for items" in Workspace Settings → Spark settings',
           'D. Change the workspace domain to allow custom compute'],
     ans:2,
-    expl:'<strong>C — "Customize compute configurations for items".</strong> By default, all notebooks and Spark items in a workspace must use the workspace-level Spark pool configuration. To allow per-item (per-notebook) custom sizing, a workspace admin must enable "Customize compute configurations for items" in Spark settings. Without this, the option is greyed out and unavailable to engineers. This is a real exam question pattern from CertEmpire.'
+    expl:'<strong>C — "Customize compute configurations for items".</strong> By default, all notebooks and Spark items in a workspace must use the workspace-level Spark pool configuration. To allow per-item (per-notebook) custom sizing, a workspace admin must enable "Customize compute configurations for items" in Spark settings. Without this, the option is greyed out and unavailable to engineers.'
   },
 
   { domain:'d1', topic:'Spark — writeHeavy Resource Profile',
@@ -285,7 +283,7 @@ const questions = [
           'C. A KQL queryset',
           'D. A Spark notebook with JDBC connection'],
     ans:1,
-    expl:'<strong>B — Data pipeline with Copy Activity.</strong> The Copy Activity in a Fabric Data Pipeline supports on-premises data gateway connections and can copy from on-premises SQL Server to a Fabric warehouse. Dataflow Gen2 (A) can connect to on-premises sources too, but data pipelines are the correct tool for direct SQL Server → Warehouse copy at scale. KQL querysets are for KQL databases. JDBC in notebooks requires the gateway be accessible as a JDBC endpoint — not the standard gateway path. This is a verbatim real exam question from ITExams.'
+    expl:'<strong>B — Data pipeline with Copy Activity.</strong> The Copy Activity in a Fabric Data Pipeline supports on-premises data gateway connections and can copy from on-premises SQL Server to a Fabric warehouse. Dataflow Gen2 (A) can connect to on-premises sources too, but data pipelines are the correct tool for direct SQL Server → Warehouse copy at scale. KQL querysets are for KQL databases. JDBC in notebooks requires the gateway be accessible as a JDBC endpoint — not the standard gateway path.'
   },
 
   { domain:'d1', topic:'Shortcut Caching — S3',
@@ -307,7 +305,7 @@ const questions = [
           'E. Set the schedule in Pipeline1 settings with timezone UTC',
           'F. Set the Retry count of the Semantic Model Refresh activity to 2'],
     ans:[0,2,4], multi:3,
-    expl:'<strong>A, C, E.</strong> A: Retry=2 on the Notebook activity means it retries twice before failing — exactly as required. C: On success condition means the model refresh runs ONLY if the notebook succeeds — "On completion" would run even on failure. E: The schedule (daily 07:00 AM UTC) must be set on PIPELINE1 — not on Notebook1 (which is just an item, not the orchestrator). F is wrong — no need to retry the model refresh. This is a verbatim real exam question from CertEmpire.'
+    expl:'<strong>A, C, E.</strong> A: Retry=2 on the Notebook activity means it retries twice before failing — exactly as required. C: On success condition means the model refresh runs ONLY if the notebook succeeds — "On completion" would run even on failure. E: The schedule (daily 07:00 AM UTC) must be set on PIPELINE1 — not on Notebook1 (which is just an item, not the orchestrator). F is wrong — no need to retry the model refresh.'
   },
 
   { domain:'d1', topic:'Mirroring — OneLake Replication',
@@ -349,7 +347,7 @@ const questions = [
           'C. Periodic snapshot fact table — captures the state of a measure at regular time intervals',
           'D. Bridge table — resolves many-to-many relationships between dimensions'],
     ans:2,
-    expl:'<strong>C — Periodic snapshot fact table.</strong> Periodic snapshots capture the state of a measure (like account balance) at regular intervals (daily, monthly). This is exactly right for "balance at end of each month." Transaction fact tables capture individual events (one row per transaction). Accumulating snapshots track milestones in a business process (e.g., order → shipped → delivered). Bridge tables handle many-to-many dimension relationships. This is a real exam question from OpenExamPrep.'
+    expl:'<strong>C — Periodic snapshot fact table.</strong> Periodic snapshots capture the state of a measure (like account balance) at regular intervals (daily, monthly). This is exactly right for "balance at end of each month." Transaction fact tables capture individual events (one row per transaction). Accumulating snapshots track milestones in a business process (e.g., order → shipped → delivered). Bridge tables handle many-to-many dimension relationships.'
   },
 
   { domain:'d2', topic:'SCD Type 2 — Dimension Design',
@@ -399,7 +397,7 @@ const questions = [
           'C. A KQL query on the lakehouse to delete non-Kansas rows after ingestion',
           'D. A Data Pipeline If Condition activity that routes only Kansas rows to the lakehouse'],
     ans:1,
-    expl:'<strong>B — Eventstream processor (Filter transformation).</strong> The Eventstream editor supports adding transformation nodes (Filter, Aggregate, Join, etc.) BETWEEN the source and destination — no-code, in the same Eventstream UI. A Filter node on City = "Kansas" routes only matching rows to the lakehouse before any data lands. This minimises development effort — no notebooks, no pipelines needed. This is a verbatim real exam question from CertEmpire.'
+    expl:'<strong>B — Eventstream processor (Filter transformation).</strong> The Eventstream editor supports adding transformation nodes (Filter, Aggregate, Join, etc.) BETWEEN the source and destination — no-code, in the same Eventstream UI. A Filter node on City = "Kansas" routes only matching rows to the lakehouse before any data lands. This minimises development effort — no notebooks, no pipelines needed.'
   },
 
   { domain:'d2', topic:'OneLake Availability — Eventhouse',
@@ -409,7 +407,7 @@ const questions = [
           'C. No data — OneLake availability is a discovery feature only, not a data export feature',
           'D. Both existing data in the eventhouse AND all new data going forward'],
     ans:3,
-    expl:'<strong>D — Both existing AND new data.</strong> When you enable OneLake availability for an eventhouse, the process exports ALL existing data from the eventhouse into OneLake (as Delta Parquet files), and subsequently any new data ingested is continuously exported going forward. This is a two-phase process: bulk historical export first, then incremental ongoing export. Only enabling it for NEW databases (A) is incorrect — it applies to all databases in the eventhouse. This is a verbatim real exam question from ITExams.'
+    expl:'<strong>D — Both existing AND new data.</strong> When you enable OneLake availability for an eventhouse, the process exports ALL existing data from the eventhouse into OneLake (as Delta Parquet files), and subsequently any new data ingested is continuously exported going forward. This is a two-phase process: bulk historical export first, then incremental ongoing export. Only enabling it for NEW databases (A) is incorrect — it applies to all databases in the eventhouse.'
   },
 
   { domain:'d2', topic:'Incremental Load — Orchestration',
@@ -511,7 +509,7 @@ const questions = [
           'C. Capacity Metrics app — shows capacity utilisation by item',
           'D. Fabric Monitor (Monitoring hub) — shows item-level run history including Spark runtime details'],
     ans:3,
-    expl:'<strong>D — Fabric Monitor (Monitoring hub).</strong> The Monitoring hub shows detailed run history for all Fabric items including notebooks. Clicking into a notebook run shows the Spark runtime version, Delta version, executor configuration, and execution logs. Real-Time hub (A) is for streaming sources. OneLake data hub (B) is for data discovery. Capacity Metrics (C) is for capacity-level resource consumption. This is a verbatim real exam question from CertEmpire.'
+    expl:'<strong>D — Fabric Monitor (Monitoring hub).</strong> The Monitoring hub shows detailed run history for all Fabric items including notebooks. Clicking into a notebook run shows the Spark runtime version, Delta version, executor configuration, and execution logs. Real-Time hub (A) is for streaming sources. OneLake data hub (B) is for data discovery. Capacity Metrics (C) is for capacity-level resource consumption.'
   },
 
   { domain:'d3', topic:'queryinsights — Last 60 Minutes',
@@ -521,7 +519,7 @@ const questions = [
           'C. The sys.dm_exec_requests dynamic management view',
           'D. Azure Monitor — stream Fabric logs to Log Analytics'],
     ans:1,
-    expl:'<strong>B — queryinsights schema.</strong> The queryinsights schema in a Fabric warehouse stores up to 30 days of query execution history with username, query text, duration, CPU, and other metrics. For the last 60 minutes: <code>SELECT login_name, command, total_elapsed_time_ms FROM queryinsights.exec_requests_history WHERE start_time > DATEADD(minute, -60, GETUTCDATE())</code>. sys.dm_exec_requests (C) shows currently ACTIVE requests only — not history. This is a verbatim real exam question from ITExams.'
+    expl:'<strong>B — queryinsights schema.</strong> The queryinsights schema in a Fabric warehouse stores up to 30 days of query execution history with username, query text, duration, CPU, and other metrics. For the last 60 minutes: <code>SELECT login_name, command, total_elapsed_time_ms FROM queryinsights.exec_requests_history WHERE start_time > DATEADD(minute, -60, GETUTCDATE())</code>. sys.dm_exec_requests (C) shows currently ACTIVE requests only — not history.'
   },
 
   { domain:'d3', topic:'D3 Capacity — Direct Lake Perf',
@@ -531,7 +529,7 @@ const questions = [
           'C. Enable V-Order on the Delta tables',
           'D. Create SQL views over the fact table to reduce query complexity'],
     ans:1,
-    expl:'<strong>B — Increase the capacity SKU.</strong> Direct Lake reports fall back to DirectQuery when the in-memory frame limit for the current capacity SKU is exceeded. For an F32 capacity with a 500M-row table, the frame limit is likely being breached — causing both slowness (DirectQuery fallback) and errors (frame overload). V-Order (C) helps read performance but doesn\'t prevent the frame limit breach. Changing hash algorithms (A) has no bearing on performance. Views (D) add abstraction but don\'t increase the frame limit. This is a verbatim real exam question from ITExams.'
+    expl:'<strong>B — Increase the capacity SKU.</strong> Direct Lake reports fall back to DirectQuery when the in-memory frame limit for the current capacity SKU is exceeded. For an F32 capacity with a 500M-row table, the frame limit is likely being breached — causing both slowness (DirectQuery fallback) and errors (frame overload). V-Order (C) helps read performance but doesn\'t prevent the frame limit breach. Changing hash algorithms (A) has no bearing on performance. Views (D) add abstraction but don\'t increase the frame limit.'
   },
 
   { domain:'d3', topic:'VACUUM — Remove Old Files',
@@ -541,7 +539,7 @@ const questions = [
           'C. COMPUTE STATISTICS — updates table statistics for the query optimiser',
           'D. CLONE — creates a zero-copy clone of the table'],
     ans:1,
-    expl:'<strong>B — VACUUM.</strong> VACUUM removes Parquet data files that are no longer referenced by the Delta transaction log AND are older than the retention threshold (default 7 days). It is the correct command for cleaning up stale files to recover storage space. OPTIMIZE consolidates small files but doesn\'t delete old versions. CLONE creates copies. This is a verbatim real exam question from ITExams — the exact phrasing "older than seven days and no longer in use" maps directly to VACUUM.'
+    expl:'<strong>B — VACUUM.</strong> VACUUM removes Parquet data files that are no longer referenced by the Delta transaction log AND are older than the retention threshold (default 7 days). It is the correct command for cleaning up stale files to recover storage space. OPTIMIZE consolidates small files but doesn\'t delete old versions. CLONE creates copies. The exact phrasing "older than seven days and no longer in use" maps directly to VACUUM.'
   },
 
   { domain:'d3', topic:'Pipeline Error — Fail Activity',
@@ -561,7 +559,7 @@ const questions = [
           'C. A Dataflow Gen2 — schedule the dataflow to refresh every 15 minutes',
           'D. A notebook — schedule the notebook to run every 15 minutes with sequential code blocks'],
     ans:1,
-    expl:'<strong>B — Data pipeline with schedule trigger.</strong> Data pipelines are the correct tool for orchestration in Fabric. Sequential activities (Copy, Notebook, Script, etc.) can be chained with On Success conditions to enforce order. A schedule trigger (every 15 minutes) drives automatic execution. Dataflows (C) are for data transformation, not sequential item loading. Notebooks (D) can be scheduled but aren\'t designed for orchestrating multiple distinct items sequentially. This is a verbatim real exam question from CertEmpire.'
+    expl:'<strong>B — Data pipeline with schedule trigger.</strong> Data pipelines are the correct tool for orchestration in Fabric. Sequential activities (Copy, Notebook, Script, etc.) can be chained with On Success conditions to enforce order. A schedule trigger (every 15 minutes) drives automatic execution. Dataflows (C) are for data transformation, not sequential item loading. Notebooks (D) can be scheduled but aren\'t designed for orchestrating multiple distinct items sequentially.'
   },
 
   { domain:'d3', topic:'Monitoring — Semantic Model Refresh',
