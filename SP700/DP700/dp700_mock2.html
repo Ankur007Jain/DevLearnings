@@ -38,20 +38,32 @@
   <span class="badge">RETAKE</span>
   <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
 </div>
-<nav class="tabs">
-  <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
-  <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
-  <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
-  <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
-  <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
-  <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
-  <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
-  <span class="nav-sep">|</span>
-  <a href="dp700_mock2.html" class="tab-btn active">📋 Full Mock</a>
-  <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
-  <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
-  <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
-  <a href="dp700_mock6.html" class="tab-btn">🌟 Mock 6</a>
+<nav class="tabs tabs-dropdowns">
+  <div class="nav-group">
+    <label class="nav-group-label">📚 Study</label>
+    <select class="nav-select" onchange="if(this.value) location.href=this.value">
+      <option value="">— Study Resources —</option>
+        <option value="DP700_Tracker.html">📊 Dashboard</option>
+        <option value="dp700_notes.html">📝 Study Notes</option>
+        <option value="dp700_pb_notes.html">📖 PB Notes</option>
+        <option value="dp700_official_notes.html">📄 Official Notes</option>
+        <option value="dp700_kql.html">🔍 KQL Lab</option>
+        <option value="dp700_labs.html">🧪 MS Labs</option>
+        <option value="dp700_exam.html">⚡ Quick Q&A</option>
+    </select>
+  </div>
+  <div class="nav-sep-v"></div>
+  <div class="nav-group">
+    <label class="nav-group-label">📋 Mocks</label>
+    <select class="nav-select" onchange="if(this.value) location.href=this.value">
+      <option value="">— Mock Exams —</option>
+        <option value="dp700_mock2.html" selected>📋 Full Mock</option>
+        <option value="dp700_mock3.html">🎯 Mock 3</option>
+        <option value="dp700_mock4.html">🎓 Mock 4</option>
+        <option value="dp700_mock5.html">🏆 Mock 5</option>
+        <option value="dp700_mock6.html">🌟 Mock 6</option>
+    </select>
+  </div>
 </nav>
 
 <div class="page">
