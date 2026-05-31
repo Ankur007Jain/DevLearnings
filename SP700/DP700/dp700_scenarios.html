@@ -305,8 +305,8 @@ const questions = [
       "Schedule the refresh during off-peak hours to get more compute resources."
     ],
     answer: 0,
-    explanation: "<strong>A is correct.</strong> Enabling Staging in Dataflow Gen2 offloads the query execution to a Fabric-optimized staging Lakehouse using Spark/SQL compute instead of the Mashup engine. This can dramatically reduce refresh time for large datasets. It's a one-checkbox fix. Scaling SKU helps but is costly. Splitting dataflows adds complexity.",
-    tip: "In your Fabric trial: Open a Dataflow Gen2 → Home tab → Options → Scale → toggle 'Staging' to ON. Then check the refresh duration in the workspace monitoring view."
+    explanation: "<strong>A is correct.</strong> Enabling staging routes query execution through a Fabric internal staging Lakehouse using Spark compute instead of the slower Power Query Mashup engine — which can dramatically reduce refresh time for large joins. To enable: right-click the query in the Queries pane → 'Enable staging' (query turns blue). Note: staging is OFF by default for Lakehouse destinations, but REQUIRED for Warehouse destinations. Scaling SKU helps but is costly. Splitting dataflows adds complexity.",
+    tip: "In your Fabric trial: Open a Dataflow Gen2 → in the Queries pane (left side), right-click your query → select 'Enable staging'. The query turns BLUE when staging is on. Note: staging is OFF by default for Lakehouse destinations but REQUIRED (forced ON) for Warehouse destinations."
   },
   {
     tag: "pipeline", tagLabel: "🔄 Pipelines & Dataflows",
