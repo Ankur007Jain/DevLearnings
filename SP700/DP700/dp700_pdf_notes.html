@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 PDF Notes – MS Learn Fabric Data Engineering</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .content-area { max-width: 1100px; margin: 0 auto; padding: 20px 24px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .card h2 { font-size: 17px; color: var(--accent); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card h3 { font-size: 15px; color: var(--d1); margin: 14px 0 8px; font-weight: 700; }
+  .card h4 { font-size: 13px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card p, .card li { margin-bottom: 5px; font-size: 13.5px; line-height: 1.55; }
+  .card ul, .card ol { padding-left: 20px; margin-bottom: 8px; }
+
+  .gotcha { background: #fff7ed; border-left: 3px solid var(--amber); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
+  .gotcha::before { content: "⚠️ EXAM TRAP: "; font-weight: 700; color: var(--amber); }
+  .tip { background: #f0fdf4; border-left: 3px solid var(--green); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
+  .tip::before { content: "✅ KEY POINT: "; font-weight: 700; color: var(--green); }
+  .note { background: #eff6ff; border-left: 3px solid var(--d1); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
+  .note::before { content: "📌 NOTE: "; font-weight: 700; color: var(--d1); }
+  .danger { background: #fef2f2; border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 10px 13px; margin: 10px 0; font-size: 13px; }
+  .danger::before { content: "🚫 IMPORTANT: "; font-weight: 700; color: var(--red); }
+
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #1e40af; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 14px 16px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-size: 12px; line-height: 1.6; }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  .badge-green { background: #d1fae5; color: var(--green); border: 1px solid var(--green); border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .badge-red   { background: #fee2e2; color: var(--red);   border: 1px solid var(--red);   border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .badge-gold  { background: #fef3c7; color: var(--amber); border: 1px solid var(--amber); border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+  .badge-blue  { background: #dbeafe; color: var(--d1);   border: 1px solid var(--d1);   border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+  .section-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 80; }
+  .section-bar label { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .section-select { padding: 7px 32px 7px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; min-width: 300px; }
+  .section-select:focus { outline: none; border-color: var(--accent); }
+  .section-count { font-size: 12px; color: var(--muted); background: #f1f5f9; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .compare-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .compare-box h4 { color: var(--accent); margin-bottom: 8px; font-size: 14px; }
+  .source { font-size: 11px; color: var(--muted); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">📚</span>
+  <h1>DP-700 Study Hub</h1>
+  <span class="badge">MS LEARN PDF</span>
+  <div class="exam-date">Source: <strong>fabric-data-engineering.pdf · 1881 pages</strong></div>
+</div>
+
+<nav class="tabs tabs-rows">
+  <div class="nav-row">
+    <span class="nav-row-label">📚 Study</span>
+    <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+    <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
+    <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
+    <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
+    <a href="dp700_pdf_notes.html" class="tab-btn active">📚 PDF Notes</a>
+    <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
+    <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+    <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
+    <a href="dp700_scenarios.html" class="tab-btn">🎭 Scenarios</a>
+  </div>
+  <div class="nav-row nav-row-mocks">
+    <span class="nav-row-label">📋 Mocks</span>
+    <a href="dp700_mock2.html" class="tab-btn">📋 Full Mock</a>
+    <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
+    <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+    <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+    <a href="dp700_mock6.html" class="tab-btn">🌟 Mock 6</a>
+  </div>
+</nav>
+
+<div class="section-bar">
+  <label for="sectionSelect">📂 Jump to section:</label>
+  <select id="sectionSelect" class="section-select" onchange="showPanel(this.value)">
+    <option value="s1">🏠 S1: Lakehouse Architecture</option>
+    <option value="s2">⚡ S2: Delta Lake Operations</option>
+    <option value="s3">🔄 S3: Data Ingestion Methods</option>
+    <option value="s4">🏢 S4: Warehouse &amp; SQL Endpoint</option>
+    <option value="s5">🔒 S5: Security &amp; Workspace Roles</option>
+    <option value="s6">🌊 S6: Streaming &amp; Real-Time</option>
+    <option value="s7">🚀 S7: Spark &amp; Notebooks</option>
+    <option value="s8">🔁 S8: Deployment Pipelines &amp; Lifecycle</option>
+  </select>
+  <span class="section-count">8 sections · Extracted from official MS Learn PDF</span>
+</div>
+
+<div class="content-area">
+
+<!-- ===== S1: LAKEHOUSE ===== -->
+<div id="s1" class="panel active">
+
+  <div class="card">
+    <h2>🏠 Lakehouse Architecture</h2>
+
+    <h3>What is a Fabric Lakehouse?</h3>
+    <p>A Lakehouse combines a data lake (flexible storage for any file format) with a data warehouse (analytical SQL querying) — all built on OneLake. Every piece of data lives in one place; different engines just read it differently.</p>
+    <ul>
+      <li>All <strong>Tables</strong> are stored as <strong>Delta format</strong> (Parquet + _delta_log) — auto-registered in the metastore</li>
+      <li><strong>Files</strong> section = raw landing zone; any format (CSV, JSON, Parquet, images…); not auto-registered</li>
+      <li>Powered by <strong>Apache Spark</strong> runtime; also queryable via <strong>SQL analytics endpoint</strong> (read-only T-SQL)</li>
+      <li>Every lakehouse also gets a <strong>default semantic model</strong> for Power BI (no longer auto-created for new lakehouses as of Sep 2025)</li>
+    </ul>
+
+    <div class="gotcha">SQL analytics endpoint is <strong>read-only</strong>. You cannot INSERT, UPDATE, or DELETE through it. Write operations must go through Spark, pipelines, or dataflows.</div>
+
+    <h3>Two Top-Level Folders</h3>
+    <table>
+      <tr><th>Folder</th><th>Purpose</th><th>Auto-registered as table?</th><th>Shortcut placement</th></tr>
+      <tr><td><strong>Tables/</strong></td><td>Managed Delta tables</td><td>✅ Yes (Delta only)</td><td>Top level only (no subdirs)</td></tr>
+      <tr><td><strong>Files/</strong></td><td>Unmanaged raw files</td><td>❌ No</td><td>Any level of hierarchy</td></tr>
+    </table>
+    <div class="note">Only Delta tables appear in the SQL analytics endpoint. Parquet, CSV, and other formats are NOT queryable through it. If you don't see your table, convert it to Delta first.</div>
+
+    <h3>Lakehouse vs. Data Warehouse — Quick Comparison</h3>
+    <table>
+      <tr><th>Feature</th><th>Lakehouse</th><th>Data Warehouse</th></tr>
+      <tr><td>Primary tool</td><td>Apache Spark (Python, Scala, SQL, R)</td><td>T-SQL</td></tr>
+      <tr><td>Data types</td><td>Structured <em>and</em> unstructured</td><td>Structured only</td></tr>
+      <tr><td>Multi-table transactions</td><td>❌ No</td><td>✅ Yes</td></tr>
+      <tr><td>Data ingestion</td><td>Notebooks, pipelines, dataflows, shortcuts</td><td>COPY INTO, INSERT, CTAS, pipelines</td></tr>
+      <tr><td>Best for</td><td>Data engineering, data science, medallion</td><td>BI reporting, dimensional modeling, SQL-first</td></tr>
+      <tr><td>Storage format</td><td>Delta on OneLake</td><td>Delta on OneLake</td></tr>
+    </table>
+    <div class="tip">Both Lakehouse and Warehouse store data in <strong>Delta format on OneLake</strong>. They differ in the tools and access patterns, not the underlying storage.</div>
+
+    <h3>Lakehouse Schemas</h3>
+    <p>Schemas are optional and must be enabled at creation time (enabled by default for new lakehouses). Schema-enabled lakehouses allow:</p>
+    <ul>
+      <li>Organizing tables by domain: <code>sales.orders</code>, <code>marketing.campaigns</code></li>
+      <li>Granting access at schema level</li>
+      <li>Cross-workspace 4-part queries: <code>workspace.lakehouse.schema.table</code></li>
+      <li>Schema shortcuts — map a schema to a folder in ADLS Gen2 or another lakehouse</li>
+      <li>Advanced features like <strong>materialized lake views</strong> (require schema-enabled)</li>
+    </ul>
+    <div class="gotcha">OneLake RLS/CLS enforcement in Spark requires the default lakehouse to be <strong>schema-enabled</strong> (or no default lakehouse set). If using a non-schema lakehouse, set Spark property <code>spark.sql.fabric.catalog.enable-schemaless-lakehouses=true</code> in the environment.</div>
+
+    <h3>SQL Analytics Endpoint</h3>
+    <ul>
+      <li>Auto-provisioned when you create a lakehouse</li>
+      <li>Read-only T-SQL interface — explore, report, and ad-hoc query</li>
+      <li>Exposes all Delta tables (including tables reached via shortcuts)</li>
+      <li>Does NOT expose non-Delta files (Parquet, CSV, etc.)</li>
+      <li>Connect Power BI directly — build reports without a separate warehouse</li>
+      <li>Does NOT support full T-SQL DML; use Spark for writes</li>
+      <li>Use <strong>Analyze data with → SQL analytics endpoint</strong> from the lakehouse ribbon</li>
+    </ul>
+
+    <h3>Analyze Data Options (Lakehouse Ribbon Dropdown)</h3>
+    <table>
+      <tr><th>Option</th><th>Engine</th><th>Use Case</th></tr>
+      <tr><td>SQL analytics endpoint</td><td>T-SQL (read-only)</td><td>SQL queries, Power BI reports</td></tr>
+      <tr><td>Eventhouse endpoint</td><td>KQL</td><td>High-performance real-time analytics</td></tr>
+      <tr><td>Notebook (New / Existing)</td><td>Apache Spark</td><td>Exploration, transformation, data science</td></tr>
+    </table>
+
+    <h3>Automatic Table Discovery</h3>
+    <p>When you place files in the <strong>Tables/</strong> folder, Fabric automatically validates, extracts metadata, and registers the table in the metastore — no <code>CREATE TABLE</code> needed. Works for Delta format only; other formats land in the <em>Unidentified</em> area.</p>
+    <div class="tip">Unidentified items appear when: broken shortcuts, non-Delta content written programmatically to Tables/, or nested subfolders that don't follow Delta table structure.</div>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "What is a lakehouse?", "Navigate the Fabric Lakehouse explorer", "Lakehouse and Delta tables" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>📂 OneLake Shortcuts</h2>
+
+    <h3>What are Shortcuts?</h3>
+    <p>Shortcuts are <em>pointers</em> — they make external data appear as local tables or folders without copying the data. Think of them as symbolic links that span storage boundaries.</p>
+
+    <h3>Supported Shortcut Sources</h3>
+    <div class="two-col">
+      <div class="compare-box">
+        <h4>Internal Sources (use caller identity)</h4>
+        <ul>
+          <li>Lakehouses</li>
+          <li>Warehouses</li>
+          <li>KQL databases</li>
+          <li>Mirrored databases</li>
+          <li>SQL databases</li>
+          <li>Semantic models</li>
+        </ul>
+      </div>
+      <div class="compare-box">
+        <h4>External Sources (use cloud connection credentials)</h4>
+        <ul>
+          <li>Azure Data Lake Storage Gen2</li>
+          <li>Azure Blob Storage</li>
+          <li>Amazon S3</li>
+          <li>Amazon S3-compatible storage</li>
+          <li>Google Cloud Storage</li>
+          <li>Dataverse</li>
+          <li>OneDrive &amp; SharePoint</li>
+          <li>On-premises data gateway (OPDG)</li>
+          <li>Iceberg tables</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Shortcut Caching Rules</h3>
+    <p>OneLake caches shortcut data locally for supported sources. This is important for performance and exam questions:</p>
+    <table>
+      <tr><th>Source</th><th>Cached?</th></tr>
+      <tr><td>Amazon S3</td><td><span class="badge-green">✅ Cached</span></td></tr>
+      <tr><td>Google Cloud Storage (GCS)</td><td><span class="badge-green">✅ Cached</span></td></tr>
+      <tr><td>S3-compatible storage</td><td><span class="badge-green">✅ Cached</span></td></tr>
+      <tr><td>On-premises data gateway (OPDG)</td><td><span class="badge-green">✅ Cached</span></td></tr>
+      <tr><td>Azure Data Lake Storage Gen2</td><td><span class="badge-red">❌ NOT cached</span></td></tr>
+      <tr><td>Azure Blob Storage</td><td><span class="badge-red">❌ NOT cached</span></td></tr>
+    </table>
+    <div class="gotcha">ADLS Gen2 and Azure Blob shortcuts are NOT cached. S3, GCS, S3-compatible, and OPDG are cached. This is a common exam trap — Microsoft-native Azure sources are not cached; non-Azure external sources are.</div>
+
+    <h3>Access Control for Shortcuts</h3>
+    <ul>
+      <li><strong>Internal shortcuts</strong>: Use the calling user's identity. User must have read permissions on the target.</li>
+      <li><strong>External shortcuts</strong>: Use cloud connection credentials set at shortcut creation time. Any user with lakehouse access can read through the shortcut using the stored credentials.</li>
+    </ul>
+
+    <h3>Shortcuts vs. Copying Data — When to Use Each</h3>
+    <table>
+      <tr><th>Scenario</th><th>Use</th></tr>
+      <tr><td>Data already in Fabric (another lakehouse/warehouse)</td><td>Shortcut</td></tr>
+      <tr><td>External cloud storage, near-real-time access needed</td><td>Shortcut</td></tr>
+      <tr><td>Complex transforms needed before use</td><td>Copy + transform</td></tr>
+      <tr><td>Compliance requires data in specific region</td><td>Copy (shortcuts don't move data)</td></tr>
+      <tr><td>Need full schema evolution and maintenance control</td><td>Copy (Delta maintenance only on local tables)</td></tr>
+    </table>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Shortcuts in a lakehouse", "OneLake shortcuts" (MS Learn, Feb 2026)</div>
+  </div>
+
+</div><!-- /s1 -->
+
+<!-- ===== S2: DELTA LAKE OPERATIONS ===== -->
+<div id="s2" class="panel">
+
+  <div class="card">
+    <h2>⚡ Delta Lake — Core Concepts</h2>
+
+    <h3>What Delta Lake Adds to Parquet</h3>
+    <ul>
+      <li><strong>ACID transactions</strong> — atomicity, consistency, isolation, durability</li>
+      <li><strong>Transaction log</strong> (<code>_delta_log/</code>) — every commit creates a new version entry</li>
+      <li><strong>Time travel</strong> — query any past version or timestamp</li>
+      <li><strong>Schema enforcement &amp; evolution</strong></li>
+      <li><strong>Upserts (MERGE)</strong></li>
+      <li><strong>Change Data Feed (CDF)</strong> — row-level change tracking</li>
+      <li><strong>Deletion vectors</strong> — soft-delete rows without rewriting files</li>
+    </ul>
+
+    <h3>Key Commands Summary</h3>
+    <table>
+      <tr><th>Command</th><th>Purpose</th><th>Exam Key Rule</th></tr>
+      <tr><td><code>OPTIMIZE</code></td><td>Compacts small files into larger ones</td><td>Improves read performance; also applies V-Order &amp; Z-Order</td></tr>
+      <tr><td><code>VACUUM</code></td><td>Removes unreferenced files from storage</td><td>Default 7-day retention; permanently deletes from OneLake</td></tr>
+      <tr><td><code>REORG ... APPLY (PURGE)</code></td><td>Physically removes deletion vector rows</td><td>OPTIMIZE does this automatically when &gt;5% rows are deletion-vector-deleted</td></tr>
+      <tr><td><code>DESCRIBE DETAIL</code></td><td>Shows table metadata (files, size, location)</td><td>Read-only inspection; works in Spark &amp; SQL endpoint</td></tr>
+      <tr><td><code>DESCRIBE HISTORY</code></td><td>Audit log of all transactions</td><td>Use to find version for time travel or RESTORE</td></tr>
+      <tr><td><code>RESTORE TABLE ... TO VERSION AS OF</code></td><td>Rolls table back to a prior version</td><td>Makes an older version the new current state</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🗜️ OPTIMIZE — File Compaction</h2>
+
+    <h3>Basic Usage</h3>
+    <pre><code>-- Basic compaction
+OPTIMIZE table_name
+
+-- With Z-Order (colocate rows with similar column values)
+OPTIMIZE table_name ZORDER BY (column1, column2)
+
+-- With V-Order (optimized Parquet encoding for reads)
+OPTIMIZE table_name VORDER
+
+-- Both Z-Order + V-Order in one pass
+OPTIMIZE table_name ZORDER BY (column1, column2) VORDER</code></pre>
+
+    <h3>OPTIMIZE Execution Order</h3>
+    <p>When combining options, Spark applies in this sequence: <strong>bin compaction → Z-Order → V-Order</strong></p>
+
+    <h3>V-Order Behavior with OPTIMIZE</h3>
+    <table>
+      <tr><th>How you invoke OPTIMIZE</th><th>V-Order behavior</th></tr>
+      <tr><td><code>OPTIMIZE table VORDER</code></td><td>Forces V-Order on rewritten files regardless of session or table settings</td></tr>
+      <tr><td><code>OPTIMIZE table</code> (no VORDER keyword)</td><td>Inherits from <code>TBLPROPERTIES("delta.parquet.vorder.enabled")</code> if set, else falls back to session config</td></tr>
+    </table>
+
+    <h3>When to Run OPTIMIZE</h3>
+    <ul>
+      <li>After large batch ingestion jobs</li>
+      <li>When many small files accumulate and reads slow down</li>
+      <li>Queries filter frequently on 2+ columns together → add <code>ZORDER BY</code></li>
+    </ul>
+    <div class="tip">OPTIMIZE is <strong>idempotent</strong> — safe to run repeatedly. It only rewrites files that benefit from compaction (minFileSize default = 1 GB, maxFileSize default = 1 GB).</div>
+    <div class="gotcha">Z-Order is best when queries filter on multiple columns AND those filters are selective enough to skip files. Don't use Z-Order on low-cardinality columns — it wastes time with no benefit.</div>
+
+    <h3>Fast Optimize</h3>
+    <p>Intelligently skips compaction operations that won't meaningfully improve performance — evaluates each candidate bin before deciding to compact.</p>
+    <pre><code>SET spark.microsoft.delta.optimize.fast.enabled = TRUE</code></pre>
+
+    <h3>Auto-Compaction</h3>
+    <p>Delta supports automatic compaction after writes via table properties or workspace settings — keeps tables healthy without manual maintenance jobs.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Compacting Delta tables", "Delta table maintenance" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>🧹 VACUUM — Storage Cleanup</h2>
+
+    <h3>What VACUUM Does</h3>
+    <p>VACUUM permanently deletes <strong>unreferenced Parquet files</strong> from OneLake. It only removes files that meet BOTH conditions:</p>
+    <ul>
+      <li>The file is <strong>no longer referenced</strong> by the Delta log (replaced by a newer version)</li>
+      <li>The file is <strong>older than the configured retention threshold</strong></li>
+    </ul>
+    <div class="danger">VACUUM permanently deletes files from OneLake. It does NOT improve query performance — its purpose is storage cleanup only. Use OPTIMIZE for query performance.</div>
+
+    <h3>Retention Rules</h3>
+    <ul>
+      <li>Default retention = <strong>7 days (168 hours)</strong></li>
+      <li>Fabric portal/API maintenance requests fail by default for retention &lt; 7 days</li>
+      <li>To use shorter retention: set <code>spark.databricks.delta.retentionDurationCheck.enabled = false</code></li>
+      <li>Delta log retention = <strong>30 days</strong> default (<code>delta.logRetentionDuration</code> table property)</li>
+    </ul>
+
+    <h3>VACUUM Syntax Variants</h3>
+    <pre><code>-- Default 7-day retention
+VACUUM table_name
+
+-- Custom retention (e.g., 7 days exactly = 168 hours)
+VACUUM table_name RETAIN 168 HOURS
+
+-- Preview files that would be deleted (no actual deletion)
+VACUUM table_name DRY RUN
+
+-- Combine preview with custom retention
+VACUUM table_name RETAIN 168 HOURS DRY RUN
+
+-- LITE mode: faster, uses only Delta log (not full directory listing)
+-- Requires Fabric Spark runtime 2.0+
+VACUUM table_name LITE</code></pre>
+
+    <h3>VACUUM and Time Travel — Critical Link</h3>
+    <div class="gotcha">VACUUM breaks time travel. If VACUUM removes old files, you can no longer query those older table versions even if they still appear in DESCRIBE HISTORY. Time travel availability depends on: (1) log retention AND (2) physical file existence.</div>
+    <table>
+      <tr><th>Setting</th><th>Default</th><th>Controls</th></tr>
+      <tr><td><code>delta.logRetentionDuration</code></td><td>30 days</td><td>How long Delta log entries are kept</td></tr>
+      <tr><td>VACUUM retention</td><td>7 days</td><td>How long unreferenced data files exist on disk</td></tr>
+    </table>
+    <p>The oldest queryable version = min(log retention, file retention). In practice: <strong>VACUUM's 7-day default is the limiting factor</strong>.</p>
+
+    <h3>Where to Run VACUUM</h3>
+    <ul>
+      <li>✅ Fabric notebooks</li>
+      <li>✅ Spark job definitions</li>
+      <li>✅ Lakehouse Maintenance UI / pipeline Lakehouse Maintenance activity</li>
+      <li>❌ SQL analytics endpoint (does NOT support Spark Delta maintenance commands)</li>
+      <li>❌ Warehouse SQL editor</li>
+    </ul>
+    <div class="note">Run VACUUM on a regular cadence (e.g., weekly or after major compaction cycles). Use DESCRIBE DETAIL to monitor file count before and after.</div>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "VACUUM Delta tables", "Run Delta table maintenance in Lakehouse" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>🎨 V-Order — Write-Time Parquet Optimization</h2>
+
+    <h3>What V-Order Is</h3>
+    <p>V-Order is a <strong>write-time optimization</strong> for Parquet files that reorganizes row-group distribution, encoding, and compression to improve <strong>read performance</strong> across all Fabric engines (Power BI Direct Lake, SQL analytics endpoint, Spark).</p>
+    <ul>
+      <li>Files remain <strong>open-source Parquet compliant</strong> (readable by any Parquet-compatible tool)</li>
+      <li>Typical impact: ~<strong>15% slower writes</strong>, up to <strong>50% better compression</strong>, significant read speedup</li>
+      <li>Best for <strong>read-heavy patterns</strong>: dashboards, interactive analytics, repeated scans</li>
+    </ul>
+
+    <h3>V-Order Default Status (CRITICAL FOR EXAM)</h3>
+    <table>
+      <tr><th>Workspace creation date</th><th>V-Order default</th><th>Optimize Write default</th></tr>
+      <tr><td>Before April 2025</td><td><span class="badge-green">Enabled by default</span></td><td><span class="badge-green">Enabled by default</span></td></tr>
+      <tr><td>After April 2025 (Runtime 1.3)</td><td><span class="badge-red">Disabled by default</span></td><td><span class="badge-red">Disabled by default</span></td></tr>
+      <tr><td>Runtime 2.0</td><td><span class="badge-red">Disabled</span></td><td><span class="badge-gold">UNSET (false)</span></td></tr>
+    </table>
+    <div class="gotcha">V-Order is <strong>disabled by default</strong> in all newly created Fabric workspaces (post April 2025). You must explicitly enable it. Do not assume it's on.</div>
+
+    <h3>Controlling V-Order at Different Levels</h3>
+    <table>
+      <tr><th>Level</th><th>Config / Property</th><th>Scope</th></tr>
+      <tr><td>Session</td><td><code>SET spark.sql.parquet.vorder.default=TRUE</code></td><td>All Parquet writes in current session</td></tr>
+      <tr><td>Table</td><td><code>TBLPROPERTIES("delta.parquet.vorder.enabled" = "true")</code></td><td>All future writes to that specific table</td></tr>
+      <tr><td>Write operation</td><td><code>.option("parquet.vorder.enabled","true")</code></td><td>Single write only</td></tr>
+    </table>
+    <div class="tip">Precedence: Write operation level > Session level > Table property level. If you set V-Order at the session level to true, it applies to ALL Parquet writes in that session, even if TBLPROPERTIES says false.</div>
+
+    <h3>V-Order Does NOT Affect Existing Files</h3>
+    <p>Changing V-Order settings (via session config, table property, or ALTER TABLE) only affects <strong>future writes</strong>. To apply V-Order to existing files, run <code>OPTIMIZE table VORDER</code>.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "What is V-Order?", "Lakehouse and Delta tables", Apache Spark Runtimes comparison (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>⏰ Time Travel</h2>
+
+    <h3>Querying Historical Versions</h3>
+    <pre><code>-- Query by version number
+SELECT * FROM table_name VERSION AS OF 5
+
+-- Query by timestamp
+SELECT * FROM table_name TIMESTAMP AS OF '2024-01-01'
+
+-- Find available versions and timestamps
+DESCRIBE HISTORY table_name
+
+-- Limit history output
+DESCRIBE HISTORY table_name LIMIT 10</code></pre>
+
+    <h3>Time Travel vs. RESTORE</h3>
+    <table>
+      <tr><th>Feature</th><th>What it does</th><th>Modifies table?</th></tr>
+      <tr><td>Time travel</td><td>Read-only query against an older snapshot</td><td>❌ No</td></tr>
+      <tr><td>RESTORE TABLE</td><td>Makes an older version the new current state</td><td>✅ Yes</td></tr>
+    </table>
+    <div class="tip">Pattern: Use time travel first to inspect the data, then use RESTORE only if you want to roll back the table.</div>
+
+    <h3>What Limits Time Travel Availability</h3>
+    <ol>
+      <li>Transaction log retention (<code>delta.logRetentionDuration</code> — default 30 days)</li>
+      <li>Physical file retention (VACUUM — default 7 days)</li>
+    </ol>
+    <p>The oldest queryable version = minimum of both. In practice, VACUUM's 7-day window is the binding constraint.</p>
+
+    <h3>Time Travel in Different Engines</h3>
+    <ul>
+      <li>✅ Fabric notebooks (Spark SQL / PySpark)</li>
+      <li>✅ Spark job definitions</li>
+      <li>✅ SQL analytics endpoint (limited — subject to VACUUM retention)</li>
+      <li>❌ Warehouse SQL editor</li>
+    </ul>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Time travel", "VACUUM Delta tables" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>📡 Change Data Feed (CDF)</h2>
+
+    <h3>What CDF Does</h3>
+    <p>CDF records <strong>row-level changes</strong> (insert, update, delete) for a Delta table after it's enabled. Use it to build <strong>incremental ETL pipelines</strong> that process only what changed.</p>
+
+    <h3>Enable CDF</h3>
+    <pre><code>-- Enable at table creation
+CREATE TABLE sales.orders (
+  order_id BIGINT, customer_id BIGINT, order_total DECIMAL(18,2)
+)
+USING DELTA
+TBLPROPERTIES (delta.enableChangeDataFeed = true)
+
+-- Enable on existing table
+ALTER TABLE sales.orders
+SET TBLPROPERTIES (delta.enableChangeDataFeed = true)</code></pre>
+
+    <h3>Read Change Data</h3>
+    <pre><code>-- Read from a specific version onward
+SELECT * FROM table_changes('table_name', 1)
+
+-- Read a bounded version range
+SELECT * FROM table_changes('sales.orders', 120, 125)
+
+-- Read by timestamp range
+SELECT * FROM table_changes(
+  'sales.orders',
+  TIMESTAMP '2026-05-01T00:00:00Z',
+  TIMESTAMP '2026-05-01T23:59:59Z'
+)</code></pre>
+
+    <h3>CDF Output Columns</h3>
+    <table>
+      <tr><th>Column</th><th>Values</th><th>Description</th></tr>
+      <tr><td><code>_change_type</code></td><td>insert, update_preimage, update_postimage, delete</td><td>The type of change</td></tr>
+      <tr><td><code>_commit_version</code></td><td>Integer</td><td>Delta table version when change was committed</td></tr>
+      <tr><td><code>_commit_timestamp</code></td><td>Timestamp</td><td>When the commit happened</td></tr>
+    </table>
+
+    <h3>Critical CDF Rules</h3>
+    <div class="gotcha">CDF does <strong>NOT backfill</strong> historical changes. It only captures changes that happen <em>after</em> the property is enabled. Enable it early in the table lifecycle.</div>
+    <div class="note">UPDATE and MERGE produce BOTH <code>update_preimage</code> (before) AND <code>update_postimage</code> (after) rows — useful for auditing what changed.</div>
+    <div class="note">OPTIMIZE and REORG do NOT produce CDF records (<code>dataChange = false</code>). Maintenance ops won't pollute your change feed.</div>
+
+    <h3>CDF Storage Impact</h3>
+    <p>CDF writes extra files to a <code>_change_data</code> folder. These are subject to VACUUM — older CDF files are removed when they fall outside the retention window.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Use change data feed with Delta tables" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>💧 Liquid Clustering</h2>
+    <p>Liquid clustering is a <strong>flexible data layout strategy</strong> that replaces static Hive-style partitioning and manual Z-Order. You declare which columns to cluster on, and the Fabric Spark Runtime handles the physical layout automatically.</p>
+    <ul>
+      <li>Clustering is a table property — you define it once; OPTIMIZE applies it</li>
+      <li>Regular write operations do <strong>NOT</strong> cluster the data — you must run OPTIMIZE</li>
+      <li>Incremental liquid clustering available in Runtime 2.0+ (no write amplification)</li>
+    </ul>
+    <div class="gotcha">Data is only physically clustered when OPTIMIZE runs. Writing data to a liquid-clustered table does NOT automatically cluster it. You must schedule OPTIMIZE jobs.</div>
+    <div class="source">Source: fabric-data-engineering.pdf — "Apply liquid clustering on Delta tables" (MS Learn)</div>
+  </div>
+
+</div><!-- /s2 -->
+
+<!-- ===== S3: DATA INGESTION ===== -->
+<div id="s3" class="panel">
+
+  <div class="card">
+    <h2>🔄 Data Ingestion Methods — When to Use Each</h2>
+    <table>
+      <tr><th>Scenario</th><th>Best Approach</th></tr>
+      <tr><td>Small files from local machine</td><td>Upload files (Lakehouse explorer)</td></tr>
+      <tr><td>Reference data without copying</td><td>OneLake Shortcuts</td></tr>
+      <tr><td>Small-to-medium data with visual transformations</td><td>Dataflow Gen2</td></tr>
+      <tr><td>Large-scale data movement</td><td>Data pipelines (Copy Activity)</td></tr>
+      <tr><td>Complex transforms or unsupported sources</td><td>Notebook code (Spark)</td></tr>
+      <tr><td>Real-time event ingestion</td><td>Eventstream → Lakehouse</td></tr>
+      <tr><td>Time-series or high-throughput streaming</td><td>Eventstream → Eventhouse → OneLake availability</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🌊 Dataflow Gen2</h2>
+    <h3>What it Is</h3>
+    <p>A <strong>low-code data transformation tool</strong> using the familiar <strong>Power Query</strong> interface. Over 200 connectors. Define transformations visually and output results to a lakehouse, warehouse, or other destinations.</p>
+    <ul>
+      <li>Best for smaller datasets or connectors not available in other tools</li>
+      <li>Ideal when a data analyst (not engineer) needs to do the transformation</li>
+      <li>Supports scheduled refresh</li>
+    </ul>
+
+    <h3>Dataflow Gen2 vs. Data Pipeline — When to Choose</h3>
+    <table>
+      <tr><th>Criteria</th><th>Dataflow Gen2</th><th>Data Pipeline</th></tr>
+      <tr><td>Data size</td><td>Small to medium</td><td>Large scale</td></tr>
+      <tr><td>User skill</td><td>No-code / low-code (Power Query)</td><td>Data engineer (orchestration)</td></tr>
+      <tr><td>Complex orchestration</td><td>Limited</td><td>Full (chain activities, branching, triggers)</td></tr>
+      <tr><td>Transformation power</td><td>Power Query M language</td><td>External Spark / SQL for transforms</td></tr>
+      <tr><td>Staging requirement for Warehouse</td><td>Must enable staging per-query (right-click → Enable staging)</td><td>Staging property on Copy Activity</td></tr>
+    </table>
+    <div class="gotcha">In Dataflow Gen2, staging for Warehouse destinations is a <strong>per-query setting</strong>: right-click the query in the Queries pane → "Enable staging". The query turns <strong>blue</strong> when staging is on. This is NOT in Options → Scale.</div>
+
+    <h3>Dataflow Gen2 Staging Rules</h3>
+    <ul>
+      <li>Staging is <strong>OFF by default</strong> for Lakehouse destinations</li>
+      <li>Staging is <strong>REQUIRED</strong> for Warehouse destinations</li>
+      <li>Staging uses a Lakehouse as an intermediate buffer before loading to the target</li>
+    </ul>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Dataflow Gen2" ingestion section, official DP-700 documentation</div>
+  </div>
+
+  <div class="card">
+    <h2>🚚 Data Pipelines &amp; Copy Activity</h2>
+
+    <h3>What Data Pipelines Provide</h3>
+    <ul>
+      <li>Scalable copy tool for <strong>large volume</strong> data movement</li>
+      <li>Schedule, trigger by events, or chain multiple activities</li>
+      <li>Copy activity, Notebook activity, Spark job activity, Dataflow activity, and more</li>
+      <li>Lakehouse Maintenance activity (Preview) — runs OPTIMIZE + VACUUM on schedule</li>
+    </ul>
+
+    <h3>Copy Activity — Staging</h3>
+    <p>Staging in Copy Activity is a <strong>property of the Copy Activity itself</strong> (not of Dataflow Gen2). Staging is a separate temp storage step used when:</p>
+    <ul>
+      <li>Loading to <strong>Warehouse</strong> via Copy Activity</li>
+      <li>Source is <strong>on-premises</strong> via SHIR (Self-hosted Integration Runtime)</li>
+    </ul>
+    <div class="gotcha">Staging in pipelines (Copy Activity) ≠ Staging in Dataflow Gen2. These are separate features with different UIs. For Copy Activity: check the "Enable staging" checkbox in the Source/Sink settings. For Dataflow Gen2: right-click the query.</div>
+
+    <h3>Pipeline Copy Activity — Fast Copy</h3>
+    <p>Fast Copy uses COPY INTO for warehouse destinations, bypassing standard row-by-row insert for much higher throughput. Enabled automatically when the destination is a Warehouse and the source/format is compatible.</p>
+
+    <h3>Lakehouse Maintenance Activity (Preview)</h3>
+    <ul>
+      <li>Runs OPTIMIZE (with optional V-Order) and VACUUM on Lakehouse Delta tables</li>
+      <li>Scheduled as part of a pipeline workflow</li>
+      <li>Can be chained with data loads and followed by a "Refresh SQL Endpoint" activity</li>
+    </ul>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Data pipelines", "Run Delta table maintenance in Lakehouse" (MS Learn, Feb/Apr 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>📥 Load to Tables (Portal)</h2>
+    <p>The Lakehouse home page lets you convert CSV or Parquet files into Delta tables visually — no Spark code needed.</p>
+    <ul>
+      <li>Supports: CSV and Parquet → Delta (with V-Order optimization)</li>
+      <li>Load into new table or append/overwrite existing table</li>
+      <li>Cannot define custom column schema from the UI — use a notebook for explicit column control</li>
+    </ul>
+    <div class="note">The Load to Tables operation is also available programmatically via the Fabric REST API (Table Load API) — useful for automation scripts.</div>
+    <div class="source">Source: fabric-data-engineering.pdf — "Load to Delta Lake tables" (MS Learn)</div>
+  </div>
+
+</div><!-- /s3 -->
+
+<!-- ===== S4: WAREHOUSE & SQL ENDPOINT ===== -->
+<div id="s4" class="panel">
+
+  <div class="card">
+    <h2>🏢 Data Warehouse in Microsoft Fabric</h2>
+
+    <h3>Key Characteristics</h3>
+    <ul>
+      <li>Stores data in <strong>Delta format on OneLake</strong> (same as Lakehouse)</li>
+      <li>Full <strong>T-SQL surface</strong>: SELECT, INSERT, UPDATE, DELETE, MERGE, CREATE TABLE, CTAS</li>
+      <li>Supports <strong>multi-table ACID transactions</strong> (Lakehouse does NOT)</li>
+      <li>Best for SQL-first teams, BI reporting, dimensional modeling</li>
+      <li>RLS in Warehouse applies to <strong>ALL users</strong> including workspace Admin/Member/Contributor (unlike Lakehouse where those roles bypass RLS)</li>
+    </ul>
+    <div class="gotcha">RLS in a Fabric <strong>Warehouse</strong> applies to ALL users — there is no dbo/sysadmin exemption like in SQL Server. In a Fabric <strong>Lakehouse</strong> (OneLake security), workspace Admin/Member/Contributor bypass RLS.</div>
+
+    <h3>CTAS (CREATE TABLE AS SELECT)</h3>
+    <pre><code>-- Basic CTAS in Warehouse
+CREATE TABLE dbo.sales_summary
+AS
+SELECT region, SUM(amount) AS total
+FROM dbo.sales
+GROUP BY region
+
+-- CTAS referencing a Lakehouse table (same workspace)
+-- Run from INSIDE the Warehouse
+CREATE TABLE dbo.enriched_sales
+AS
+SELECT s.*, c.customer_name
+FROM dbo.sales s
+JOIN SalesLakehouse.dbo.dim_customer c ON s.customer_id = c.id</code></pre>
+    <div class="gotcha">Cross-workspace CTAS is <strong>NOT supported</strong>. You can reference a Lakehouse in the same workspace using <code>LakehouseName.dbo.table_name</code> from inside the Warehouse, but you cannot span workspaces in a single CTAS.</div>
+
+    <h3>Warehouse Ingestion Methods</h3>
+    <table>
+      <tr><th>Method</th><th>Notes</th></tr>
+      <tr><td><code>COPY INTO</code></td><td>Bulk load from files; high performance</td></tr>
+      <tr><td><code>INSERT … SELECT</code></td><td>Row-by-row or batched insert from query</td></tr>
+      <tr><td>CTAS</td><td>Create + populate in one statement</td></tr>
+      <tr><td>Pipeline Copy Activity</td><td>Requires staging for warehouse destination</td></tr>
+      <tr><td>Dataflow Gen2</td><td>Requires staging enabled per query</td></tr>
+    </table>
+
+    <h3>Warehouse Security: DDM (Dynamic Data Masking)</h3>
+    <ul>
+      <li>Masks sensitive column values (e.g., showing <code>XXXX</code> instead of SSN)</li>
+      <li>Defined on specific columns in the warehouse</li>
+      <li><strong>Workspace Admin, Member, Contributor</strong> automatically see <strong>unmasked</strong> data</li>
+      <li>Viewer role and shared users see masked data</li>
+    </ul>
+    <div class="gotcha">DDM bypass: Anyone with <strong>Admin, Member, or Contributor</strong> workspace role sees unmasked data automatically. Sharing a warehouse with "Read + ReadData" grants masked access.</div>
+
+    <h3>Direct Lake Mode</h3>
+    <p>Power BI can connect to Delta tables in OneLake using <strong>Direct Lake mode</strong> — data is loaded directly from OneLake into Power BI's in-memory engine (VertiPaq) without going through a SQL endpoint.</p>
+    <ul>
+      <li>Much faster than Import or DirectQuery for first query after table updates</li>
+      <li>Falls back to <strong>DirectQuery</strong> when certain features trigger a fallback:</li>
+    </ul>
+    <table>
+      <tr><th>Condition</th><th>Result</th></tr>
+      <tr><td>RLS applied on a Warehouse data source</td><td>❌ Fallback to DirectQuery</td></tr>
+      <tr><td>CLS (Column-Level Security) on Warehouse</td><td>❌ Fallback to DirectQuery</td></tr>
+      <tr><td>Frame limit exceeded (too many rows/columns)</td><td>❌ Fallback to DirectQuery</td></tr>
+      <tr><td>Unsupported DAX function</td><td>❌ Fallback to DirectQuery</td></tr>
+    </table>
+    <div class="note">Direct Lake mode reads from OneLake files directly. It can be used with both Lakehouse and Warehouse Delta tables as the source.</div>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Lakehouse vs. data warehouse", "Direct Lake", Warehouse documentation (MS Learn)</div>
+  </div>
+
+  <div class="card">
+    <h2>🔍 SQL Analytics Endpoint — Deep Dive</h2>
+    <h3>Key Rules</h3>
+    <ul>
+      <li>Auto-provisioned alongside every Lakehouse — no separate creation needed</li>
+      <li>Read-only — SELECT queries only; no INSERT, UPDATE, DELETE, CREATE TABLE</li>
+      <li>Only surfaces <strong>Delta tables</strong> (including via shortcuts); not Files section</li>
+      <li>Tables auto-sync from lakehouse; can also manually trigger a sync</li>
+      <li>Supports views created via the SQL analytics endpoint editor</li>
+      <li>Tables in unsupported schemas or non-Delta formats <strong>fail to sync</strong></li>
+    </ul>
+    <div class="note">Use "Refresh SQL Endpoint" activity in a pipeline to keep the SQL analytics endpoint in sync after large batch loads — avoids stale metadata.</div>
+    <div class="source">Source: fabric-data-engineering.pdf — "Lakehouse SQL analytics endpoint" (MS Learn)</div>
+  </div>
+
+</div><!-- /s4 -->
+
+<!-- ===== S5: SECURITY ===== -->
+<div id="s5" class="panel">
+
+  <div class="card">
+    <h2>🔒 Workspace Roles — What Each Can Do</h2>
+
+    <h3>Four Roles</h3>
+    <table>
+      <tr><th>Role</th><th>Create</th><th>Read</th><th>Update</th><th>Delete</th><th>Share item</th></tr>
+      <tr><td><strong>Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td><strong>Member</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td><strong>Contributor</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>Only if granted reshare permission</td></tr>
+      <tr><td><strong>Viewer</strong></td><td>❌</td><td>✅ (SQL endpoint only)</td><td>❌</td><td>❌</td><td>Only if granted reshare permission</td></tr>
+    </table>
+    <div class="gotcha">Viewer can ONLY read data using the <strong>SQL analytics endpoint</strong> — and only if the SQL access policy is granted. They cannot access data via Spark or OneLake APIs.</div>
+    <div class="gotcha">Admin, Member, and Contributor workspace roles <strong>bypass both RLS and CLS</strong> in Lakehouse (OneLake security). Viewer role IS subject to RLS/CLS enforcement.</div>
+
+    <h3>Role Mapping: Security Bypass Summary</h3>
+    <table>
+      <tr><th>Feature</th><th>Admin/Member/Contributor</th><th>Viewer</th></tr>
+      <tr><td>RLS in Lakehouse (OneLake security)</td><td>Bypassed ✅</td><td>Enforced 🔒</td></tr>
+      <tr><td>CLS in Lakehouse (OneLake security)</td><td>Bypassed ✅</td><td>Enforced 🔒</td></tr>
+      <tr><td>DDM in Warehouse</td><td>Bypassed ✅ (sees unmasked)</td><td>Enforced 🔒</td></tr>
+      <tr><td>RLS in Warehouse</td><td>Enforced 🔒 (all users)</td><td>Enforced 🔒</td></tr>
+    </table>
+    <div class="danger">RLS in Fabric <strong>Warehouse</strong> applies to ALL users — even Admin/Member/Contributor cannot bypass it. This is different from Lakehouse (OneLake security) where those roles bypass RLS.</div>
+  </div>
+
+  <div class="card">
+    <h2>🛡️ RLS and CLS in Spark (OneLake Security)</h2>
+
+    <h3>How Spark Enforces OneLake Security</h3>
+    <p>When a user queries a secured lakehouse table in Spark, Fabric uses a <strong>two-context execution model</strong>:</p>
+    <ol>
+      <li><strong>User context</strong> — runs the user's notebook/Spark job with user identity; never has unfiltered access to secured tables</li>
+      <li><strong>System (security) context</strong> — privileged Microsoft-managed context that resolves RLS/CLS policies, reads raw Delta files, applies row filtering and column projection, then returns only authorized data to the user context</li>
+    </ol>
+    <div class="note">The system security jobs appear in Monitoring Hub as <code>SparkSecurityControl</code> entries — this is expected and normal. It means OneLake security is actively enforced.</div>
+
+    <h3>Policy Behavior in Spark</h3>
+    <table>
+      <tr><th>Policy type</th><th>What Spark returns</th></tr>
+      <tr><td>RLS only</td><td>All columns, but only rows the user's RLS rule allows</td></tr>
+      <tr><td>CLS only</td><td>Only the allowed columns; all rows; SELECT * returns allowed columns only</td></tr>
+      <tr><td>RLS + CLS (same role)</td><td>Allowed rows projected to allowed columns — supported</td></tr>
+      <tr><td>RLS in role A + CLS in role B (same user)</td><td>❌ Query FAILS — not supported for a user in two roles with mixed policy types</td></tr>
+      <tr><td>Non-Delta object with rule applied</td><td>❌ Access BLOCKED (RLS/CLS only on Delta Parquet)</td></tr>
+    </table>
+
+    <h3>Direct File Access is Blocked</h3>
+    <p>When OneLake security is enabled on a table, non-privileged users cannot use:</p>
+    <pre><code># These are BLOCKED for non-privileged users
+spark.read.format("delta").load("abfss://...")
+DeltaTable.forPath(spark, "abfss://...")</code></pre>
+    <p>Users must access secured tables through the lakehouse table name:</p>
+    <pre><code># This works — security is applied transparently
+df = spark.read.table("lakehouse.secured_table")</code></pre>
+
+    <h3>Service Principals and RLS/CLS</h3>
+    <div class="gotcha">RLS and CLS in Spark do NOT support service principals — only user identities are evaluated. Running notebooks with workspace identity does NOT enforce RLS/CLS for that workspace identity.</div>
+
+    <h3>OneLake Data Access Roles (Preview)</h3>
+    <p>Configures access to specific <strong>folders</strong> in OneLake (more granular than workspace roles). Lets you grant read access to a subset of the data in a lakehouse without granting full workspace access.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Spark support for OneLake security (RLS and CLS)", "Workspace roles in Lakehouse" (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>🔑 Lakehouse Sharing</h2>
+    <ul>
+      <li>Sharing a lakehouse grants access WITHOUT giving workspace membership</li>
+      <li>By default, sharing grants <strong>Fabric Read</strong> on the lakehouse and its SQL analytics endpoint</li>
+      <li>Sharing does NOT grant write permissions</li>
+      <li>Additional permissions you can grant at share time:</li>
+    </ul>
+    <table>
+      <tr><th>Permission</th><th>What it allows</th></tr>
+      <tr><td>Read (default)</td><td>Browse metadata, see in OneLake catalog</td></tr>
+      <tr><td>ReadData (ReadAll)</td><td>Read all data via Spark / OneLake APIs</td></tr>
+      <tr><td>Read all data using SQL</td><td>Query via SQL analytics endpoint</td></tr>
+      <tr><td>Build</td><td>Build Power BI reports on top of this lakehouse</td></tr>
+    </table>
+    <div class="source">Source: fabric-data-engineering.pdf — "How lakehouse sharing works" (MS Learn)</div>
+  </div>
+
+</div><!-- /s5 -->
+
+<!-- ===== S6: STREAMING & REAL-TIME ===== -->
+<div id="s6" class="panel">
+
+  <div class="card">
+    <h2>🌊 Streaming Data into a Lakehouse</h2>
+
+    <h3>Structured Streaming Basics</h3>
+    <p>Fabric Spark supports Structured Streaming — treats live data streams as a table with new rows appended continuously. Supports Kafka, Azure Event Hubs, file sources (CSV, JSON, Parquet).</p>
+    <pre><code># Basic Event Hubs → Delta table streaming write
+rawData = (
+  df
+  .withColumn("bodyAsString", f.col("body").cast("string"))
+  .select(f.from_json("bodyAsString", Schema).alias("events"))
+  .select("events.*")
+  .writeStream
+  .format("delta")                              # Write as Delta
+  .option("checkpointLocation", "Files/checkpoint")
+  .outputMode("append")                         # Only new rows
+  .toTable("deltaeventstable")
+)</code></pre>
+
+    <h3>Streaming Performance Optimizations</h3>
+    <table>
+      <tr><th>Technique</th><th>How</th></tr>
+      <tr><td>Partition on disk</td><td><code>.partitionBy("col1", "col2")</code> — organizes data into subdirs by column values</td></tr>
+      <tr><td>Partition in memory</td><td><code>.repartition(n)</code> full shuffle; <code>.coalesce(n)</code> reduces only, less movement</td></tr>
+      <tr><td>Optimized Write</td><td><code>spark.conf.set("spark.databricks.delta.optimizeWrite.enabled", True)</code> — auto-merges/splits partitions before write</td></tr>
+      <tr><td>Trigger interval</td><td><code>.trigger(processingTime="1 minute")</code> — batches events for fewer, larger file writes</td></tr>
+    </table>
+
+    <h3>Production Streaming: Spark Job Definitions</h3>
+    <ul>
+      <li>Use <strong>Spark job definitions</strong> (not notebooks) for production streaming</li>
+      <li>Configure a <strong>retry policy</strong> — automatically restarts the job when it stops unexpectedly</li>
+      <li>Retry policy: specify max restarts (up to infinite) and interval between retries</li>
+      <li>Lifetime limit: <strong>90 days</strong> for retry policy setup</li>
+    </ul>
+    <div class="gotcha">Spark notebooks are great for development/testing of streaming logic. For production, use Spark job definitions with retry policies — they are non-interactive and more robust.</div>
+
+    <h3>Monitoring Streaming</h3>
+    <p>Fabric Monitoring Hub → <strong>Structured Streaming tab</strong> shows: Input Rate, Process Rate, Input Rows, Batch Duration, Operation Duration.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Data streaming into a lakehouse with Spark" (MS Learn, Feb 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>📡 Eventstream — Destinations</h2>
+
+    <h3>Valid Eventstream Destinations</h3>
+    <table>
+      <tr><th>Destination</th><th>Supported?</th></tr>
+      <tr><td>Lakehouse</td><td><span class="badge-green">✅ Yes</span></td></tr>
+      <tr><td>Eventhouse (KQL Database)</td><td><span class="badge-green">✅ Yes</span></td></tr>
+      <tr><td>Fabric Activator (Alerts)</td><td><span class="badge-green">✅ Yes</span></td></tr>
+      <tr><td>Custom endpoint (EventHub)</td><td><span class="badge-green">✅ Yes</span></td></tr>
+      <tr><td>Derived stream</td><td><span class="badge-green">✅ Yes</span></td></tr>
+      <tr><td>Spark Notebook (Preview)</td><td><span class="badge-gold">✅ Preview</span></td></tr>
+      <tr><td><strong>Data Warehouse</strong></td><td><span class="badge-red">❌ NOT supported</span></td></tr>
+    </table>
+    <div class="gotcha">Eventstream does <strong>NOT support Warehouse as a destination</strong>. If you need events in a warehouse, land them in a Lakehouse first, then load to Warehouse.</div>
+
+    <h3>Lakehouse Destination — Schema Enforcement</h3>
+    <ul>
+      <li>Schema is set based on the <strong>first record</strong> received</li>
+      <li>New writes must be schema-compatible with the existing table</li>
+      <li>Extra columns in incoming data are <strong>dropped</strong></li>
+      <li>Missing columns write as <strong>null</strong></li>
+      <li>Schema mismatch (no intersection) → schema conversion failure</li>
+    </ul>
+    <div class="gotcha">Using a Lakehouse as an Eventstream destination for <strong>CDC data</strong> (database change data capture) is NOT recommended because CDC data often has schema changes that cause columns or records to be lost.</div>
+
+    <h3>Lakehouse Destination — Ingestion Settings</h3>
+    <table>
+      <tr><th>Setting</th><th>Default / Range</th><th>Effect</th></tr>
+      <tr><td>Minimum rows</td><td>Min 1, Max 2 million per file</td><td>Fewer rows → more small files</td></tr>
+      <tr><td>Maximum duration</td><td>Min 1 min, Max 2 hours per file</td><td>Longer duration → more rows per file (larger files)</td></tr>
+    </table>
+
+    <h3>Best Approach for High-Throughput Streaming</h3>
+    <p>For time-series or high-throughput scenarios, use <strong>Eventstream → Eventhouse</strong> with <strong>OneLake Availability</strong> enabled. This creates a Delta table in OneLake that a lakehouse can access through a shortcut — combining real-time KQL analytics with Delta-based SQL/Spark access.</p>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "Add a lakehouse destination to an eventstream", Eventstream documentation (MS Learn, Dec 2025)</div>
+  </div>
+
+  <div class="card">
+    <h2>⚡ High Concurrency Mode (Lakehouse Operations)</h2>
+    <p>High concurrency mode allows <strong>multiple compatible Lakehouse operations</strong> (load, preview) to share a single Spark session instead of starting separate sessions for each.</p>
+
+    <h3>Requirements for Session Sharing</h3>
+    <ul>
+      <li>Operations must be triggered by the <strong>same user</strong></li>
+      <li>Operations must run in the <strong>same Lakehouse and workspace</strong></li>
+    </ul>
+
+    <h3>Benefits</h3>
+    <ul>
+      <li>Up to <strong>5 Lakehouse operations</strong> in one shared Spark session</li>
+      <li>Faster start times (subsequent ops reuse existing session)</li>
+      <li>Only the <strong>initiating session is billed</strong> — subsequent shared ops don't add billing</li>
+      <li>Especially helpful in workspaces using Managed Virtual Networks (longer startup times)</li>
+    </ul>
+
+    <div class="note">High concurrency for Lakehouse load/preview is <strong>automatic</strong> — no per-operation toggle needed. High concurrency for notebooks and pipelines requires explicit configuration in workspace settings.</div>
+    <div class="source">Source: fabric-data-engineering.pdf — "High concurrency mode for Lakehouse operations" (MS Learn, Mar 2026)</div>
+  </div>
+
+</div><!-- /s6 -->
+
+<!-- ===== S7: SPARK & NOTEBOOKS ===== -->
+<div id="s7" class="panel">
+
+  <div class="card">
+    <h2>🚀 Apache Spark — Fabric Defaults</h2>
+
+    <h3>Spark Runtime Versions</h3>
+    <table>
+      <tr><th>Runtime</th><th>Spark version</th><th>Delta version</th></tr>
+      <tr><td>Runtime 1.1</td><td>Spark 3.3</td><td>Delta 2.2</td></tr>
+      <tr><td>Runtime 1.2</td><td>Spark 3.4</td><td>Delta 2.4</td></tr>
+      <tr><td>Runtime 1.3</td><td>Spark 3.5</td><td>Delta 3.1</td></tr>
+      <tr><td>Runtime 2.0</td><td>Spark 3.5+</td><td>Delta 4.1</td></tr>
+    </table>
+
+    <h3>Key Fabric Spark Defaults vs. Azure Synapse</h3>
+    <table>
+      <tr><th>Config</th><th>Fabric (new workspace)</th><th>Azure Synapse</th></tr>
+      <tr><td><code>spark.sql.sources.default</code></td><td><strong>delta</strong></td><td>parquet</td></tr>
+      <tr><td><code>spark.sql.parquet.vorder.default</code></td><td><strong>false*</strong></td><td>N/A</td></tr>
+      <tr><td><code>spark.databricks.delta.optimizeWrite.enabled</code></td><td><strong>unset (false)*</strong></td><td>unset (false)</td></tr>
+    </table>
+    <p><em>* Workspaces created before April 2025 have V-Order and Optimize Write enabled by default. Runtime 2.0 has Optimize Write UNSET.</em></p>
+
+    <h3>Optimized Write</h3>
+    <p>Merges or splits partitions before writing to maximize file sizes — alternative to manual <code>repartition()</code> / <code>coalesce()</code>.</p>
+    <pre><code># Enable Optimized Write
+spark.conf.set("spark.databricks.delta.optimizeWrite.enabled", True)
+
+# Disable
+spark.conf.unset("spark.databricks.delta.optimizeWrite.enabled")</code></pre>
+
+    <h3>Intelligent Cache</h3>
+    <ul>
+      <li>Automatically caches each file read within allocated cache storage on each Spark node (SSD)</li>
+      <li>Enabled by default for all Spark pools with <strong>50% cache size</strong></li>
+      <li>Cache is per-node — multiple executors on the same node share one cache</li>
+      <li>Automatically evicts LRU (least recently used) files when full</li>
+    </ul>
+    <div class="note">You don't benefit from intelligent cache if: (1) the file exceeds cache size, or (2) workload requires large amounts of shuffle (in that case, disable cache to free up SSD).</div>
+
+    <h3>Spark Pool Sizes (Fabric)</h3>
+    <table>
+      <tr><th>Size</th><th>vCores</th></tr>
+      <tr><td>Small</td><td>4 vCores</td></tr>
+      <tr><td>Medium</td><td>8 vCores</td></tr>
+      <tr><td>Large</td><td>16 vCores</td></tr>
+      <tr><td>X-Large</td><td>32 vCores</td></tr>
+      <tr><td>XX-Large</td><td>64 vCores</td></tr>
+    </table>
+
+    <div class="source">Source: fabric-data-engineering.pdf — Apache Spark runtime versions, Fabric vs. Synapse comparison, "Intelligent cache" (MS Learn)</div>
+  </div>
+
+  <div class="card">
+    <h2>📓 Notebooks</h2>
+
+    <h3>Security Context for Notebook Execution</h3>
+    <table>
+      <tr><th>How triggered</th><th>Identity used</th></tr>
+      <tr><td>User runs interactively</td><td>User's identity</td></tr>
+      <tr><td>Scheduled run (pipeline / schedule)</td><td>Workspace identity (service principal)</td></tr>
+      <tr><td>API-triggered</td><td>Depends on caller identity or service principal</td></tr>
+    </table>
+    <div class="gotcha">RLS/CLS enforcement in Spark does NOT apply to workspace identity — it applies only to individual user identities. A scheduled pipeline running a notebook with workspace identity will NOT have RLS/CLS enforced.</div>
+
+    <h3>Notebook Features</h3>
+    <ul>
+      <li>Supports Python, Scala, Spark SQL, R</li>
+      <li>Built-in Resources: Unix-like file system for managing files</li>
+      <li>Co-pilot integration: Fix with Copilot for failed cells</li>
+      <li>Source control (Git) and deployment pipeline support</li>
+      <li>T-SQL Notebooks: Author and run T-SQL directly in notebook interface</li>
+    </ul>
+
+    <h3>MSSparkUtils (notebookutils)</h3>
+    <ul>
+      <li><code>notebookutils.credentials.getToken()</code> — get auth token</li>
+      <li><code>notebookutils.credentials.getSecret(vaultURI, secretName)</code> — get Key Vault secrets</li>
+      <li><code>notebookutils.fs</code> — file system operations</li>
+      <li><code>notebookutils.notebook.run()</code> — call another notebook</li>
+    </ul>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "How to use Microsoft Fabric notebooks", MSSparkUtils documentation (MS Learn)</div>
+  </div>
+
+  <div class="card">
+    <h2>🔧 High Concurrency Mode (Notebooks)</h2>
+    <p>Separate from Lakehouse HC mode — for notebooks/pipelines, high concurrency must be <strong>explicitly configured</strong> in workspace settings. A single Spark application hosts multiple notebook runs in isolated REPLs.</p>
+    <ul>
+      <li>Session acquisition is NOT idempotent — multiple acquire requests with the same <code>sessionTag</code> return different HC session IDs</li>
+      <li>Sessions auto-expire after inactivity timeout (configured in workspace settings)</li>
+    </ul>
+    <div class="source">Source: fabric-data-engineering.pdf — High concurrency documentation (MS Learn)</div>
+  </div>
+
+</div><!-- /s7 -->
+
+<!-- ===== S8: DEPLOYMENT PIPELINES ===== -->
+<div id="s8" class="panel">
+
+  <div class="card">
+    <h2>🔁 Deployment Pipelines &amp; Lifecycle Management</h2>
+
+    <h3>What Deployment Pipelines Do</h3>
+    <p>Deployment pipelines let you promote Fabric items (lakehouses, warehouses, notebooks, datasets, reports) across environments (Dev → Test → Prod). They are the CI/CD mechanism for Fabric items.</p>
+
+    <h3>What Gets Copied When You Deploy</h3>
+    <div class="two-col">
+      <div class="compare-box">
+        <h4>✅ IS Copied / Deployed</h4>
+        <ul>
+          <li>Lakehouse structure (Tables and Files definitions)</li>
+          <li>Notebook code</li>
+          <li>Pipeline definitions</li>
+          <li>Dataflow Gen2 definitions</li>
+          <li>Report layouts</li>
+          <li>Semantic model schema</li>
+          <li>Warehouse schema (tables, views, stored procedures)</li>
+        </ul>
+      </div>
+      <div class="compare-box">
+        <h4>❌ NOT Copied / Deployed</h4>
+        <ul>
+          <li><strong>Credentials</strong> — must be reconfigured in each environment</li>
+          <li><strong>Role assignments</strong> — security must be set up in target environment</li>
+          <li><strong>Refresh schedules</strong> — must be reconfigured</li>
+          <li><strong>Query caching settings</strong></li>
+          <li><strong>Endorsement</strong> (Certified / Promoted status)</li>
+          <li><strong>App content</strong> (published apps)</li>
+          <li><strong>Item IDs and URLs</strong> (change per deployment)</li>
+          <li><strong>OneLake shortcuts</strong> — definitions are copied but target paths may differ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gotcha">Credentials, role assignments, refresh schedules, query caching, and endorsement are <strong>never copied</strong> by deployment pipelines. You must manually configure these in each environment after deployment.</div>
+
+    <h3>Lakehouse-Specific Deployment Pipeline Behavior</h3>
+    <ul>
+      <li>SQL analytics endpoints and semantic models are <strong>provisioned as part of the lakehouse</strong> — no separate deployment step needed</li>
+      <li>OneLake shortcut <strong>definitions</strong> are stored in the lakehouse item and are copied — but the <strong>target paths</strong> may need to be updated in the new environment</li>
+      <li>Actual data in the lakehouse is <strong>NOT copied</strong> — deployment copies structure/definitions, not data</li>
+    </ul>
+
+    <h3>Git Integration</h3>
+    <ul>
+      <li>Fabric items can be connected to a Git repo (Azure DevOps or GitHub)</li>
+      <li>Supports branch-based development workflow</li>
+      <li>Items are serialized to JSON/YAML in the repo</li>
+      <li>Git integration is used for CI (source control); deployment pipelines are used for CD (promotion)</li>
+    </ul>
+    <div class="note">Deployment pipelines vs. Git integration: Use Git for version control and collaboration (CI). Use deployment pipelines to promote tested code from Dev → Test → Prod (CD).</div>
+
+    <div class="source">Source: fabric-data-engineering.pdf — "What is lifecycle management in Microsoft Fabric?", Lakehouse deployment pipeline section (MS Learn, May 2026)</div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Quick Reference: DP-700 Exam Cheat Sheet</h2>
+
+    <h3>Numbers to Memorize</h3>
+    <table>
+      <tr><th>Topic</th><th>Key Number</th></tr>
+      <tr><td>VACUUM default retention</td><td><strong>7 days (168 hours)</strong></td></tr>
+      <tr><td>Delta log retention default</td><td><strong>30 days</strong></td></tr>
+      <tr><td>V-Order write time impact</td><td><strong>~15% slower writes</strong></td></tr>
+      <tr><td>V-Order compression gain</td><td><strong>up to 50% better compression</strong></td></tr>
+      <tr><td>HC mode Lakehouse ops per session</td><td><strong>up to 5 operations</strong></td></tr>
+      <tr><td>Streaming retry policy lifetime limit</td><td><strong>90 days</strong></td></tr>
+      <tr><td>Eventstream Lakehouse max rows/file</td><td><strong>2 million rows</strong></td></tr>
+      <tr><td>Eventstream Lakehouse max duration/file</td><td><strong>2 hours</strong></td></tr>
+      <tr><td>REORG auto-trigger threshold</td><td><strong>&gt;5% of records</strong> referenced by deletion vectors</td></tr>
+      <tr><td>OneLake soft delete recovery window</td><td><strong>7 days</strong></td></tr>
+      <tr><td>Default Spark intelligent cache size</td><td><strong>50%</strong> of node SSD</td></tr>
+    </table>
+
+    <h3>True / False Quick Facts</h3>
+    <table>
+      <tr><th>Statement</th><th>True/False</th></tr>
+      <tr><td>V-Order is enabled by default in new workspaces (post April 2025)</td><td><span class="badge-red">FALSE</span></td></tr>
+      <tr><td>VACUUM improves query performance</td><td><span class="badge-red">FALSE</span> — it's storage cleanup only</td></tr>
+      <tr><td>Warehouse is a valid Eventstream destination</td><td><span class="badge-red">FALSE</span></td></tr>
+      <tr><td>Admin/Member/Contributor bypass RLS in Fabric Warehouse</td><td><span class="badge-red">FALSE</span> — only Lakehouse (OneLake security) bypasses</td></tr>
+      <tr><td>OPTIMIZE and REORG produce CDF change records</td><td><span class="badge-red">FALSE</span> — maintenance ops have dataChange=false</td></tr>
+      <tr><td>CDF backfills historical changes when enabled on existing table</td><td><span class="badge-red">FALSE</span> — captures future changes only</td></tr>
+      <tr><td>Cross-workspace CTAS is supported in Fabric Warehouse</td><td><span class="badge-red">FALSE</span></td></tr>
+      <tr><td>ADLS Gen2 shortcuts are cached by OneLake</td><td><span class="badge-red">FALSE</span> — S3/GCS/OPDG are cached, not ADLS Gen2</td></tr>
+      <tr><td>SQL analytics endpoint auto-syncs all file formats</td><td><span class="badge-red">FALSE</span> — Delta format only</td></tr>
+      <tr><td>Liquid clustered tables are clustered on every write</td><td><span class="badge-red">FALSE</span> — only when OPTIMIZE runs</td></tr>
+      <tr><td>Time travel read-only query changes the active table version</td><td><span class="badge-red">FALSE</span> — use RESTORE to change current state</td></tr>
+      <tr><td>Dataflow Gen2 staging toggle is in Options → Scale</td><td><span class="badge-red">FALSE</span> — right-click query → Enable staging</td></tr>
+    </table>
+
+    <div class="source">Source: fabric-data-engineering.pdf — compiled from all sections (MS Learn, June 2026)</div>
+  </div>
+
+</div><!-- /s8 -->
+
+</div><!-- /content-area -->
+
+<script>
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    const sel = document.getElementById('sectionSelect');
+    if (sel) sel.value = id;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+// Scroll-hide section bar
+let lastScrollY = 0;
+const bar = document.querySelector('.section-bar');
+window.addEventListener('scroll', () => {
+  const currentY = window.scrollY;
+  if (bar) {
+    if (currentY > lastScrollY && currentY > 80) bar.classList.add('hidden');
+    else bar.classList.remove('hidden');
+  }
+  lastScrollY = currentY;
+}, { passive: true });
+</script>
+</body>
+</html>
