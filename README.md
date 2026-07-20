@@ -32,6 +32,7 @@ Personal reference notes — things I learned while building, organized by topic
 - [Slash commands vs Python agents](claude-agents/slash-commands-vs-python-agents.md)
 - [Dynamic flow in production — model router + tool-use agent + collab multi-agent](claude-agents/dynamic-flow-in-production.md)
 - [Prompt caching + context tiering — cutting chat cost without losing quality](claude-agents/prompt-caching-and-context-tiering.md)
+- [Chat memory loop — cross-conversation retrieval, user learnings, cache-prefix gotcha](claude-agents/chat-memory-loop-and-cache-prefix-gotcha.md)
 
 ### Claude Code
 - [claude-code-action setup (Pro subscription, no API key)](claude-code/claude-code-action-setup.md)
