@@ -12,7 +12,10 @@
   <span style="font-size:22px">🎯</span>
   <h1>DP-700 Study Hub</h1>
   <span class="badge">RETAKE</span>
-  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span></div>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Jun 2, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span>
+    <button onclick="toggleExamDateEdit()" title="Change exam date" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:0.75;margin-left:4px">✏️</button>
+    <input type="date" id="examDateInput" style="display:none;margin-left:6px;font-size:12px;padding:2px 6px;border-radius:4px;border:1px solid var(--border)" onchange="setExamDate(this.value)">
+  </div>
 </div>
 
 <nav class="tabs tabs-rows">
@@ -302,8 +305,36 @@ function setFilter(f, btn) {
   });
 }
 
+const EXAM_DATE_KEY = 'dp700_exam_date';
+const DEFAULT_EXAM_DATE = '2026-06-02';
+
+function getExamDate() { return localStorage.getItem(EXAM_DATE_KEY) || DEFAULT_EXAM_DATE; }
+
+function setExamDate(dateStr) {
+  if (!dateStr) return;
+  localStorage.setItem(EXAM_DATE_KEY, dateStr);
+  document.getElementById('examDateInput').style.display = 'none';
+  renderExamDate();
+  updateCountdown();
+}
+
+function toggleExamDateEdit() {
+  const input = document.getElementById('examDateInput');
+  const showing = input.style.display !== 'none';
+  if (showing) { input.style.display = 'none'; return; }
+  input.value = getExamDate();
+  input.style.display = 'inline-block';
+  input.focus();
+}
+
+function renderExamDate() {
+  const d = new Date(getExamDate() + 'T09:00:00');
+  document.getElementById('examDateText').textContent =
+    d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function updateCountdown() {
-  const exam = new Date('2026-06-02T09:00:00');
+  const exam = new Date(getExamDate() + 'T09:00:00');
   const diff = exam - new Date();
   const el = document.getElementById('countdown');
   if (!el) return;
@@ -314,6 +345,7 @@ function updateCountdown() {
 }
 
 applyStateToUI(loadState());
+renderExamDate();
 updateCountdown();
 setInterval(updateCountdown, 60000);
 </script>
