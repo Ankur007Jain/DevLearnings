@@ -531,13 +531,14 @@ OPTIMIZE tablename ZORDER BY (OrderDate, Region)</div>
           <li>This is why storage grows after UPDATE — expected behavior</li>
         </ul>
 
-        <h3>OneLake Data Access Roles (OLDAR)</h3>
+        <h3>OneLake Security Roles (⚠️ renamed from "OneLake Data Access Roles"/OLDAR — now GA)</h3>
         <ul>
-          <li>Path-based access control within a lakehouse</li>
-          <li>Enable: Lakehouse → Manage → Security (OneLake Data Access)</li>
-          <li>Create roles with folder-level path rules (e.g., Files/raw/ or Tables/sales/)</li>
-          <li>Assign users/security groups to roles</li>
-          <li>More granular than workspace roles (which apply to all items)</li>
+          <li>Path/table/row/column-based access control within a lakehouse (data-plane security, distinct from workspace roles + item permissions which are control-plane)</li>
+          <li>Enable: Lakehouse → Manage → OneLake security</li>
+          <li>Create roles scoped to folders, tables, schemas — and rows/columns directly</li>
+          <li>Assign users/security groups (Entra identities) to roles</li>
+          <li>Only affects Viewer-role users or those with Read item permission — Admins/Members/Contributors already have full data access regardless</li>
+          <li>Reached General Availability around April/May 2026 — no longer preview-only</li>
         </ul>
 
         <h3>Lakehouse Access Permissions</h3>
@@ -637,7 +638,7 @@ WITH (STATE = ON)</div>
         </ul>
         <div class="code-block">GRANT SELECT ON dbo.Employee(EmployeeID, Name) TO [AuditorRole]
 -- Auditor can't SELECT Salary or Email — permission error if they try</div>
-        <div class="gotcha"><strong>⚠️ RLS vs CLS implementation contrast:</strong> RLS = CREATE SECURITY POLICY + inline TVF (complex). CLS = just GRANT SELECT ON table(columns) (simple). Both cause Direct Lake → DirectQuery fallback in Power BI. DDM is different — data is still returned, just obfuscated; use DDM when you want users to see a row exists but hide sensitive values.</div>
+        <div class="gotcha"><strong>⚠️ RLS vs CLS implementation contrast:</strong> RLS = CREATE SECURITY POLICY + inline TVF (complex). CLS = just GRANT SELECT ON table(columns) (simple). ⚠️ Corrected: these do NOT cause the same Direct Lake behavior — <strong>RLS falls back to DirectQuery</strong> (slower, still works), but <strong>CLS/OLS returns a hard ERROR instead</strong> (report visuals fail to render, no fallback). To avoid both, enforce the restriction via <strong>OneLake security</strong> roles instead of SQL-endpoint RLS/CLS — that works natively in-memory with no fallback and no error, across every compute engine. DDM is different from both — data is still returned, just obfuscated; use DDM when you want users to see a row exists but hide sensitive values.</div>
 
         <h3>Object-Level Security (OLS)</h3>
         <ul>
@@ -1153,9 +1154,9 @@ dataformat=csv
             <td style="padding:6px;border-bottom:1px solid var(--border);">ALTER TABLE…ADD MASKED WITH (FUNCTION = '...')</td>
           </tr>
           <tr style="background:var(--card);">
-            <td style="padding:6px;">OLDAR (OneLake Data Access Roles)</td>
-            <td style="padding:6px;">Folder-level path access</td>
-            <td style="padding:6px;">Lakehouse → Manage → Security → define role with path</td>
+            <td style="padding:6px;">OneLake security roles (⚠️ formerly "OLDAR"/OneLake Data Access Roles) — GA</td>
+            <td style="padding:6px;">Folder/table/row/column-level access, engine-agnostic</td>
+            <td style="padding:6px;">Lakehouse → Manage → OneLake security → define role scoped to data</td>
           </tr>
         </table>
 
@@ -1203,16 +1204,17 @@ dataformat=csv
         </ul>
         <div class="gotcha"><strong>⚠️ On-premises data source + no ExpressRoute = use SHIR.</strong> SHIR creates outbound connection — no inbound firewall changes needed.</div>
 
-        <h3>Direct Lake — Fallback to DirectQuery</h3>
+        <h3>Direct Lake — Fallback to DirectQuery (⚠️ corrected: RLS and CLS do NOT behave the same)</h3>
         <ul>
           <li>Direct Lake reads Delta table files directly — fastest mode for Power BI</li>
-          <li>Falls back to DirectQuery when: <strong>data volume exceeds the frame limit for the capacity SKU</strong></li>
-          <li>Fix: upgrade to higher SKU (F8, F16, F32…) or reduce model size</li>
+          <li>"Direct Lake on SQL" falls back to DirectQuery when: <strong>data volume exceeds the frame/guardrail limit</strong> for the capacity SKU, OR a query hits a table with <strong>RLS</strong> (or a view) at the SQL analytics endpoint</li>
+          <li>Fix for frame limits: upgrade to higher SKU (F8, F16, F32…) or reduce model size</li>
           <li>V-Order does NOT cause fallback — it affects read speed only</li>
           <li>Cross-workspace lakehouse: supported, no fallback</li>
-          <li><strong>RLS or CLS on a Warehouse</strong> causes fallback to DirectQuery to enforce security</li>
+          <li>⚠️ <strong>CLS/OLS on a Warehouse does NOT fall back to DirectQuery — it returns a hard ERROR instead</strong> (report visuals fail). Only RLS triggers the DirectQuery fallback; CLS/OLS errors out.</li>
+          <li>⚠️ <strong>"Direct Lake on OneLake" (newer/recommended mode) doesn't support DirectQuery fallback at all</strong> — any of the above triggers an error instead, not a fallback.</li>
         </ul>
-        <div class="gotcha"><strong>⚠️ Direct Lake fallback triggers:</strong> (1) Frame limit exceeded by data volume, (2) <strong>RLS</strong> applied to Warehouse, (3) <strong>CLS</strong> applied to Warehouse. <br><strong>Exam chain to memorise:</strong> Warehouse has RLS/CLS → Power BI Direct Lake query detects security policy → falls back to DirectQuery to honour it → slower but secure. V-Order, cross-workspace access, and partition count do NOT cause fallback.</div>
+        <div class="gotcha"><strong>⚠️ Direct Lake fallback triggers — corrected:</strong> (1) Frame/guardrail limit exceeded by data volume → fallback. (2) <strong>RLS</strong> on a SQL-endpoint table (or a view) → fallback to DirectQuery. (3) <strong>CLS/OLS</strong> on a SQL-endpoint table → <strong>ERROR</strong>, NOT a fallback. <br><strong>Exam chain to memorise:</strong> "RLS → fallback (still works, slower). CLS/OLS → error (breaks)." To avoid both, enforce security in <strong>OneLake security</strong> roles instead of SQL-endpoint RLS/CLS — full in-memory speed, no fallback, no error, works across every engine. V-Order, cross-workspace access, and partition count do NOT cause fallback.</div>
       </div>
     </div>
   </div>

@@ -45,6 +45,7 @@
       <div style="font-size:48px;margin-bottom:16px">✏️</div>
       <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam</h2>
       <p style="color:var(--muted);margin-bottom:24px">35 scenario-based questions · All 3 domains · Hands-on focus</p>
+      <p style="font-size:11px;color:var(--accent);margin-top:-12px;margin-bottom:24px">✅ Re-verified against Microsoft Learn 2026-09-06</p>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;">
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
           <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
@@ -120,9 +121,9 @@ const questions = [
   {
     domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Security',
     q: 'A user needs read access to only the /Tables/Sales/ folder in a lakehouse. They should not see any other tables or items in the workspace. What is the minimum configuration required?',
-    opts:['A. Assign the user a Viewer workspace role','B. Grant the user ReadData item permission on the lakehouse, then create an OneLake data access role scoped to /Tables/Sales/ only','C. Grant the user ReadAll item permission on the lakehouse','D. Configure Row-Level Security (RLS) on the Sales table'],
+    opts:['A. Assign the user a Viewer workspace role','B. Grant the user Read item permission on the lakehouse, then create an OneLake security role scoped to /Tables/Sales/ only','C. Grant the user ReadAll item permission on the lakehouse','D. Configure Row-Level Security (RLS) on the Sales table'],
     ans:1,
-    expl:'<strong>B.</strong> Two steps: (1) ReadData item permission on the specific lakehouse — this avoids giving workspace-wide access. (2) OneLake data access role scoped to /Tables/Sales/ — limits folder-level access within the lakehouse. A Viewer workspace role would expose ALL items in the workspace.'
+    expl:'<strong>B.</strong> Two steps: (1) Read item permission on the specific lakehouse — this avoids giving workspace-wide access (⚠️ corrected: OneLake security roles combine with the plain "Read" item permission, not "ReadData" — ReadData is a SQL-endpoint-only permission that only applies in delegated mode). (2) OneLake security role scoped to /Tables/Sales/ — limits folder-level access within the lakehouse. A Viewer workspace role would expose ALL items in the workspace.'
   },
   {
     domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Dynamic Data Masking',
@@ -162,9 +163,9 @@ const questions = [
   {
     domain:'d1', domainLabel:'D1 · Implement & Manage', topic:'Security Layers',
     q: 'A company has three requirements: (1) User A should access only Lakehouse X, not the warehouse. (2) User B should access only the Sales table within Lakehouse X. (3) User C should see only rows where Region = "West" in the Sales table. Which security layers (in order) meet these requirements?',
-    opts:['A. Workspace role → OneLake data access role → Row-Level Security','B. Item permission → OneLake data access role → Row-Level Security','C. OneLake data access role → Item permission → Workspace role','D. Workspace role → Item permission → Column-Level Security'],
+    opts:['A. Workspace role → OneLake security role → Row-Level Security','B. Item permission → OneLake security role → Row-Level Security','C. OneLake security role → Item permission → Workspace role','D. Workspace role → Item permission → Column-Level Security'],
     ans:1,
-    expl:'<strong>B.</strong> (1) Item permission grants access to a specific item only (Lakehouse X), not all workspace items. (2) OneLake data access role scoped to /Tables/Sales/ grants access to just that table. (3) Row-Level Security (CREATE SECURITY POLICY) filters rows by Region in the warehouse SQL endpoint.'
+    expl:'<strong>B.</strong> (1) Item permission grants access to a specific item only (Lakehouse X), not all workspace items. (2) OneLake security role scoped to /Tables/Sales/ grants access to just that table. (3) Row-Level Security (CREATE SECURITY POLICY) filters rows by Region in the warehouse SQL endpoint.'
   },
 
   // ── DOMAIN 2: Ingest & Transform ──

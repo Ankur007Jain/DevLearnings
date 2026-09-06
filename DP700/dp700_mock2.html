@@ -70,6 +70,7 @@
     <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Full Length Mock Exam</h2>
     <p style="color:var(--muted);margin-bottom:6px">65 questions · 130 minutes · All 3 domains · Hands-on + Exam-realistic</p>
     <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
+    <p style="font-size:11px;color:var(--accent);margin-top:-20px;margin-bottom:20px">✅ Re-verified against Microsoft Learn 2026-09-06</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d1);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
@@ -187,20 +188,20 @@ const questions = [
   },
 
   { domain:'d1', topic:'Spark Config — UDFs',
-    q:'Your Fabric lakehouse runs Apache Spark queries that include user-defined functions (UDFs). You notice these queries perform poorly compared to others. What should you do to improve performance while keeping UDFs?',
+    q:'⚠️ Corrected 2026-09-06 — Your Fabric lakehouse runs Apache Spark queries that include user-defined functions (UDFs). You notice these queries perform poorly compared to others. What should you do to improve performance while keeping UDFs?',
     opts:['A. Enable High Concurrency Mode to share sessions',
           'B. Enable query result caching',
-          'C. Adjust Spark configuration to use the traditional Spark engine instead of the native execution engine',
+          'C. Convert row-by-row scalar UDFs to vectorized Pandas UDFs (@pandas_udf), keeping the native execution engine enabled',
           'D. Switch to a different execution engine entirely'],
     ans:2,
-    expl:'<strong>C — Adjust Spark configuration.</strong> The native execution engine (default in Fabric) does not support UDFs. Adjusting Spark config disables the native engine for affected queries, falling back to the traditional Spark engine which fully supports UDFs. High Concurrency Mode and query caching do not fix UDF compatibility.'
+    expl:'<strong>C — Convert to vectorized (Pandas) UDFs.</strong> ⚠️ This answer reverses older guidance. As of Fabric Runtime 1.3/2.0, the <strong>native execution engine now supports and accelerates Python UDFs (scalar and vectorized) and Scala UDFs</strong> — no extra config needed. Benchmarks show vectorized (Pandas) UDFs up to ~5.76x faster under the native engine vs only ~1.08x for row-by-row scalar UDFs. Disabling the native engine used to be the fix (when it had no UDF support at all) but is now the WRONG move — it forfeits the native engine\'s other speedups for no compatibility benefit. High Concurrency Mode and query caching still don\'t address UDF performance.'
   },
 
   { domain:'d1', topic:'Workspace Settings',
     q:'A workspace admin wants to configure Apache Airflow for orchestrating external workflows within a Fabric workspace. Which workspace settings category contains this configuration?',
-    opts:['A. Spark settings','B. OneLake settings','C. Domain settings','D. Data workflows settings'],
+    opts:['A. Spark settings','B. OneLake settings','C. Domain settings','D. Apache Airflow settings (also labeled "Data workflows" in older UI)'],
     ans:3,
-    expl:'<strong>D — Data workflows settings.</strong> This category contains Airflow environment configuration and the starter pool for Data Factory. "Spark settings" is for Spark runtime, pools, and High Concurrency Mode. "Domain" is for data mesh governance.'
+    expl:'<strong>D — Apache Airflow settings.</strong> The current DP-700 skills outline (July 21, 2026) calls this bullet "Configure Apache Airflow workspace settings" — this category contains Airflow environment configuration and the starter pool. "Spark settings" is for Spark runtime, pools, and High Concurrency Mode. "Domain" is for data mesh governance.'
   },
 
   { domain:'d1', topic:'Data Mesh / Domains',
@@ -263,12 +264,12 @@ const questions = [
 
   { domain:'d1', topic:'Database Projects',
     q:'You have a Fabric data warehouse named DW1. You need to deploy schema changes to DW1 using a database project. The solution must import the existing schema of DW1 and must not affect the existing schema when the project is created. What should you do?',
-    opts:['A. Create a generic database project and export a DAC from DW1',
-          'B. Create an SDK-style project and import the schema of DW1 into the project',
+    opts:['A. Create a generic (non-SDK-style) database project and manually export a DAC from DW1',
+          'B. In VS Code, create an SDK-style project using "Create Project From Database" against DW1',
           'C. Use VS Code to create a new database and publish it to DW1',
           'D. Create a new SDK-style project and add deployment rules for DW1'],
     ans:1,
-    expl:'<strong>B — SDK-style project + import schema.</strong> SDK-style is the required project type for Fabric Warehouse. Importing the schema captures the existing DW1 structure without modifying it. DAC (Data-tier Application) is a SQL Server concept — not applicable to Fabric Warehouse.'
+    expl:'<strong>B — SDK-style project via "Create Project From Database."</strong> SDK-style is the required project type for Fabric Warehouse ("Only SDK-style projects are supported"). The "Create Project From Database" option in the VS Code SQL Database Projects extension pulls in DW1\'s existing schema without modifying it. ⚠️ Corrected: option A is wrong not because "DAC doesn\'t apply to Fabric Warehouse" — it actually DOES: SDK-style projects reference the Microsoft.SqlServer.Dacpacs.FabricDw package and Build produces a real .dacpac under the hood. What\'s wrong with A is the workflow — you don\'t manually export/import a DAC yourself; the SDK-style tooling (Build → .dacpac → Publish) handles that for you.'
   },
 
   { domain:'d1', topic:'Security — Least Privilege',
@@ -276,9 +277,9 @@ const questions = [
     opts:['A. Assign User1 the Viewer workspace role for Workspace1',
           'B. Assign User1 the Member workspace role for Workspace1',
           'C. Configure item permissions for User1 on Lakehouse1 only',
-          'D. Create an OneLake data access role and assign User1 to it'],
+          'D. Create an OneLake security role and assign User1 to it'],
     ans:2,
-    expl:'<strong>C — Item permissions on Lakehouse1.</strong> Item-level permissions grant access to only that specific item, satisfying least privilege. A Viewer workspace role grants read-only access to ALL items in the workspace — not just Lakehouse1. OneLake data access roles control table/folder-level access within a lakehouse, which is a further layer — not the first step.'
+    expl:'<strong>C — Item permissions on Lakehouse1.</strong> Item-level permissions grant access to only that specific item, satisfying least privilege. A Viewer workspace role grants read-only access to ALL items in the workspace — not just Lakehouse1. OneLake security roles control table/folder-level access within a lakehouse, which is a further layer — not the first step.'
   },
 
   { domain:'d1', topic:'Security — RLS',
@@ -684,7 +685,7 @@ const questions = [
     opts:['A. Add the analyst as a Workspace Viewer — they can only read items',
           'B. Share the specific Power BI report with the analyst using "Manage permissions" on that report only',
           'C. Add the analyst as a Workspace Member — Members have full edit rights',
-          'D. Grant the analyst ReadAll on the workspace via OneLake data access roles'],
+          'D. Grant the analyst ReadAll on the workspace via OneLake security roles'],
     ans:1,
     expl:'<strong>B — Share the specific report only.</strong> Workspace Viewer (A) grants access to ALL items in the workspace — a direct violation of least privilege. Sharing a single item (report, lakehouse, etc.) via "Manage permissions" exposes ONLY that item. This is the correct least-privilege pattern for single-item access. Workspace roles always apply to all workspace items.'
   },

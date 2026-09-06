@@ -89,7 +89,7 @@
     <option value="s5">🔒 S5: Security &amp; Governance</option>
     <option value="s6">📊 S6: Monitoring &amp; Admin</option>
   </select>
-  <span class="section-count">6 sections · MS Learn sourced · No hallucinations</span>
+  <span class="section-count">6 sections · MS Learn sourced · No hallucinations · Re-verified 2026-09-06</span>
 </div>
 
 <div class="content-area">
@@ -200,7 +200,7 @@
   </div>
 
   <div class="card">
-    <h2>OneLake Data Access Control (OneLake Security Roles)</h2>
+    <h2>OneLake Security Roles (GA — formerly called "OneLake Data Access Control")</h2>
     <p>OneLake security uses RBAC to control access to data at the <strong>folder/table level</strong>, independent of workspace roles.</p>
     <h3>Permission Types:</h3>
     <table>
@@ -210,10 +210,11 @@
     </table>
     <h3>Supported Items:</h3>
     <ul>
-      <li>Lakehouse <span class="badge badge-green">Public Preview</span></li>
-      <li>Azure Databricks Mirrored Catalog <span class="badge badge-green">Public Preview</span></li>
-      <li>Mirrored Databases <span class="badge badge-green">Public Preview</span></li>
+      <li>Lakehouse (Read/Write) <span class="badge badge-green">GA</span></li>
+      <li>Azure Databricks Mirrored Catalog (Read) <span class="badge badge-green">GA</span></li>
+      <li>Mirrored Databases (Read) <span class="badge badge-green">GA</span></li>
     </ul>
+    <div class="note"><p>⚠️ Corrected: OneLake security reached <strong>General Availability around April/May 2026</strong> — it is NOT still "Public Preview." Warehouse and SQL database are not yet in the supported-items list for native OneLake security roles as of this check.</p></div>
     <h3>Workspace Role → OneLake Access:</h3>
     <table>
       <tr><th>Role</th><th>View Files in OneLake</th><th>Write Files</th><th>Edit Security Roles</th></tr>
@@ -326,14 +327,15 @@ WITH (STATE = ON);</code></pre>
       <p>In Fabric (unlike SQL Server), <strong>dbo users and db_owner members ARE filtered by RLS</strong>. Security policies apply to ALL users. If admins need to see all rows, the policy must explicitly allow it.</p>
     </div>
     <div class="gotcha">
-      <p>Power BI in Direct Lake mode will <strong>fall back to DirectQuery</strong> when RLS is applied to the underlying warehouse. Direct Lake cannot bypass row-level security.</p>
+      <p>⚠️ <strong>More precise than "Direct Lake falls back to DirectQuery" (corrected/refined, 2026-09-06):</strong> this is true specifically for <strong>"Direct Lake on SQL endpoints."</strong> If a query hits a SQL-analytics-endpoint table with RLS (or a view) enabled, Direct Lake on SQL falls back to DirectQuery. But <strong>"Direct Lake on OneLake" does NOT support DirectQuery fallback at all</strong> — if it would need to fall back, it instead returns an <strong>error</strong> (report visuals fail to render). The way to get RLS with <em>no</em> fallback and <em>no</em> error, at full Direct Lake in-memory speed, across every compute engine (lakehouse, warehouse, semantic model) — is to define the RLS in <strong>OneLake security</strong> instead of SQL-endpoint RLS. Microsoft's own guidance: "If you must enforce data-access rules, do so in OneLake security so that the rules apply across all compute engines... achieve high query performance from the in-memory cache."</p>
     </div>
     <h3>RLS applies to:</h3>
     <ul>
       <li>✅ Warehouse</li>
       <li>✅ SQL analytics endpoint (shared warehouse or lakehouse)</li>
+      <li>✅ OneLake security (row-level, engine-agnostic — preferred for Direct Lake performance)</li>
     </ul>
-    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/row-level-security" target="_blank">Row-level security — Microsoft Learn</a></div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/row-level-security" target="_blank">Row-level security — Microsoft Learn</a> · <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-security-integration" target="_blank">Direct Lake security integration — Microsoft Learn</a></div>
   </div>
 
   <div class="card">
@@ -354,9 +356,9 @@ The SELECT permission was denied on the column 'CreditCard'...</code></pre>
       <li>Only <strong>Microsoft Entra authentication</strong> supported (no SQL auth)</li>
     </ul>
     <div class="gotcha">
-      <p>Like RLS, Power BI in Direct Lake mode will <strong>fall back to DirectQuery</strong> when column-level security is applied to the underlying warehouse.</p>
+      <p>⚠️ <strong>Corrected (2026-09-06) — this is NOT the same as RLS:</strong> When Direct Lake on SQL hits a table/column restricted by SQL analytics endpoint CLS (or object-level security), it does <strong>NOT</strong> fall back to DirectQuery — it <strong>returns an error</strong> and the report visual fails to render. Fallback-to-DirectQuery is specifically an RLS/view behavior; CLS/OLS is hard-error behavior. As with RLS, defining the restriction in <strong>OneLake security</strong> instead avoids both the error and any fallback, at full Direct Lake speed.</p>
     </div>
-    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security" target="_blank">Column-level security — Microsoft Learn</a></div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security" target="_blank">Column-level security — Microsoft Learn</a> · <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-security-integration" target="_blank">Direct Lake security integration — Microsoft Learn</a></div>
   </div>
 
   <div class="card">
@@ -986,24 +988,24 @@ WITH (
       <li>If not framed, data is loaded from OneLake on demand</li>
       <li>V-Order optimized Parquet files load significantly faster into Direct Lake</li>
     </ul>
-    <h3>Direct Lake Fallback to DirectQuery:</h3>
-    <p>Direct Lake falls back to DirectQuery (slower) when:</p>
+    <h3>Direct Lake Fallback vs Error — ⚠️ corrected, these are NOT the same behavior</h3>
+    <p>This is specifically about <strong>"Direct Lake on SQL endpoints."</strong> RLS and CLS behave differently — don't lump them together:</p>
     <table>
-      <tr><th>Fallback Trigger</th><th>Explanation</th></tr>
-      <tr><td>Row-Level Security on Warehouse</td><td>Direct Lake detects security policy → falls back to DirectQuery</td></tr>
-      <tr><td>Column-Level Security on Warehouse</td><td>Same — CLS triggers DirectQuery fallback</td></tr>
-      <tr><td>Frame limit exceeded</td><td>Model exceeds the number of rows/columns that can be framed for the SKU</td></tr>
+      <tr><th>Trigger</th><th>What actually happens</th></tr>
+      <tr><td>Row-Level Security (or a view) on the SQL analytics endpoint</td><td><strong>Falls back to DirectQuery</strong> (slower, but the report still renders)</td></tr>
+      <tr><td>Column-Level Security / Object-Level Security on the SQL analytics endpoint</td><td>❌ Does <strong>NOT</strong> fall back — <strong>returns an error</strong>, report visuals fail to render entirely</td></tr>
+      <tr><td>Frame/guardrail limit exceeded</td><td>Model exceeds the rows/columns/capacity guardrails for the SKU → falls back to DirectQuery (or errors, on Direct Lake on OneLake — see below)</td></tr>
       <tr><td>Unsupported data types</td><td>Some complex types force DirectQuery</td></tr>
     </table>
     <div class="gotcha">
-      <p>Direct Lake falls back to DirectQuery when RLS or CLS is applied to the <strong>Warehouse</strong> source. If you need Direct Lake performance with security, use OneLake security roles on a Lakehouse instead.</p>
+      <p>⚠️ <strong>"Direct Lake on OneLake" (the newer/recommended mode) does NOT support DirectQuery fallback at all</strong> — for any of the above triggers, it returns an error instead of degrading to DirectQuery. To get RLS/CLS/OLS enforcement with <strong>zero fallback and zero error</strong>, at full in-memory Direct Lake speed, across every compute engine — define the security in <strong>OneLake security roles</strong> (not SQL-endpoint RLS/CLS). This is Microsoft's own stated best practice.</p>
     </div>
     <h3>Frame Limits by SKU:</h3>
     <ul>
       <li>Frame limits vary by capacity SKU — larger SKUs support more rows/columns in memory</li>
-      <li>When limits are exceeded, the query automatically falls back to DirectQuery</li>
+      <li>When limits are exceeded on Direct Lake on SQL, the query falls back to DirectQuery; on Direct Lake on OneLake, it errors instead</li>
     </ul>
-    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview" target="_blank">Direct Lake overview — Microsoft Learn</a></div>
+    <div class="source"><strong>Source:</strong> <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview" target="_blank">Direct Lake overview — Microsoft Learn</a> · <a href="https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-security-integration" target="_blank">Direct Lake security integration — Microsoft Learn</a></div>
   </div>
 
   <div class="card">

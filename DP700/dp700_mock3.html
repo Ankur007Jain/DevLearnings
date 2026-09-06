@@ -88,6 +88,7 @@
         <div style="font-size:11px;color:var(--muted)">30–35%</div>
       </div>
     </div>
+    <p style="font-size:11px;color:var(--accent);margin-bottom:12px">✅ Re-verified against Microsoft Learn 2026-09-06 — held up well; only OneLake security role naming needed updating.</p>
     <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:24px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <strong>📡 New topics covered (not in Mock 1 or 2):</strong> Periodic snapshot facts, Fabric Monitor, Pipeline-calls-pipeline orchestration, OneLake availability for Eventhouse, writeHeavy Spark profile, Deployment metadata-only, Warehouse → Git as SQL DB project, Eventstream processor, On-premises data gateway, Mirroring, Domain assignment, Direct Lake, Endorsed items.
     </div>
@@ -227,7 +228,7 @@ const questions = [
   { domain:'d1', topic:'Domain Assignment — Effect',
     q:'You assign a Fabric workspace to a domain. What does this domain assignment directly change?',
     opts:['A. It grants Viewer access to all users in the Microsoft Entra tenant',
-          'B. It automatically enables OneLake data access roles for the workspace',
+          'B. It automatically enables OneLake security roles for the workspace',
           'C. It changes organisation and discovery metadata — content is discoverable under the domain in OneLake catalog, but no access permissions change',
           'D. It converts the workspace into a deployment pipeline stage for the domain'],
     ans:2,
@@ -259,7 +260,7 @@ const questions = [
     opts:['A. Add the DataAnalysts group to the Viewer role on WorkspaceA — Viewers cannot write, only read',
           'B. Share Lakehouse2 with the DataAnalysts group and grant the "Read all SQL Endpoint data" permission only',
           'C. Grant DataAnalysts a Workspace Contributor role — then configure RLS to block non-gold tables',
-          'D. Share both lakehouses with DataAnalysts and use OneLake data access roles to restrict to /Tables/Gold/ only'],
+          'D. Share both lakehouses with DataAnalysts and use OneLake security roles to restrict to /Tables/Gold/ only'],
     ans:1,
     expl:'<strong>B — Share Lakehouse2 only + Read all SQL Endpoint data.</strong> This is from a real DP-700 case study (Contoso). Workspace Viewer (A) grants access to ALL items in the workspace — including Lakehouse1 (bronze/silver). Sharing specifically Lakehouse2 (gold) via item-level permission, with SQL Endpoint read access, grants exactly what\'s needed. The DataAnalysts group never sees Lakehouse1 at all.'
   },
@@ -329,7 +330,7 @@ const questions = [
   { domain:'d1', topic:'Workspace Logging',
     q:'A Fabric workspace admin wants to track all read and write operations performed on items in the workspace — including who accessed what and when — for compliance auditing. What Fabric feature should they implement?',
     opts:['A. Sensitivity labels — automatically log access to labeled items',
-          'B. OneLake data access roles — generate access logs for each role',
+          'B. OneLake security roles — generate access logs for each role',
           'C. Workspace logging — captures workspace item activity events and stores them in a designated log destination',
           'D. queryinsights schema — logs all SQL operations in the workspace warehouse'],
     ans:2,
@@ -410,12 +411,12 @@ const questions = [
 
   { domain:'d2', topic:'OneLake Availability — Eventhouse',
     q:'Users report that from OneLake file explorer they cannot see data from an eventhouse. You enable "OneLake availability" for the eventhouse. What data will be copied to OneLake?',
-    opts:['A. Only data added to new databases created after enabling the setting',
+    opts:['A. By default, only NEW data ingested after enabling — existing data is included only if you separately choose "Apply to existing tables"',
           'B. Only existing data already in the eventhouse at the time of enabling',
           'C. No data — OneLake availability is a discovery feature only, not a data export feature',
-          'D. Both existing data in the eventhouse AND all new data going forward'],
-    ans:3,
-    expl:'<strong>D — Both existing AND new data.</strong> When you enable OneLake availability for an eventhouse, the process exports ALL existing data from the eventhouse into OneLake (as Delta Parquet files), and subsequently any new data ingested is continuously exported going forward. This is a two-phase process: bulk historical export first, then incremental ongoing export. Only enabling it for NEW databases (A) is incorrect — it applies to all databases in the eventhouse.'
+          'D. Both existing data in the eventhouse AND all new data going forward, always automatic'],
+    ans:0,
+    expl:'<strong>A — corrected 2026-09-06.</strong> ⚠️ By default, enabling OneLake availability syncs only NEW data ingested going forward. Existing data is included only if you explicitly select the <strong>"Apply to existing tables"</strong> option when turning the feature on. Data lands directly in Delta Lake format (GA), readable by Spark with no separate conversion step. There\'s also a configurable latency target (default up to a few hours, checked via <code>.show table mirroring operations</code>) before newly ingested data appears in OneLake.'
   },
 
   { domain:'d2', topic:'Incremental Load — Orchestration',

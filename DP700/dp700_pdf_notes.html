@@ -91,7 +91,7 @@
     <option value="s7">🚀 S7: Spark &amp; Notebooks</option>
     <option value="s8">🔁 S8: Deployment Pipelines &amp; Lifecycle</option>
   </select>
-  <span class="section-count">8 sections · Extracted from official MS Learn PDF</span>
+  <span class="section-count">8 sections · Extracted from official MS Learn PDF · Re-verified 2026-09-06</span>
 </div>
 
 <div class="content-area">
@@ -667,12 +667,13 @@ JOIN SalesLakehouse.dbo.dim_customer c ON s.customer_id = c.id</code></pre>
     </ul>
     <table>
       <tr><th>Condition</th><th>Result</th></tr>
-      <tr><td>RLS applied on a Warehouse data source</td><td>❌ Fallback to DirectQuery</td></tr>
-      <tr><td>CLS (Column-Level Security) on Warehouse</td><td>❌ Fallback to DirectQuery</td></tr>
-      <tr><td>Frame limit exceeded (too many rows/columns)</td><td>❌ Fallback to DirectQuery</td></tr>
+      <tr><td>RLS (or a view) applied on a SQL-analytics-endpoint data source</td><td>❌ Fallback to DirectQuery (slower, still works)</td></tr>
+      <tr><td>CLS / Object-Level Security on the SQL analytics endpoint</td><td>⚠️ Corrected: <strong>NOT</strong> a fallback — returns a hard <strong>ERROR</strong>, report visuals fail to render</td></tr>
+      <tr><td>Frame/guardrail limit exceeded (too many rows/columns)</td><td>❌ Fallback to DirectQuery (on "Direct Lake on OneLake," this errors instead of falling back)</td></tr>
       <tr><td>Unsupported DAX function</td><td>❌ Fallback to DirectQuery</td></tr>
     </table>
     <div class="note">Direct Lake mode reads from OneLake files directly. It can be used with both Lakehouse and Warehouse Delta tables as the source.</div>
+    <div class="gotcha">⚠️ Corrected: RLS and CLS do NOT behave the same in Direct Lake. RLS → DirectQuery fallback. CLS/OLS → hard error, no fallback. Also: this fallback behavior is specific to <strong>"Direct Lake on SQL"</strong> — "Direct Lake on OneLake" (the newer, recommended mode) doesn't support DirectQuery fallback at all; it errors instead for any of these triggers. Enforcing security via <strong>OneLake security roles</strong> instead of SQL-endpoint RLS/CLS avoids both the error and the fallback, at full in-memory speed, across every compute engine.</div>
 
     <div class="source">Source: fabric-data-engineering.pdf — "Lakehouse vs. data warehouse", "Direct Lake", Warehouse documentation (MS Learn)</div>
   </div>
@@ -755,8 +756,8 @@ df = spark.read.table("lakehouse.secured_table")</code></pre>
     <h3>Service Principals and RLS/CLS</h3>
     <div class="gotcha">RLS and CLS in Spark do NOT support service principals — only user identities are evaluated. Running notebooks with workspace identity does NOT enforce RLS/CLS for that workspace identity.</div>
 
-    <h3>OneLake Data Access Roles (Preview)</h3>
-    <p>Configures access to specific <strong>folders</strong> in OneLake (more granular than workspace roles). Lets you grant read access to a subset of the data in a lakehouse without granting full workspace access.</p>
+    <h3>OneLake Security Roles (⚠️ renamed from "OneLake Data Access Roles" — GA, not Preview)</h3>
+    <p>Configures access to specific <strong>folders, tables, rows, and columns</strong> in OneLake (more granular than workspace roles). Lets you grant read access to a subset of the data in a lakehouse without granting full workspace access. Reached General Availability around April/May 2026.</p>
 
     <div class="source">Source: fabric-data-engineering.pdf — "Spark support for OneLake security (RLS and CLS)", "Workspace roles in Lakehouse" (MS Learn, May 2026)</div>
   </div>
@@ -901,7 +902,7 @@ rawData = (
       <tr><td>Runtime 1.1</td><td>Spark 3.3</td><td>Delta 2.2</td></tr>
       <tr><td>Runtime 1.2</td><td>Spark 3.4</td><td>Delta 2.4</td></tr>
       <tr><td>Runtime 1.3</td><td>Spark 3.5</td><td>Delta 3.1</td></tr>
-      <tr><td>Runtime 2.0</td><td>Spark 3.5+</td><td>Delta 4.1</td></tr>
+      <tr><td>Runtime 2.0</td><td>⚠️ Corrected: Spark <strong>4.1</strong> (not "3.5+")</td><td>Delta 4.1</td></tr>
     </table>
 
     <h3>Key Fabric Spark Defaults vs. Azure Synapse</h3>

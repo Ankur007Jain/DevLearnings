@@ -71,6 +71,7 @@
     <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam 5</h2>
     <p style="color:var(--muted);margin-bottom:6px">34 questions · 70 minutes · DP-700 Practice Test</p>
     <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
+    <p style="font-size:11px;color:var(--accent);margin-top:-20px;margin-bottom:20px">✅ Re-verified against Microsoft Learn 2026-09-06 — corrected: the Capacity Metrics app has 11 pages, not "exactly two tabs"; OneLake security role naming updated.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d1);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
@@ -89,7 +90,7 @@
       </div>
     </div>
     <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:24px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
-      <strong>🆕 Topics in this mock:</strong> Dataflow Gen2 destinations, Notebook pipeline parameters, Spark streaming (readStream), Shortcut caching, SCD types, Capacity Metrics app tabs, Minimum roles, Fast Copy path, V-Order trade-offs, Merge query types, KQL continuous export, Git commit in Fabric, Workspace logging, Delta VACUUM vs OPTIMIZE, RLS/OLS/CLS in Warehouse, Deployment pipeline credentials, OneLake Data Access Roles (folder-level), Certified endorsement, KQL syntax (ago, summarize), Cron expressions, Eventstream filter processor, SHIR vs Azure IR, Direct Lake fallback, Sensitivity label inheritance.
+      <strong>🆕 Topics in this mock:</strong> Dataflow Gen2 destinations, Notebook pipeline parameters, Spark streaming (readStream), Shortcut caching, SCD types, Capacity Metrics app tabs, Minimum roles, Fast Copy path, V-Order trade-offs, Merge query types, KQL continuous export, Git commit in Fabric, Workspace logging, Delta VACUUM vs OPTIMIZE, RLS/OLS/CLS in Warehouse, Deployment pipeline credentials, OneLake security roles (folder-level), Certified endorsement, KQL syntax (ago, summarize), Cron expressions, Eventstream filter processor, SHIR vs Azure IR, Direct Lake fallback, Sensitivity label inheritance.
     </div>
     <button class="btn btn-primary" onclick="startExam()" style="font-size:15px;padding:14px 36px;background:#059669;border-color:#059669;">Start Exam →</button>
   </div>
@@ -229,11 +230,11 @@ const questions = [
     expl:'<strong>B — SCD Type 2.</strong> Type 2 adds a new row for each change, with Start Date and End Date (and often an IsCurrent flag) to track the full history. You can query any point-in-time state. Type 1 overwrites the existing row (no history). Type 3 adds a "previous value" column (only one prior version). Type 4 uses a separate history table.'
   },
 
-  { domain:'d3', topic:'Capacity Metrics App — Two Tabs',
-    q:'I am using the "Microsoft Fabric Capacity Metrics" app. Please select TWO tabs which are included in this app.',
+  { domain:'d3', topic:'Capacity Metrics App — Pages',
+    q:'⚠️ Corrected 2026-09-06 — I am using the "Microsoft Fabric Capacity Metrics" app. Which of these ARE pages included in this app? (Select all that apply)',
     opts:['A. Compute','B. Storage','C. Networking','D. Workspaces'],
     ans:[0,1],
-    expl:'<strong>A &amp; B — Compute and Storage.</strong> The Fabric Capacity Metrics app has exactly two main tabs: <strong>Compute</strong> (showing CU usage over time, throttling, smoothing, and per-item breakdowns) and <strong>Storage</strong> (showing OneLake storage consumption). Networking and Workspaces are not tabs in this app. Know these two tabs for the exam.'
+    expl:'<strong>A &amp; B — Compute and Storage are real pages, but this is NOT an exhaustive list — do not memorize "exactly two tabs."</strong> ⚠️ The old version of this question asserted the app has "exactly two main tabs." That is wrong. The Capacity Metrics app is a multi-page app with (at least): <strong>Health, Compute, Storage, Timepoint, Timepoint summary, Timepoint item detail, Autoscale compute for Spark, Autoscale compute for Spark detail, Plan capacity, Monitor paused capacity, and Calculations</strong> — 11 pages, not 2. Compute shows a 14-day view of CU usage/throttling/utilization; Storage shows 30-day OneLake storage usage. Networking and Workspaces are not app pages. If an exam option says "the app has exactly two tabs," that option is wrong.'
   },
 
   { domain:'d1', topic:'Minimum Role — Run Notebook',
@@ -355,12 +356,12 @@ const questions = [
     q:'I want to implement Row-Level Security (RLS) in a Fabric Data Warehouse. Which approach is correct?',
     opts:[
       'A. Create a security policy with a filter predicate function in T-SQL',
-      'B. Use OneLake Data Access Roles on the warehouse Delta files',
+      'B. Use OneLake security roles on the warehouse Delta files',
       'C. Apply a sensitivity label to restrict row access',
       'D. Configure RLS in the Power BI semantic model only'
     ],
     ans:[0],
-    expl:'<strong>A — T-SQL security policy with filter predicate.</strong> RLS in Fabric Warehouse uses standard T-SQL: (1) Create an inline table-valued function as the filter predicate, (2) CREATE SECURITY POLICY binding it to the table with ADD FILTER PREDICATE. This is identical to SQL Server RLS syntax. OneLake Data Access Roles (OLDAR) provide folder/path-based access — not row-level filtering by query context. Sensitivity labels are for classification/protection, not row filtering.'
+    expl:'<strong>A — T-SQL security policy with filter predicate.</strong> RLS in Fabric Warehouse uses standard T-SQL: (1) Create an inline table-valued function as the filter predicate, (2) CREATE SECURITY POLICY binding it to the table with ADD FILTER PREDICATE. This is identical to SQL Server RLS syntax. OneLake security roles (formerly "OLDAR") provide folder/path-based access — not row-level filtering by query context. Sensitivity labels are for classification/protection, not row filtering.'
   },
 
   { domain:'d1', topic:'Deployment Pipeline — Credentials Not Copied',
@@ -423,16 +424,16 @@ const questions = [
     expl:'<strong>C — OLS = simply do NOT grant SELECT permission.</strong> Object-Level Security in Fabric Warehouse is implemented by the principle of least privilege: grant only what is needed. If you don\'t GRANT SELECT on a table to a role, users in that role cannot see or query it. This is different from RLS (row filtering via filter predicate) and CLS (column-level GRANTs). DENY is more explicit but OLS relies on the absence of GRANTs. SECURITY POLICY with BLOCK predicate is for blocking INSERT/UPDATE/DELETE via RLS.'
   },
 
-  { domain:'d1', topic:'OneLake Data Access Roles — Folder-Level',
+  { domain:'d1', topic:'OneLake security roles — Folder-Level',
     q:'I have a Fabric Lakehouse. I want to give a user access to only a specific folder within the Files section of the lakehouse (not the Tables section). Which feature allows folder-level access control?',
     opts:[
-      'A. OneLake Data Access Roles with path-based folder rules',
+      'A. OneLake security roles with path-based folder rules',
       'B. Workspace Viewer role scoped to the folder',
       'C. Sensitivity labels applied to the folder',
       'D. Item permissions with ReadAll scoped to the folder path'
     ],
     ans:[0],
-    expl:'<strong>A — OneLake Data Access Roles (OLDAR) with path-based rules.</strong> OLDAR supports path-based access control: you can define rules that grant access to specific folders (e.g., Files/raw/ or Files/processed/) within a lakehouse. This allows fine-grained, folder-level access without giving access to the entire lakehouse. Workspace roles (including Viewer) apply to ALL workspace items, not specific folders. ReadAll in item permissions grants access to ALL OneLake files in the lakehouse — not folder-scoped.'
+    expl:'<strong>A — OneLake security roles (formerly "OLDAR") with path-based rules.</strong> OLDAR supports path-based access control: you can define rules that grant access to specific folders (e.g., Files/raw/ or Files/processed/) within a lakehouse. This allows fine-grained, folder-level access without giving access to the entire lakehouse. Workspace roles (including Viewer) apply to ALL workspace items, not specific folders. ReadAll in item permissions grants access to ALL OneLake files in the lakehouse — not folder-scoped.'
   },
 
   { domain:'d1', topic:'Certified Endorsement — Who Can Certify',

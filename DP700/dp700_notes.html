@@ -14,6 +14,7 @@
   <span class="badge">RETAKE</span>
   <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
 </div>
+<div style="background:#ecfeff;border-bottom:2px solid #a5f3fc;padding:8px 24px;font-size:12.5px;color:#0e7490">✅ Fact-checked against live Microsoft Learn docs on 2026-09-06 (skills outline dated July 21, 2026). Major corrections: Native Execution Engine now supports/accelerates UDFs (old "disable native engine" advice reversed); High Concurrency Mode confirmed single-user (this file had it right); OneLake security roles renamed from "data access roles"; shortcut write-through and shortcut-type list corrected/expanded; database projects clarified (SDK-style required, DAC/dacpac IS used under the hood); "Query acceleration" is the official RTI term; V-Order default nuanced by workspace age.</div>
 <nav class="tabs tabs-rows">
   <div class="nav-row">
     <span class="nav-row-label">📚 Study</span>
@@ -61,17 +62,17 @@
           <tr><td><strong>Spark</strong></td><td>Default pool, runtime version, autoscale, high concurrency mode</td><td>"optimize notebook", "Spark pool", "configure runtime"</td></tr>
           <tr><td><strong>Domain</strong></td><td>Assign workspace to a Fabric domain, inherit domain governance</td><td>"data mesh", "group by business unit", "domain governance"</td></tr>
           <tr><td><strong>OneLake</strong></td><td>Managed/unmanaged items, storage location, cross-workspace access</td><td>"control where data is stored", "restrict item creation"</td></tr>
-          <tr><td><strong>Data Workflows</strong></td><td>Apache Airflow environment, starter pool for Data Factory</td><td>"Airflow", "orchestrate external workflows", "starter pool"</td></tr>
+          <tr><td><strong>Apache Airflow</strong> (also labeled "Data Workflows" in some UI versions)</td><td>Apache Airflow environment, starter pool for running Airflow DAGs as a Fabric item</td><td>"Airflow", "orchestrate external workflows", "starter pool"</td></tr>
         </table>
-        <div class="gotcha"><strong>⚠️ Gotcha</strong> "Data workflows settings" = Airflow configuration, NOT generic pipeline settings. If the question mentions Airflow or external workflow orchestration → Data Workflows settings.</div>
+        <div class="gotcha"><strong>⚠️ Gotcha</strong> The official DP-700 skills outline (as of July 21, 2026) calls this bullet "Configure Apache Airflow workspace settings" — if you see "Data workflows" in older material, it's the same setting. If the question mentions Airflow or external workflow orchestration → this settings tab.</div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Explore All Workspace Setting Categories</h4>
           <ol>
             <li>Open your Fabric Trial workspace → click the <strong>gear icon (Settings)</strong> in the top right</li>
-            <li>Click through all tabs: <strong>Spark</strong>, <strong>Domain</strong>, <strong>OneLake</strong>, <strong>Data workflows</strong></li>
+            <li>Click through all tabs: <strong>Spark</strong>, <strong>Domain</strong>, <strong>OneLake</strong>, <strong>Apache Airflow</strong></li>
             <li>In Spark settings: note the default runtime version and toggle "High concurrency mode" — see where it lives</li>
             <li>In OneLake settings: find the shortcut cache toggle and note which shortcut types it applies to</li>
-            <li>In Data workflows: observe the Airflow environment config — this is only place to configure Airflow starter pool</li>
+            <li>In the Airflow tab: observe the Airflow environment config — this is the only place to configure the Airflow starter pool</li>
             <li><strong>Exam drill:</strong> For each tab, ask yourself: "which exam trigger words map here?"</li>
           </ol>
         </div>
@@ -96,28 +97,27 @@
         <div class="gotcha"><strong>⚠️ Gotcha</strong> Session sharing requires: same user + same default Lakehouse + same Spark compute settings. If ANY differs, a separate Spark session starts.</div>
 
         <h4>Native Execution Engine vs Traditional Spark Engine</h4>
+        <div class="gotcha"><strong>⚠️ Corrected (2026-09-06): this table below was wrong on UDF support.</strong> As of Fabric Runtime 1.3/2.0, the <strong>native execution engine now supports and accelerates Python UDFs (scalar and vectorized/pandas) and Scala UDFs</strong>, plus complex types (array/map/struct) — with <strong>no extra configuration</strong> beyond having the native engine enabled. This reverses older guidance that said NEE couldn't run UDFs at all.</div>
         <table class="dt">
           <tr><th>Engine</th><th>Performance</th><th>UDF Support</th><th>When Used</th></tr>
-          <tr><td><strong>Native Execution Engine</strong> (default)</td><td>Faster — vectorized, columnar processing</td><td class="red">❌ No UDF support</td><td>Standard SQL / DataFrame ops — OPTIMIZE, V-Order, general queries</td></tr>
-          <tr><td><strong>Traditional Spark Engine</strong></td><td>Slower — row-based processing</td><td class="green">✅ Full UDF support</td><td>When UDFs are required — triggered via Spark config adjustment</td></tr>
+          <tr><td><strong>Native Execution Engine</strong> (default, GA)</td><td>Faster — vectorized, columnar C++ processing</td><td class="green">✅ Supports scalar + vectorized (pandas) Python UDFs, and Scala UDFs — accelerated automatically, no config needed</td><td>Default choice for almost everything, including UDF-heavy workloads now</td></tr>
+          <tr><td><strong>Traditional (JVM) Spark Engine</strong></td><td>Slower for the operations NEE accelerates</td><td class="green">✅ Full support (always was)</td><td>Fallback path — used automatically for the specific operations NEE doesn't cover (e.g., some Python libraries needing arbitrary object serialization, deeply nested complex types, or when ANSI mode is required — NEE doesn't support ANSI mode)</td></tr>
         </table>
-        <div class="priority-box"><strong>🚨 Exam Gotcha — UDFs + Poor Performance → Adjust Spark Configuration</strong>
-          When queries using <strong>UDFs (User-Defined Functions)</strong> perform poorly in a Fabric Lakehouse, the root cause is that the <strong>native execution engine does not support UDFs</strong>. The fix is to <strong>adjust Spark configuration</strong> to disable the native engine for those queries, falling back to the traditional Spark engine.<br><br>
-          <strong>Why the other options are wrong:</strong><br>
-          • <strong>High Concurrency Mode</strong> — reduces startup time / session sharing. Does NOT help UDF performance.<br>
-          • <strong>Query caching</strong> — caches results, but doesn't fix UDF compatibility with the native engine.<br>
-          • <strong>Switch execution engine</strong> — vague/wrong answer. The fix is Spark <em>config</em>, not swapping engines entirely.<br><br>
-          <strong>Trigger words:</strong> "UDF", "user-defined function", "poor performance", "lakehouse queries slow" → think native engine compatibility → adjust Spark config.
+        <div class="priority-box"><strong>🚨 Exam Gotcha — UDFs + Poor Performance → convert scalar UDFs to vectorized (Pandas) UDFs</strong>
+          If UDF-based queries in a Fabric Lakehouse are underperforming and the native execution engine is enabled, the biggest lever is the UDF's <em>type</em>, not disabling the engine: benchmarks show <strong>vectorized (Pandas) UDFs up to ~5.76x faster</strong> under NEE vs. only ~1.08x for row-by-row scalar UDFs. So: rewrite a slow row-by-row <code>udf()</code> as a <code>@pandas_udf</code> where possible, and make sure the native execution engine is actually enabled (it's on by default on Runtime 1.3/2.0, but can be toggled off at the environment/notebook/Spark-job-definition level).<br><br>
+          <strong>Why "disable the native engine" is now the wrong answer:</strong> that was the correct fix under the old (pre-UDF-support) behavior, but current Fabric accelerates UDFs *inside* the native engine — turning it off would remove that speedup, not add it.<br><br>
+          <strong>Known remaining fallback cases</strong> (where NEE still can't help, so the traditional engine kicks in automatically): Python libraries needing arbitrary object serialization, deeply nested complex types (e.g. arrays of maps of structs) for certain ops, and any query requiring ANSI mode.<br><br>
+          <strong>Trigger words:</strong> "UDF", "user-defined function", "poor performance" → think vectorized (Pandas) UDF conversion first, not engine-switching.
         </div>
         <div class="qa">
           <div class="qa-q">Q: A data engineer runs 5 notebooks at once. Spark takes 3 min to start each. What to enable?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
-          <div class="qa-answer"><strong>High Concurrency Mode.</strong> Shares the existing session — no new startup per notebook. NOT autoscale (that scales nodes, not sessions).</div>
+          <div class="qa-answer"><strong>High Concurrency Mode.</strong> Shares the existing session — no new startup per notebook. NOT autoscale (that scales nodes, not sessions). Note: this is scoped to ONE user's own notebooks — it does not share a session across different users.</div>
         </div>
         <div class="qa">
           <div class="qa-q">Q: Queries using UDFs in a Fabric Lakehouse are underperforming. You must keep using UDFs. What should you do?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
-          <div class="qa-answer"><strong>Adjust Spark configuration.</strong> The native execution engine (default) does not support UDFs. Adjusting Spark config disables the native engine for those queries and falls back to the traditional Spark engine, which supports UDFs fully. High Concurrency Mode and query caching do not address UDF compatibility.</div>
+          <div class="qa-answer">⚠️ <strong>Corrected answer:</strong> Keep the native execution engine enabled (it now accelerates UDFs) and convert row-by-row scalar UDFs to <strong>vectorized (Pandas) UDFs</strong> (<code>@pandas_udf</code>) — this gives the largest measured speedup (up to ~5.76x vs ~1.08x for scalar). Disabling the native engine to fall back to the traditional engine is no longer the right move now that NEE supports UDFs natively — it would give up NEE's other performance benefits for no UDF-compatibility reason.</div>
         </div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Enable &amp; Test High Concurrency Mode</h4>
@@ -154,8 +154,13 @@
           <tr><td>Amazon S3</td><td>AWS S3 bucket</td><td>No</td><td>Multi-cloud, data stays in AWS</td></tr>
           <tr><td>Google Cloud Storage</td><td>GCS bucket</td><td>No</td><td>Data in GCP</td></tr>
           <tr><td>Azure Blob Storage</td><td>Azure Blob</td><td>No</td><td>Legacy Blob storage in Azure</td></tr>
-          <tr><td>Dataverse</td><td>Microsoft Dataverse</td><td>No</td><td>Power Platform data in Fabric</td></tr>
+          <tr><td>Dataverse</td><td>Microsoft Dataverse</td><td>No (read-only)</td><td>Power Platform data in Fabric</td></tr>
+          <tr><td>Amazon S3-compatible</td><td>Any S3-compatible object store</td><td>No</td><td>Non-AWS object storage that speaks the S3 API</td></tr>
+          <tr><td>Iceberg</td><td>Apache Iceberg tables</td><td>No</td><td>Read Iceberg-format tables via OneLake's Iceberg-to-Delta translation</td></tr>
+          <tr><td>OneDrive / SharePoint</td><td>OneDrive or SharePoint document libraries</td><td>No</td><td>Office/SharePoint-hosted files</td></tr>
+          <tr><td>On-premises (via gateway)</td><td>Any on-prem/network-restricted source</td><td>Varies</td><td>Data behind a firewall, reached through the on-premises data gateway (OPDG)</td></tr>
         </table>
+        <div class="gotcha"><strong>⚠️ Write-through correction</strong> Shortcuts are NOT all read-only. <strong>Internal OneLake shortcuts and ADLS Gen2 shortcuts support write-through</strong> to the target (if you have write permission there). Only <strong>Amazon S3, Google Cloud Storage, and Dataverse</strong> shortcuts are strictly read-only. Also: internal shortcuts aren't limited to "another Fabric item" generically — they can specifically target lakehouses, warehouses, KQL databases, SQL databases, semantic models, mirrored databases, and mirrored Azure Databricks catalogs.</div>
         <div class="priority-box"><strong>🚨 Shortcut Caching — Tested!</strong>
           Caching is supported ONLY for: <strong>GCS, S3, S3-compatible, and on-premises data gateway</strong> shortcuts. <span class="red">ADLS Gen2 shortcuts do NOT support caching.</span><br>
           Enable in: Workspace Settings → OneLake → toggle Cache ON → set retention (1–28 days).<br>
@@ -253,36 +258,40 @@
       </div>
       <div class="acc-body">
         <table class="dt">
-          <tr><th>Syncs to Git ✅</th><th>Does NOT Sync ❌</th></tr>
-          <tr><td>Notebooks, Pipelines, Dataflows Gen2</td><td>Data in tables</td></tr>
-          <tr><td>Lakehouse metadata, Warehouse metadata</td><td>Pipeline run history</td></tr>
-          <tr><td>Reports, Semantic Models</td><td>Workspace settings</td></tr>
-          <tr><td>Eventhouses, KQL Databases, KQL Querysets</td><td>Credentials / secrets</td></tr>
+          <tr><th>Syncs to Git ✅ (examples — list is much bigger)</th><th>Does NOT Sync ❌</th></tr>
+          <tr><td>Notebooks, Pipelines, Dataflows Gen2, Environment, GraphQL, Spark Job Definitions, User Data Functions</td><td>Data in tables</td></tr>
+          <tr><td>Lakehouse, Warehouse, SQL database, Mirrored database</td><td>Pipeline run history</td></tr>
+          <tr><td>Reports, Semantic Models (mostly preview), Variable Library</td><td>Workspace settings</td></tr>
+          <tr><td>Eventhouse, KQL Database, KQL Queryset, Eventstream, Activator, Real-Time Dashboard, Maps</td><td>Credentials / secrets</td></tr>
+          <tr><td>Copy Job, Airflow (preview), dbt Job (preview), Mount ADF</td><td>App content/settings</td></tr>
         </table>
+        <div class="gotcha"><strong>⚠️ Don't memorize a short list</strong> The supported-items list has grown to cover nearly every Fabric workload (Data Engineering, Data Factory, Real-Time Intelligence, Data Warehouse, Power BI, Database items, and more). Some newer items are still preview-only (e.g., Airflow, dbt Job, Cosmos database, most Power BI items). If an exam question asks "does X sync to Git," lean toward "yes, possibly preview" rather than assuming a short fixed list.</div>
         <div class="gotcha"><strong>⚠️ Key Rules</strong><br>
           • Changes in Fabric UI do NOT auto-sync to Git — you must explicitly commit.<br>
           • Only workspace <strong>Admin or Member</strong> can commit to Git.<br>
           • Workspace roles still control Git commit rights — Git doesn't bypass Fabric security.
         </div>
-        <h4>Database Projects</h4>
-        <p>Schema-as-code for Fabric Warehouse. Define your warehouse schema (tables, views, stored procedures) as SQL scripts in a Git repo. Publish the project to apply schema changes to the warehouse. Incremental — applies only changes, no drop/recreate.</p>
-        <div class="priority-box"><strong>🚨 Exam Gotcha — SDK-Style vs DAC vs Generic Database Project</strong>
+        <h4>Database Projects ⚠️ (still preview as of Sep 2026)</h4>
+        <p>Schema-as-code for Fabric Warehouse, built with <strong>VS Code</strong> + the <strong>SQL Database Projects</strong> and <strong>SQL Server (mssql)</strong> extensions. Define your warehouse schema (tables, views, stored procedures, functions) as `.sql` files in the project, put the project under Git, then <strong>Publish</strong> to apply schema changes to the warehouse. Publish is incremental (diff-based) — it generates and runs a change script, not a drop/recreate.</p>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — SDK-Style is required, but DAC/dacpac IS used under the hood (corrected)</strong>
           <table style="margin-top:8px">
             <tr><th>Option</th><th>Works with Fabric Warehouse?</th><th>Why</th></tr>
-            <tr><td><strong>SDK-style project + Import Schema</strong></td><td class="green">✅ Correct</td><td>This is the required project type for Fabric Warehouse. Import schema pulls the existing DB1 schema into the project so you can manage it as code.</td></tr>
-            <tr><td>Generic "database project" (non-SDK)</td><td class="red">❌ Wrong</td><td>Legacy project format — not supported for Fabric Warehouse database projects.</td></tr>
-            <tr><td>Export DAC → import DAC</td><td class="red">❌ Wrong</td><td>DAC (Data-tier Application) is a SQL Server / Azure SQL concept. Fabric Warehouse does not use DAC packages.</td></tr>
+            <tr><td><strong>SDK-style project</strong></td><td class="green">✅ Correct — required</td><td>Docs state explicitly: "Only SDK-style projects are supported for Fabric Data Warehouse." You choose this when creating the project (whether from scratch or from an existing warehouse).</td></tr>
+            <tr><td>Generic/legacy (non-SDK-style) database project</td><td class="red">❌ Wrong</td><td>Not supported for Fabric Warehouse database projects.</td></tr>
+            <tr><td>DAC / .dacpac (DacFx)</td><td class="green">⚠️ Actually IS used — corrected</td><td>Contrary to older guidance, Fabric Warehouse database projects <strong>do</strong> use DacFx under the hood: the project references the <code>Microsoft.SqlServer.Dacpacs.FabricDw</code> NuGet package, <strong>Build</strong> produces a <code>.dacpac</code> file, and <strong>Publish</strong> deploys that dacpac (with a generated diff script) to the target warehouse. You just don't manually "export/import" a dacpac yourself — the SDK-style project tooling handles it.</td></tr>
           </table>
-          <p style="margin-top:8px"><strong>Workflow to deploy schema changes to an existing warehouse:</strong><br>
-          1. Create a new <strong>SDK-style</strong> SQL Database Project<br>
-          2. <strong>Import the schema</strong> of the existing warehouse (DB1) into the project<br>
-          3. Make schema changes as SQL scripts in Git<br>
-          4. <strong>Publish</strong> the project to apply changes to the warehouse (incremental — no drop/recreate)</p>
+          <p style="margin-top:8px"><strong>Correct workflow to deploy schema changes to an existing warehouse (verified against current docs):</strong><br>
+          1. In VS Code, create a new SQL Database Project, target platform <strong>"Synapse Data Warehouse in Microsoft Fabric,"</strong> and choose <strong>Yes</strong> for SDK-style when prompted (required — non-SDK isn't supported)<br>
+          2. To start from an <em>existing</em> warehouse's schema, use the Database Projects pane's <strong>"Create Project From Database"</strong> option (connect to the warehouse's SQL endpoint first) — this extracts/reverse-engineers the project files from the live schema. (Not literally called "Import Schema" in the UI — that's the older/looser way people describe this step.)<br>
+          3. Edit the `.sqlproj` to reference the <code>Microsoft.SqlServer.Dacpacs.FabricDw</code> package and the <code>Microsoft.Build.Sql</code> SDK<br>
+          4. Add/edit table, view, stored procedure, function `.sql` files under the schema folder<br>
+          5. <strong>Build</strong> the project — produces a `.dacpac`<br>
+          6. <strong>Publish</strong> — optionally <strong>Generate Script</strong> first to review the T-SQL diff, then apply it to the target warehouse (incremental, not drop/recreate)</p>
         </div>
         <div class="qa">
           <div class="qa-q">Q: You need to use a database project to deploy schema changes to an existing Fabric Warehouse named DB1. What should you do?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
-          <div class="qa-answer"><strong>Create a new SDK-style project, and import the schema of DB1 into the project.</strong> SDK-style is the required format for Fabric Warehouse database projects. Importing the schema captures the existing DB1 structure so you can manage and deploy changes as code. DAC (Data-tier Application) packages are a SQL Server concept and do NOT apply to Fabric Warehouse.</div>
+          <div class="qa-answer"><strong>Create a new SDK-style project, using "Create Project From Database" to pull in DB1's existing schema.</strong> SDK-style is the required format for Fabric Warehouse database projects — non-SDK-style isn't supported. ⚠️ Correction: DAC/dacpac is NOT irrelevant to Fabric Warehouse — it's the actual underlying mechanism (Build produces a `.dacpac`, Publish deploys it); you just don't manually export/import it yourself.</div>
         </div>
         <div class="qa">
           <div class="qa-q">Q: A developer adds a stored procedure in the Git repo SQL script. How is it deployed to the warehouse?</div>
@@ -326,7 +335,7 @@
           <tr><td>"User should see ALL items in the workspace"</td><td>Workspace Role (Viewer)</td></tr>
           <tr><td>"User needs read-only access to ONE item only — least privilege"</td><td><strong>Item Permission</strong> (NOT Workspace Viewer — Viewer grants access to ALL items)</td></tr>
           <tr><td>"User should see only ONE lakehouse, not the warehouse"</td><td>Item Permission on that lakehouse</td></tr>
-          <tr><td>"User should see only the Sales table, not HR table in a lakehouse"</td><td>OneLake Data Access Role (scoped to /Tables/Sales/)</td></tr>
+          <tr><td>"User should see only the Sales table, not HR table in a lakehouse"</td><td>OneLake security role (scoped to the Sales table) — formerly called "OneLake data access role"</td></tr>
           <tr><td>"User should see only rows where Region='West' in a warehouse table"</td><td>Row-Level Security (SQL policy in warehouse)</td></tr>
           <tr><td>"User should not see the Salary column in a warehouse table"</td><td>Column-Level Security (DENY SELECT on column)</td></tr>
           <tr><td>"User should see masked phone numbers unless authorized"</td><td>Dynamic Data Masking (DDM)</td></tr>
@@ -337,24 +346,24 @@
           ✅ <strong>Item Permissions</strong> on the specific Lakehouse — grants access only to that one item. True least privilege.<br><br>
           Rule: If the question says "least privilege" + "one specific item" → always choose <strong>item permissions</strong>, not workspace roles.
         </div>
-        <div class="priority-box"><strong>🚨 OneLake Data Access Roles</strong> (GA 2025 — New Feature, Heavily Tested)
-          Create a role → assign folder/table paths (e.g., /Tables/Sales/) → assign users or groups.<br>
-          This is SEPARATE from workspace roles. A user with Viewer workspace role still needs OneLake data access role to read specific tables.
+        <div class="priority-box"><strong>🚨 OneLake Security Roles</strong> (⚠️ renamed from "OneLake Data Access Roles" — Heavily Tested)
+          Microsoft now calls this feature <strong>"OneLake security"</strong> — it's the <em>data-plane</em> security model, distinct from workspace roles + item permissions (the <em>control-plane</em> model). Create a role on an item → scope it to folders, tables, schemas, <strong>and now also rows/columns directly</strong> → assign Entra users or groups.<br>
+          This is SEPARATE from workspace roles. It only restricts/grants users in the <strong>Viewer</strong> workspace role or with <strong>Read</strong> item permission — Admins/Members/Contributors already have full data access regardless. Every lakehouse ships with a built-in <strong>DefaultReader</strong> role you can edit or delete.
         </div>
         <div class="qa">
           <div class="qa-q">Q: A user must read only HR table in a lakehouse but nothing else in the workspace. Two steps needed?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
-          <div class="qa-answer">1. Grant <strong>ReadData item permission</strong> on the specific lakehouse (not a workspace role — that gives access to all items).<br>2. Create an <strong>OneLake data access role</strong> scoped to /Tables/HR/ and assign the user.</div>
+          <div class="qa-answer">1. Grant <strong>Read</strong> item permission on the specific lakehouse (not a workspace role — that gives access to all items).<br>2. Create a <strong>OneLake security role</strong> scoped to the <code>HR</code> table and assign the user.</div>
         </div>
         <div class="exercise">
-          <h4>🖥️ Hands-On: Configure OneLake Data Access Roles</h4>
+          <h4>🖥️ Hands-On: Configure OneLake Security Roles</h4>
           <ol>
-            <li>Open a Lakehouse → click <strong>Manage OneLake data access (preview)</strong> in the ribbon</li>
+            <li>Open a Lakehouse → click <strong>Manage OneLake security</strong> in the ribbon (may still show as "data access roles" in older UI)</li>
             <li>Create a new role, e.g. "SalesOnly"</li>
-            <li>In the role editor, click <strong>+ Add table</strong> → select only the <code>Sales</code> table (path: /Tables/Sales/)</li>
+            <li>In the role editor, click <strong>+ Add table</strong> → select only the <code>Sales</code> table</li>
             <li>Assign a test user (or your own email in another browser) to this role</li>
             <li>Log in as that user → open the lakehouse → verify they can see Sales but NOT other tables</li>
-            <li><strong>Exam drill:</strong> What's the difference between giving a workspace Viewer role vs. creating an OneLake data access role? (Viewer = all items; OneLake role = specific tables/folders)</li>
+            <li><strong>Exam drill:</strong> What's the difference between giving a workspace Viewer role vs. creating a OneLake security role? (Viewer = all items, no data by default unless given a security role; OneLake security role = specific tables/folders/rows/columns)</li>
           </ol>
         </div>
       </div>
@@ -763,9 +772,9 @@ df_agg.writeStream
           </table>
           <p style="margin-top:8px"><strong>Trap:</strong> Eventhouse supports diverse data formats and seems like a good answer — but it's built for <em>real-time KQL</em>, not batch PySpark or SQL transformation at scale. When the question mentions "PySpark AND SQL" → pick Lakehouse (or Synapse).</p>
         </div>
-        <div class="priority-box"><strong>🚨 Accelerated vs Non-Accelerated Shortcut</strong><br>
-          Accelerated shortcut = eventhouse builds its own indexes on the OneLake Delta data → fast KQL queries.<br>
-          Non-accelerated shortcut = no indexes → slow, use <code>external_table('name')</code> to query.
+        <div class="priority-box"><strong>🚨 Official term: "Query acceleration" (this is literally in the current skills outline)</strong><br>
+          The exam's own wording (as of July 21, 2026) is: <em>"Choose between Query acceleration for OneLake shortcuts and standard OneLake shortcuts in Real-Time Intelligence."</em> "Accelerated shortcut" (used above) is describing the same thing informally — the official mechanism is a <strong>Query acceleration policy</strong> you toggle on a OneLake shortcut (at creation, or later via <strong>Manage → Data policies → Query acceleration</strong>). When ON, the eventhouse builds/caches indexes over the shortcut's Delta data for fast KQL queries; you also set a <strong>caching period</strong> (days, based on the Delta log's modificationTime). Standard (non-accelerated) shortcuts have no indexing — queries go through <code>external_table()</code> and read the source on each query, so they're slower.<br>
+          Requires: Admin/Contributor/Member workspace role + OneLake security permission on the shortcut's data.
         </div>
         <div class="qa">
           <div class="qa-q">Q: A KQL database has a shortcut pointing to ADLS Gen2 external storage. Queries use external_table(). What storage type is this and is it fast?</div>
@@ -993,7 +1002,7 @@ OPTIMIZE schema_name.table_name ZORDER BY (customer_id) VORDER;</pre>
           <tr><td><strong>Write overhead</strong></td><td>~15% slower writes on average</td><td>Slower compaction (more data movement)</td></tr>
           <tr><td><strong>Keyword</strong></td><td><code>VORDER</code></td><td><code>ZORDER BY (col)</code></td></tr>
         </table>
-        <div class="gotcha"><strong>⚠️ V-Order disabled by default</strong> — V-Order was changed to be OFF by default to improve write performance for ingestion workloads. Enable it explicitly for read-heavy scenarios like dashboarding.</div>
+        <div class="gotcha"><strong>⚠️ V-Order disabled by default — but only in NEWER workspaces.</strong> V-Order was changed to be OFF by default (tied to a "writeHeavy" Spark resource profile) for workspaces created after roughly April 2025, to improve write performance for ingestion workloads. A workspace created BEFORE that may still have V-Order/Optimize Write ON by default — don't assume every workspace in a scenario is OFF. Enable it explicitly (or use a "ReadHeavy" resource profile) for read-heavy scenarios like dashboarding.</div>
         <div class="gotcha"><strong>⚠️ After enabling V-Order via table properties</strong>, only FUTURE writes are affected. Existing Parquet files are NOT rewritten. To rewrite existing files with V-Order, run <code>OPTIMIZE ... VORDER</code>.</div>
         <div class="qa">
           <div class="qa-q">Q: Queries on a Delta table frequently filter by customer_id. What optimization would most help?</div>
