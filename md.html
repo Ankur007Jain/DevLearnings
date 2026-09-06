@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Learnings</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.9.0/github-markdown-light.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.0.11/lib/marked.umd.min.js"></script>
+<style>
+  :root { --bg: #f8fafc; --border: #e2e8f0; --muted: #64748b; --accent: #0891b2; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 14px; }
+  .topbar a { color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 600; }
+  .topbar a:hover { text-decoration: underline; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 60px; }
+  .markdown-body { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 32px 40px; }
+  .state { color: var(--muted); font-size: 14px; padding: 40px 0; text-align: center; }
+  @media (max-width: 640px) { .markdown-body { padding: 20px; } }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html">← Dev Learnings</a>
+  </div>
+  <div class="wrap">
+    <article id="content" class="markdown-body">
+      <p class="state">Loading…</p>
+    </article>
+  </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const file = params.get('file');
+  const el = document.getElementById('content');
+
+  if (!file) {
+    el.innerHTML = '<p class="state">No file specified.</p>';
+  } else {
+    fetch(file)
+      .then(res => {
+        if (!res.ok) throw new Error(res.status);
+        return res.text();
+      })
+      .then(md => {
+        document.title = file.split('/').pop().replace(/\.md$/, '') + ' — Dev Learnings';
+        el.innerHTML = marked.parse(md);
+      })
+      .catch(() => {
+        el.innerHTML = '<p class="state">Could not load "' + file.replace(/[<>&"]/g, '') + '".</p>';
+      });
+  }
+</script>
+</body>
+</html>
