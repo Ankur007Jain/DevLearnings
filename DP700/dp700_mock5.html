@@ -37,7 +37,8 @@
   <span style="font-size:22px">🎯</span>
   <h1>DP-700 Study Hub</h1>
   <span class="badge">RETAKE</span>
-  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Jun 2, 2026</strong></div>
+<script>(function(){var d=localStorage.getItem('dp700_exam_date');if(!d)return;var dt=new Date(d+'T09:00:00');var el=document.getElementById('examDateText');if(el)el.textContent=dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});})();</script>
 </div>
 <nav class="tabs tabs-rows">
   <div class="nav-row">
@@ -184,7 +185,7 @@ const questions = [
       'D. In the notebook activity, go to the General tab and open "Input parameters".'
     ],
     ans:[0],
-    expl:'<strong>A — Settings tab → Base parameters.</strong> This is where you pass parameter values to a notebook when running it from a pipeline activity. General tab is for naming, descriptions, and timeout/retry settings. Do not confuse with the Notebook activity's own parameters — Base parameters in Settings is the correct location.'
+    expl:'<strong>A — Settings tab → Base parameters.</strong> This is where you pass parameter values to a notebook when running it from a pipeline activity. General tab is for naming, descriptions, and timeout/retry settings. Do not confuse with the Notebook activity\'s own parameters — Base parameters in Settings is the correct location.'
   },
 
   { domain:'d2', topic:'Spark Job Definition — Streaming',

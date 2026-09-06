@@ -12,7 +12,8 @@
   <span style="font-size:22px">🎯</span>
   <h1>DP-700 Study Hub</h1>
   <span class="badge">RETAKE</span>
-  <div class="exam-date">Exam: <strong>Mon Jun 2, 2026</strong></div>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Jun 2, 2026</strong></div>
+<script>(function(){var d=localStorage.getItem('dp700_exam_date');if(!d)return;var dt=new Date(d+'T09:00:00');var el=document.getElementById('examDateText');if(el)el.textContent=dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});})();</script>
 </div>
 <div style="background:#ecfeff;border-bottom:2px solid #a5f3fc;padding:8px 24px;font-size:12.5px;color:#0e7490">✅ Fact-checked against live Microsoft Learn docs on 2026-09-06 (skills outline dated July 21, 2026). Major corrections: Native Execution Engine now supports/accelerates UDFs (old "disable native engine" advice reversed); High Concurrency Mode confirmed single-user (this file had it right); OneLake security roles renamed from "data access roles"; shortcut write-through and shortcut-type list corrected/expanded; database projects clarified (SDK-style required, DAC/dacpac IS used under the hood); "Query acceleration" is the official RTI term; V-Order default nuanced by workspace age.</div>
 <nav class="tabs tabs-rows">
