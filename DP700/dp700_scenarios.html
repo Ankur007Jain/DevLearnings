@@ -516,11 +516,11 @@ const questions = [
     options: [
       "The Lakehouse was optimized with VACUUM, which changes the table format.",
       "Too many users opened the report simultaneously.",
-      "Row-Level Security (RLS) is applied to an underlying Warehouse source, OR the dataset exceeded the frame row limit for the capacity SKU, OR Column-Level Security (CLS) is applied to the Warehouse.",
+      "Row-Level Security (RLS) is applied to an underlying Warehouse source, OR the dataset exceeded the frame row limit for the capacity SKU. (Note: Column-Level Security behaves differently — see explanation.)",
       "The Lakehouse has more than 100 tables, causing a fallback."
     ],
     answer: 2,
-    explanation: "<strong>C is correct.</strong> Direct Lake fallback to DirectQuery is triggered by: (1) RLS applied to a Warehouse the dataset reads from, (2) CLS applied to a Warehouse, (3) the framing row limit for the capacity SKU is exceeded. VACUUM and OPTIMIZE don't affect Direct Lake mode. User count and table count are not fallback triggers.",
+    explanation: "<strong>C is correct, with a 2026-09-06 correction:</strong> Direct Lake (on SQL) fallback to DirectQuery is triggered by RLS applied to a Warehouse/SQL-endpoint source the dataset reads from, or exceeding the framing/guardrail row-column limit for the capacity SKU. ⚠️ <strong>Column-Level Security does NOT trigger the same fallback</strong> — CLS (and Object-Level Security) on the SQL analytics endpoint instead causes a hard <strong>error</strong> (report visuals fail to render), not a DirectQuery fallback. Also, \"Direct Lake on OneLake\" (the newer/recommended mode) doesn't support DirectQuery fallback at all — it errors instead of falling back for any of these triggers. To avoid both the fallback and the error, enforce security via <strong>OneLake security</strong> roles instead of SQL-endpoint RLS/CLS. VACUUM and OPTIMIZE don't affect Direct Lake mode. User count and table count are not fallback triggers.",
     tip: "To check if your dataset fell back: In Power BI Desktop, open Performance Analyzer → run a visual → look for 'Direct Lake' or 'DirectQuery' in the DAX query trace. In Fabric trial, test by applying RLS to a Warehouse-backed semantic model."
   },
   {
@@ -529,13 +529,13 @@ const questions = [
     question: "What Fabric feature allows folder-level access without workspace membership?",
     options: [
       "Share the entire workspace with the vendor as a Viewer — they can then filter the data they need.",
-      "Use OneLake Data Access Roles to grant read permission on specific folders or tables within the Lakehouse.",
+      "Use OneLake security roles to grant read permission on specific folders or tables within the Lakehouse.",
       "Create a separate Lakehouse with just the products folder and share that workspace.",
       "Grant the vendor READ access to the entire Lakehouse via the Lakehouse sharing dialog."
     ],
     answer: 1,
-    explanation: "<strong>B is correct.</strong> OneLake Data Access Roles (ODAR) allow you to define custom roles that grant access to specific folders or tables within a Lakehouse — without granting workspace-level access. The vendor gets a scoped token that only allows reading /gold/products/. This is the most granular Fabric access control below workspace level.",
-    tip: "In your Fabric trial: Open a Lakehouse → Manage OneLake Data Access → New Role → select specific folders → assign users or service principals. This is distinct from workspace roles."
+    explanation: "<strong>B is correct.</strong> OneLake security roles (⚠️ renamed from \"OneLake Data Access Roles\"/ODAR — now GA as of ~April/May 2026) let you define custom roles that grant access to specific folders, tables, rows, or columns within a Lakehouse — without granting workspace-level access. The vendor gets scoped access that only allows reading /gold/products/. This is the most granular Fabric access control below workspace level.",
+    tip: "In your Fabric trial: Open a Lakehouse → Manage OneLake security → New Role → select specific folders → assign users or service principals. This is distinct from workspace roles."
   },
 
   // ── REAL-TIME & KQL ────────────────────────────────────────────────────

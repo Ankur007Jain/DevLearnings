@@ -71,6 +71,7 @@
     <h2 style="font-size:24px;font-weight:800;margin-bottom:8px">DP-700 Mock Exam 4</h2>
     <p style="color:var(--muted);margin-bottom:6px">45 questions · 90 minutes · DP-700 Practice Test</p>
     <p style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:28px">Passing score: 700/1000 (70%)</p>
+    <p style="font-size:11px;color:var(--accent);margin-top:-20px;margin-bottom:20px">✅ Re-verified against Microsoft Learn 2026-09-06 — corrected: Eventhouse OneLake availability now exports Delta format directly (no manual conversion needed); the 5th queryinsights view is sql_pool_insights, not "wait_statistics"; OneLake security role naming.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;text-align:left;max-width:500px;margin-left:auto;margin-right:auto;">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">
         <div style="font-size:11px;color:var(--d1);font-weight:700;text-transform:uppercase;margin-bottom:4px">D1 · Implement</div>
@@ -195,11 +196,11 @@ const questions = [
     expl:'<strong>B — Domain assignment only affects metadata/discoverability, NOT access permissions.</strong> Assigning a workspace to a domain organises it within the data catalogue and governance structure — it lets domain admins apply domain-level policies (like who can certify content). It does NOT change who can access the workspace, read items, or run queries. Workspace roles (Admin, Member, Contributor, Viewer) and item permissions remain the only access control mechanism. This is a common exam distractor.'
   },
 
-  { domain:'d1', topic:'OneLake Data Access Roles — Partial Table Access',
-    q:'You have a Fabric Lakehouse with a table named CustomerOrders. A business analyst team should be able to read only the rows where Region = \'Europe\'. They should have no access to other regions.\n\nWhat is the correct sequence of steps to implement this using OneLake Data Access Roles?',
-    opts:['A. 1. Enable OneLake Data Access Roles on the lakehouse → 2. Create a new role → 3. Define a row filter (Region = \'Europe\') → 4. Add the analyst security group to the role','B. 1. Assign Viewer workspace role → 2. Enable RLS on the SQL analytics endpoint → 3. Add users to the SQL role','C. 1. Create a sensitivity label → 2. Apply it to the CustomerOrders table → 3. Add analysts to the label policy','D. 1. Share the lakehouse with analysts via item permissions → 2. Use column-level security in T-SQL to filter rows'],
+  { domain:'d1', topic:'OneLake security roles — Partial Table Access',
+    q:'You have a Fabric Lakehouse with a table named CustomerOrders. A business analyst team should be able to read only the rows where Region = \'Europe\'. They should have no access to other regions.\n\nWhat is the correct sequence of steps to implement this using OneLake security roles?',
+    opts:['A. 1. Enable OneLake security roles on the lakehouse → 2. Create a new role → 3. Define a row filter (Region = \'Europe\') → 4. Add the analyst security group to the role','B. 1. Assign Viewer workspace role → 2. Enable RLS on the SQL analytics endpoint → 3. Add users to the SQL role','C. 1. Create a sensitivity label → 2. Apply it to the CustomerOrders table → 3. Add analysts to the label policy','D. 1. Share the lakehouse with analysts via item permissions → 2. Use column-level security in T-SQL to filter rows'],
     ans:0,
-    expl:'<strong>A — Enable OneLake Data Access Roles → Create role → Define row filter → Add security group.</strong> OneLake Data Access Roles (OLDAR) enable row-level access control directly at the OneLake storage layer — before any query engine is involved. The process: (1) Enable the feature on the lakehouse, (2) Create a named role, (3) Define path/row filters (table + WHERE clause), (4) Assign users or security groups. This is more fundamental than SQL endpoint RLS — it works across Spark, T-SQL, and shortcuts because it operates at the Delta table level.'
+    expl:'<strong>A — Enable OneLake security roles → Create role → Define row filter → Add security group.</strong> OneLake security roles (formerly "OLDAR") enable row-level access control directly at the OneLake storage layer — before any query engine is involved. The process: (1) Enable the feature on the lakehouse, (2) Create a named role, (3) Define path/row filters (table + WHERE clause), (4) Assign users or security groups. This is more fundamental than SQL endpoint RLS — it works across Spark, T-SQL, and shortcuts because it operates at the Delta table level.'
   },
 
   { domain:'d1', topic:'Lakehouse Permission — PySpark Read-Only',
@@ -299,7 +300,7 @@ const questions = [
     q:'A data engineer wants to identify which queries are being run most frequently and may be contributing to performance degradation in a Fabric Warehouse.\n\nWhich queryinsights view should they query?',
     opts:['A. queryinsights.exec_requests_history','B. queryinsights.long_running_queries','C. queryinsights.frequently_run_queries','D. sys.dm_exec_requests'],
     ans:2,
-    expl:'<strong>C — queryinsights.frequently_run_queries.</strong> This view aggregates query patterns and shows which queries execute most often — useful for identifying repeated expensive patterns that accumulate load over time. Know the 5 queryinsights views: <strong>exec_requests_history</strong> (all completed queries), <strong>long_running_queries</strong> (queries exceeding duration threshold), <strong>frequently_run_queries</strong> (most executed), <strong>exec_sessions_history</strong> (session activity), <strong>wait_statistics</strong> (wait types). 30-day retention, ~15-minute data delay.'
+    expl:'<strong>C — queryinsights.frequently_run_queries.</strong> This view aggregates query patterns and shows which queries execute most often — useful for identifying repeated expensive patterns that accumulate load over time. ⚠️ Corrected: the 5 queryinsights views are <strong>exec_requests_history</strong> (all completed queries), <strong>long_running_queries</strong> (queries exceeding duration threshold), <strong>frequently_run_queries</strong> (most executed), <strong>exec_sessions_history</strong> (session activity), and <strong>sql_pool_insights</strong> (pool-level resource pressure/allocation) — NOT "wait_statistics", which isn\'t one of the named queryinsights views. 30-day retention, ~15-minute data delay.'
   },
 
   { domain:'d2', topic:'Dynamic Data Masking — Email and Salary',
@@ -310,10 +311,10 @@ const questions = [
   },
 
   { domain:'d2', topic:'Eventhouse OneLake — PySpark Returns No Data',
-    q:'A team enables OneLake availability on a Fabric Eventhouse. A data engineer then tries to read the Eventhouse data using a PySpark notebook via a lakehouse shortcut.\n\nThe PySpark query returns no data. What is the most likely reason, and what should the data engineer do?',
-    opts:['A. PySpark cannot read Eventhouse data — only KQL queries are supported','B. The shortcut was created before OneLake availability was enabled — recreate the shortcut','C. Eventhouse data is stored in Parquet format by default; use spark.read.parquet() instead of Delta format','D. OneLake availability stores data in KQL internal format — it must first be converted to Delta format via an explicit conversion step or materialized view'],
-    ans:3,
-    expl:'<strong>D — Eventhouse OneLake data must be converted to Delta format before PySpark can read it.</strong> When you enable OneLake availability on an Eventhouse, the data is exposed in OneLake — but in Kusto\'s internal columnar storage format, not Delta. To read via PySpark (which expects Delta or Parquet), you must convert or materialise the data to Delta format first (e.g., using an update policy or explicitly converting tables). This is a real exam trap: "OneLake availability enabled" ≠ "immediately readable by Spark as Delta."'
+    q:'⚠️ Corrected 2026-09-06 — A team enables OneLake availability on a Fabric Eventhouse. A data engineer then tries to read the Eventhouse data using a PySpark notebook via a lakehouse shortcut.\n\nThe PySpark query returns no data. What is the most likely reason, and what should the data engineer do?',
+    opts:['A. PySpark cannot read Eventhouse data — only KQL queries are supported','B. The shortcut was created before OneLake availability was enabled — recreate the shortcut','C. Eventhouse data is stored in Parquet format by default; use spark.read.parquet() instead of Delta format','D. The shortcut points to the wrong OneLake path — the correct path is abfss://&lt;workspaceGuid&gt;@onelake.dfs.fabric.microsoft.com/&lt;eventhouseGuid&gt;/Tables/&lt;tableName&gt;'],
+    ans:1,
+    expl:'<strong>B — Recreate the shortcut (or verify the shortcut path) — corrected explanation.</strong> ⚠️ The premise of the old "D" answer is wrong: OneLake availability for Eventhouse is now <strong>GA and exports data directly in Delta Lake format</strong> — there is no separate conversion step or materialized view required. Spark can read it directly at the path <code>abfss://&lt;workspaceGuid&gt;@onelake.dfs.fabric.microsoft.com/&lt;eventhouseGuid&gt;/Tables/&lt;tableName&gt;</code>. If PySpark returns no data, the realistic causes are a shortcut created/cached before availability was enabled, or the shortcut pointing at the wrong path — not a missing Delta conversion.'
   },
 
   { domain:'d2', topic:'KQL — uuid Data Type',

@@ -94,6 +94,7 @@ pre{background:#0d0d1a;padding:14px;border-radius:8px;overflow-x:auto;font-size:
   <h1>🌟 DP-700 Mock 6 — Practice Test 2025</h1>
   <p>30 questions · 60 minutes · DP-700 Practice Test 2025</p>
   <p style="margin-top:6px;color:#9f7aea">D1: Implement &amp; Manage &nbsp;|&nbsp; D2: Ingest &amp; Transform &nbsp;|&nbsp; D3: Monitor &amp; Optimize</p>
+  <p style="margin-top:10px;color:#6ee7b7;font-size:.8rem">✅ Re-verified against Microsoft Learn 2026-09-06. Corrected: Eventhouse OneLake availability sync behavior. Flagged as unreliable (self-contradicting source explanations, not fixed): Q5, Q6, Q27 — read their notes before trusting either answer choice.</p>
 </div>
 
 <div class="timer-bar">
@@ -161,7 +162,7 @@ const QUESTIONS = [
     q:"There is a domain in Microsoft Fabric called Domain1. Client One is the domain admin of Domain1. Additionally there are three users: Client Two (Fabric Admin), Client Three (Power BI Admin), and Client Four (Domain Admin of Domain4). Which users can delete Domain1?",
     answers:["Only Client Two","Only Client Four and Client One","Only Client Two and Client Four","Only Client One and Client Two"],
     correct:["C"],
-    explanation:"Only Fabric Admins and the specific domain admin can delete a domain. Client Two is a Fabric Admin — can delete any domain. Client Four is a Domain Admin (of Domain4 only, not Domain1) — Fabric Admins can delete any domain. Wait — Client Four is only Domain Admin of Domain4, not Domain1. The domain admin of Domain1 is Client One. Fabric Admin (Client Two) can delete any domain. Domain admin (Client One) can delete their own domain. So the answer is Client One and Client Two (D), but the correct answer recorded is C (Client Two and Client Four) — indicating Client Four has Fabric Admin privileges in this scenario."
+    explanation:"⚠️ UNRELIABLE QUESTION — flagged 2026-09-06, not fixed. The explanation as originally written contradicts its own reasoning: it walks through Fabric Admin + own-domain-admin logic and concludes the answer should be Client One + Client Two, then reverses itself to match a recorded answer of Client Two + Client Four by inventing an unstated assumption (\"indicating Client Four has Fabric Admin privileges\") not supported by the question stem. I can't verify the real intended answer without the original source — treat this question as unreliable for study purposes rather than trust either answer choice. General rule you CAN rely on: only Fabric Admins and a domain's own domain admin can delete that domain."
   },
   {
     num:6, domain:"D1",
@@ -169,7 +170,7 @@ const QUESTIONS = [
     q:"Four users exist in Microsoft 365. Only Client One and Client Two are in securitygroup01. Each user admins a workspace: Client One → Workspace1 (unassigned), Client Two → Workspace2 (unassigned), Client Three → Workspace3 (assigned to domain4), Client Four → Workspace4 (assigned to domain1). A Fabric admin creates domain1 (Client One as domain admin) and domain4 (Client Four as domain admin), then adds securitygroup01 to the default domain list of domain1. Q1: Will Workspace1 and Workspace2 be assigned to domain1? Q2: Can Client Three add Workspace3 to domain1?",
     answers:["Yes, Yes","Yes, No","No, Yes","No, No"],
     correct:["D"],
-    explanation:"Q1: Both Workspace1 and Workspace2 are unassigned. Their admins (Client One and Client Two) are in securitygroup01, which is the default domain of domain1. So both WILL be assigned to domain1 — this would be Yes. Q2: When a domain is created, all users become domain contributors by default, allowing them to add/remove workspaces. Client Three can add Workspace3 to domain1 — Yes. But the correct answer is No, No — indicating that default domain assignment requires the workspace admin to be in the security group AND the workspace must currently be unassigned AND the policy triggers only on new workspaces, not retroactively."
+    explanation:"⚠️ UNRELIABLE QUESTION — flagged 2026-09-06, not fixed. Same problem as Q5: the explanation reasons its way to \"Yes, Yes\" and then reverses to a recorded answer of \"No, No\" by inventing an unstated rule (\"the policy triggers only on new workspaces, not retroactively\") not established anywhere in the question or verified against current docs. Treat this question as unreliable rather than memorize either the stated logic or the recorded answer."
   },
   {
     num:7, domain:"D1",
@@ -289,9 +290,9 @@ const QUESTIONS = [
     num:21, domain:"D1",
     section:"Implement and manage an analytics solution",
     q:"In Microsoft Fabric, an Eventhouse KQL database has OneLake availability recently enabled. A user queries a table from this database using a Fabric notebook with PySpark. The query runs successfully but returns no data, despite the table being expected to contain records. What should you do?",
-    answers:["Add new records since only new data in the existing table is mirrored","Add a new table since only new tables in the database are mirrored","Enable OneLake availability for the specific table","Update the delay using the table's mirroring policy"],
-    correct:["D"],
-    explanation:"After OneLake availability is enabled on an Eventhouse, there is a latency/delay before existing data is mirrored to OneLake. The mirroring policy controls this delay. The user can query via OneLake path without errors (confirming connectivity works), but data hasn't synced yet. Updating the mirroring policy delay (or waiting) resolves this. Adding new records or tables won't fix the delay for existing data. OneLake availability is already enabled at the database level."
+    answers:["Add new records since only new data in the existing table is mirrored","Re-enable OneLake availability with the \"Apply to existing tables\" option selected","Enable OneLake availability for the specific table","Update the delay using the table's mirroring policy"],
+    correct:["B"],
+    explanation:"⚠️ Corrected 2026-09-06. By default, enabling OneLake availability on an Eventhouse only syncs NEW data ingested going forward — pre-existing data in the table is NOT backfilled unless you explicitly choose \"Apply to existing tables\" when enabling the feature. That matches this scenario (query runs fine, connectivity confirmed, but the expected pre-existing records never appear). There is also a separate, real latency setting (checked via <code>.show table mirroring operations</code>, default up to a few hours) — but that governs freshness of newly-ingested data, not whether old data ever appears at all."
   },
   {
     num:22, domain:"D2",
@@ -339,7 +340,7 @@ const QUESTIONS = [
     q:"You have a lakehouse with product audit source and target tables (same schema). You implement incremental loading using a MERGE operation in a Fabric notebook. A source record with ProductID=101 has Status='Reviewed' and LastModified='2025-08-01'. The target already has this record with Status='Pending'. After the MERGE, Q1: What is the Status of ProductID=101 in the target? Q2: What is the LastModified date in the target?",
     answers:["Q1: Reviewed; Q2: 2025-08-01","Q1: Reviewed; Q2: original date","Q1: Pending; Q2: 2025-08-01","Q1: Pending; Q2: original date"],
     correct:["D"],
-    explanation:"MERGE with an incremental pattern typically updates the target when source and target records match (by key). The source has Status='Reviewed' and LastModified='2025-08-01'. However — the answer is D (Pending, original date) which suggests the MERGE condition uses LastModified as a watermark: only records where source.LastModified > target.LastModified are updated. If the watermark condition isn't met (dates equal or source is older), no update occurs."
+    explanation:"⚠️ UNRELIABLE QUESTION — flagged 2026-09-06, not fixed. The question stem doesn't state the target's LastModified value or that the MERGE has a watermark condition at all — a plain MERGE ON ProductID with no extra WHEN MATCHED filter would simply update the target to Status='Reviewed', LastModified='2025-08-01' (i.e., answer A), not leave it as 'Pending'/original date. The recorded answer (D) only makes sense under an assumed watermark clause invented after the fact to justify it. Don't rely on this question — if you see a real exam MERGE question, check exactly what the WHEN MATCHED condition says rather than assuming a watermark exists."
   },
   {
     num:28, domain:"D1",
