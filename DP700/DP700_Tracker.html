@@ -165,6 +165,7 @@
     <button class="filter-btn" onclick="setFilter('priority',this)">⚠️ Priority (Weak Areas)</button>
     <button class="filter-btn" onclick="setFilter('kql',this)">🔷 KQL Only</button>
     <button class="filter-btn" onclick="setFilter('incomplete',this)">📋 Not Done Yet</button>
+    <button class="filter-btn" style="margin-left:auto;color:#b91c1c;border-color:#fecaca" onclick="resetProgress()">🗑️ Reset Progress</button>
   </div>
 
   <!-- DOMAIN 1 -->
@@ -266,6 +267,12 @@ function setStatus(id, newStatus, btn) {
   state[id] = (current === newStatus) ? 0 : newStatus;
   saveState(state);
   applyStateToUI(state);
+}
+
+function resetProgress() {
+  if (!confirm('Reset all tracker progress? This cannot be undone.')) return;
+  localStorage.removeItem(LS_KEY);
+  applyStateToUI(loadState());
 }
 
 function updateRings(state) {
