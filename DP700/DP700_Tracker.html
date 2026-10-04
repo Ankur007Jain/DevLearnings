@@ -12,7 +12,7 @@
   <span style="font-size:22px">🎯</span>
   <h1>DP-700 Study Hub</h1>
   <span class="badge">RETAKE</span>
-  <div class="exam-date">Exam: <strong id="examDateText">Mon Jun 2, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Oct 26, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span>
     <button onclick="toggleExamDateEdit()" title="Change exam date" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:0.75;margin-left:4px">✏️</button>
     <input type="date" id="examDateInput" style="display:none;margin-left:6px;font-size:12px;padding:2px 6px;border-radius:4px;border:1px solid var(--border)" onchange="setExamDate(this.value)">
   </div>
@@ -22,6 +22,7 @@
   <div class="nav-row">
     <span class="nav-row-label">📚 Study</span>
     <a href="DP700_Tracker.html" class="tab-btn active">📊 Dashboard</a>
+    <a href="dp700_plan.html" class="tab-btn">🗓️ Pass Plan</a>
     <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
     <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
     <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
@@ -49,7 +50,8 @@
       <div class="banner-score">619/1000</div>
       <div class="banner-detail">
         Last attempt score &nbsp;·&nbsp; <strong>Need 700 — gap: 81 pts</strong><br>
-        ⚠️ Weak: Security &amp; Governance &nbsp;·&nbsp; Streaming &nbsp;·&nbsp; Error Resolution
+        ⚠️ Weak: Security &amp; Governance &nbsp;·&nbsp; Streaming &nbsp;·&nbsp; Error Resolution<br>
+        📅 Oct 26 exam uses the Oct 19, 2026 skills outline &nbsp;·&nbsp; <a href="dp700_plan.html" style="color:#92400e;font-weight:700">Open the Pass Plan</a>
       </div>
     </div>
     <div class="banner-tip">
@@ -93,6 +95,30 @@
         <div style="font-size:11px;color:#92400e;">19/30 · D3: 💯</div>
       </div>
 
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;">MS Practice</div>
+        <div style="font-size:20px;font-weight:800;color:var(--muted);">—</div>
+        <div style="font-size:11px;color:var(--muted);">gate · Oct 17</div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;">kengio Mock 1</div>
+        <div style="font-size:20px;font-weight:800;color:var(--muted);">—</div>
+        <div style="font-size:11px;color:var(--muted);">gate · Oct 17</div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;">kengio Mock 2</div>
+        <div style="font-size:20px;font-weight:800;color:var(--muted);">—</div>
+        <div style="font-size:11px;color:var(--muted);">Oct 21</div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;">kengio Mock 3</div>
+        <div style="font-size:20px;font-weight:800;color:var(--muted);">—</div>
+        <div style="font-size:11px;color:var(--muted);">gate · Oct 22</div>
+      </div>
+
     </div>
     <div style="margin-top:10px;font-size:12px;color:var(--muted);">
       ⚠️ Weak areas from Mock 6: <strong style="color:var(--red)">D1 Implement &amp; Manage 57%</strong> · <strong style="color:var(--red)">D2 Ingest &amp; Transform 55%</strong> · D3 perfect ✅
@@ -130,7 +156,7 @@
         </svg>
         <div class="ring-text" id="pct1" style="color:var(--d1)">0%</div>
       </div>
-      <div class="pc-sub" id="sub1">0 / 15 topics</div>
+      <div class="pc-sub" id="sub1">0 / 19 topics</div>
     </div>
     <div class="progress-card">
       <h3 style="color:var(--d2)">D2 · Ingest &amp; Transform</h3>
@@ -141,7 +167,7 @@
         </svg>
         <div class="ring-text" id="pct2" style="color:var(--d2)">0%</div>
       </div>
-      <div class="pc-sub" id="sub2">0 / 16 topics</div>
+      <div class="pc-sub" id="sub2">0 / 23 topics</div>
     </div>
     <div class="progress-card">
       <h3 style="color:var(--d3)">D3 · Monitor &amp; Optimize</h3>
@@ -152,7 +178,7 @@
         </svg>
         <div class="ring-text" id="pct3" style="color:var(--d3)">0%</div>
       </div>
-      <div class="pc-sub" id="sub3">0 / 14 topics</div>
+      <div class="pc-sub" id="sub3">0 / 21 topics</div>
     </div>
   </div>
 
@@ -177,7 +203,7 @@
       <h2>Domain 1 — Implement &amp; Manage</h2>
       <span class="domain-tag d1-tag">30–35%</span>
     </div>
-    <div class="topic-item" data-id="d1_01" data-domain="d1"><div class="topic-name">Workspace Settings Categories (Spark, Domain, OneLake, Data Workflows)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_01',1,this)" title="Studied">📖</button><button class="s-btn" onclick="setStatus('d1_01',2,this)" title="Confident">✅</button></div></div>
+    <div class="topic-item" data-id="d1_01" data-domain="d1"><div class="topic-name">Workspace Settings Categories (Spark, Domain, OneLake, Apache Airflow)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_01',1,this)" title="Studied">📖</button><button class="s-btn" onclick="setStatus('d1_01',2,this)" title="Confident">✅</button></div></div>
     <div class="topic-item" data-id="d1_02" data-domain="d1"><div class="topic-name">High Concurrency Mode vs Autoscale (Spark)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_02',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_02',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d1_03" data-domain="d1"><div class="topic-name">OneLake Architecture (one lake per tenant, workspace, item)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_03',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_03',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d1_04" data-domain="d1"><div class="topic-name">Shortcuts — Types, Location Rules (Tables vs Files), Read/Write</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_04',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_04',2,this)">✅</button></div></div>
@@ -185,13 +211,17 @@
     <div class="topic-item" data-id="d1_06" data-domain="d1"><div class="topic-name">Deployment Pipelines (2–10 stages, pairing, deployment rules)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_06',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_06',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d1_07" data-domain="d1"><div class="topic-name">Git Integration + Database Projects (schema-as-code)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_07',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_07',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_08" data-domain="d1" data-priority="1"><div class="topic-name">Workspace Roles (Admin / Member / Contributor / Viewer)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_08',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_08',2,this)">✅</button></div></div>
-    <div class="topic-item priority" data-id="d1_09" data-domain="d1" data-priority="1"><div class="topic-name">Item Permissions vs OneLake Data Access Roles (when each applies)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_09',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_09',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d1_09" data-domain="d1" data-priority="1"><div class="topic-name">Item Permissions vs OneLake Security Roles (when each applies)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_09',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_09',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_10" data-domain="d1" data-priority="1"><div class="topic-name">Row-Level Security in Fabric Warehouse (CREATE SECURITY POLICY)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_10',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_10',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_11" data-domain="d1" data-priority="1"><div class="topic-name">Dynamic Data Masking (4 types: Default, Email, Random, Custom)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_11',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_11',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_12" data-domain="d1" data-priority="1"><div class="topic-name">Column-Level Security (DENY SELECT on specific columns)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_12',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_12',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_13" data-domain="d1" data-priority="1"><div class="topic-name">Sensitivity Labels (auto-propagation downstream to reports)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_13',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_13',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d1_14" data-domain="d1" data-priority="1"><div class="topic-name">Orchestration: Pipeline vs Dataflow Gen2 vs Notebook vs Airflow</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_14',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_14',2,this)">✅</button></div></div>
-    <div class="topic-item" data-id="d1_15" data-domain="d1"><div class="topic-name">Trigger Types (Schedule, Tumbling Window, Event-Based, On Demand)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_15',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_15',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d1_15" data-domain="d1"><div class="topic-name">Trigger Types (Schedule, Event-Based, On Demand) — verify Tumbling Window: the docs found are ADF/Synapse</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_15',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_15',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d1_16" data-domain="d1" data-priority="1"><div class="topic-name">Endorsement (Promoted / Certified / Master data, who can certify)</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_16',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_16',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d1_17" data-domain="d1" data-priority="1"><div class="topic-name">Fabric Audit Logs (where to search them, which role is needed)</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_17',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_17',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d1_18" data-domain="d1" data-priority="1"><div class="topic-name">Object-Level &amp; Folder/File-Level Access Controls</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_18',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_18',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d1_19" data-domain="d1"><div class="topic-name">Orchestration Patterns: notebookutils runMultiple DAG, pipeline parameters &amp; dynamic expressions</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d1_19',1,this)">📖</button><button class="s-btn" onclick="setStatus('d1_19',2,this)">✅</button></div></div>
   </div>
 
   <!-- DOMAIN 2 -->
@@ -200,12 +230,12 @@
       <h2>Domain 2 — Ingest &amp; Transform</h2>
       <span class="domain-tag d2-tag">30–35%</span>
     </div>
-    <div class="topic-item" data-id="d2_01" data-domain="d2"><div class="topic-name">Copy Activity (sources, sinks, degree of copy parallelism)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_01',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_01',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d2_01" data-domain="d2" data-priority="1"><div class="topic-name">Copy Activity (sources, sinks, degree of copy parallelism)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_01',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_01',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d2_02" data-domain="d2"><div class="topic-name">Dataflow Gen2 (Power Query UI, no-code transforms, when to use)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_02',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_02',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d2_03" data-domain="d2"><div class="topic-name">Metadata-Driven Ingestion (control table + ForEach loop)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_03',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_03',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d2_04" data-domain="d2"><div class="topic-name">Lakehouse Loading Patterns (COPY INTO, append, overwrite, Delta)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_04',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_04',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d2_05" data-domain="d2"><div class="topic-name">Warehouse Loading (COPY INTO from external, T-SQL INSERT)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_05',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_05',2,this)">✅</button></div></div>
-    <div class="topic-item" data-id="d2_06" data-domain="d2"><div class="topic-name">Incremental Load (watermark variable, CDC, change tracking)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_06',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_06',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d2_06" data-domain="d2" data-priority="1"><div class="topic-name">Incremental Load (watermark variable, CDC, change tracking)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_06',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_06',2,this)">✅</button></div></div>
     <div class="topic-item" data-id="d2_07" data-domain="d2"><div class="topic-name">MERGE / Upsert in Delta (matched/unmatched clauses)</div><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_07',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_07',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d2_08" data-domain="d2" data-priority="1"><div class="topic-name">Eventstream (no-code streaming, sources, destinations, at-least-once)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_08',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_08',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d2_09" data-domain="d2" data-priority="1"><div class="topic-name">Spark Structured Streaming (checkpointing, watermarks, triggers)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_09',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_09',2,this)">✅</button></div></div>
@@ -216,6 +246,13 @@
     <div class="topic-item priority kql-topic" data-id="d2_14" data-domain="d2" data-priority="1" data-kql="1"><div class="topic-name">KQL Time: ago(), between(), bin(), datetime literals</div><span class="tag-priority">⚠️</span><span class="tag-kql">🔷 KQL</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_14',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_14',2,this)">✅</button></div></div>
     <div class="topic-item priority kql-topic" data-id="d2_15" data-domain="d2" data-priority="1" data-kql="1"><div class="topic-name">KQL Aggregations: | summarize count(), dcount(), avg(), sum() by ...</div><span class="tag-priority">⚠️</span><span class="tag-kql">🔷 KQL</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_15',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_15',2,this)">✅</button></div></div>
     <div class="topic-item kql-topic" data-id="d2_16" data-domain="d2" data-kql="1"><div class="topic-name">KQL Joins, mv-expand, external_table() for KQL shortcuts</div><span class="tag-kql">🔷 KQL</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_16',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_16',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d2_17" data-domain="d2"><div class="topic-name">Mirroring (which sources, what replicates, where it lands)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_17',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_17',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d2_18" data-domain="d2"><div class="topic-name">Dimensional Model Prep (surrogate keys, SCD Type 1 vs 2, late-arriving dimensions)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_18',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_18',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d2_19" data-domain="d2" data-priority="1"><div class="topic-name">Group &amp; Aggregate: GROUPING SETS vs ROLLUP vs CUBE, GROUPING()</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_19',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_19',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d2_20" data-domain="d2"><div class="topic-name">Denormalize (fact-to-dimension joins, broadcast join)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_20',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_20',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d2_21" data-domain="d2"><div class="topic-name">Duplicate, Missing &amp; Late-Arriving Data (ROW_NUMBER, dropDuplicates, fillna)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_21',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_21',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d2_22" data-domain="d2" data-priority="1"><div class="topic-name">Windowing Functions (tumbling, hopping, sliding, session, snapshot)</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_22',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_22',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d2_23" data-domain="d2"><div class="topic-name">Choose Data Store + Transform Tool (Lakehouse / Warehouse / Eventhouse; Dataflow Gen2 / notebook / KQL / T-SQL)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d2_23',1,this)">📖</button><button class="s-btn" onclick="setStatus('d2_23',2,this)">✅</button></div></div>
   </div>
 
   <!-- DOMAIN 3 -->
@@ -238,12 +275,19 @@
     <div class="topic-item priority" data-id="d3_12" data-domain="d3" data-priority="1"><div class="topic-name">Z-Order (column clustering for data skipping on selective filters)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_12',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_12',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d3_13" data-domain="d3" data-priority="1"><div class="topic-name">VACUUM (default 7-day / 168-hour retention, cleans unreferenced files)</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_13',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_13',2,this)">✅</button></div></div>
     <div class="topic-item priority" data-id="d3_14" data-domain="d3" data-priority="1"><div class="topic-name">Primary Keys NOT ENFORCED + Lakehouse vs Warehouse decision</div><span class="tag-priority">⚠️ PRIORITY</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_14',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_14',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d3_15" data-domain="d3"><div class="topic-name">Monitor Semantic Model Refresh (refresh history)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_15',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_15',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d3_16" data-domain="d3"><div class="topic-name">Configure Alerts (Activator on a failed pipeline or job)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_16',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_16',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d3_17" data-domain="d3" data-priority="1"><div class="topic-name">Eventhouse &amp; Eventstream Errors (.show ingestion failures, runtime logs)</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_17',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_17',2,this)">✅</button></div></div>
+    <div class="topic-item priority" data-id="d3_18" data-domain="d3" data-priority="1"><div class="topic-name">OneLake Shortcut Errors (path, connection, permission)</div><span class="tag-priority">⚠️ PRIORITY</span><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_18',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_18',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d3_19" data-domain="d3"><div class="topic-name">Optimize a Pipeline (ForEach parallelism &amp; batch count, Copy staging)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_19',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_19',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d3_20" data-domain="d3"><div class="topic-name">Optimize Eventstream &amp; Eventhouse (caching vs retention, update policies, materialized views)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_20',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_20',2,this)">✅</button></div></div>
+    <div class="topic-item" data-id="d3_21" data-domain="d3"><div class="topic-name">Optimize Spark &amp; Warehouse (resource profiles, native execution engine, statistics, caching)</div><span class="tag-new">🆕 New</span><div class="status-btns"><button class="s-btn" onclick="setStatus('d3_21',1,this)">📖</button><button class="s-btn" onclick="setStatus('d3_21',2,this)">✅</button></div></div>
   </div>
 
 </div><!-- end .page -->
 
 <script>
-const TOTALS = { d1: 15, d2: 16, d3: 14 };
+const TOTALS = { d1: 19, d2: 23, d3: 21 };
 const LS_KEY = 'dp700_v2';
 
 function loadState() { try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) { return {}; } }
@@ -306,9 +350,9 @@ function setFilter(f, btn) {
 }
 
 const EXAM_DATE_KEY = 'dp700_exam_date';
-const DEFAULT_EXAM_DATE = '2026-06-02';
+const DEFAULT_EXAM_DATE = '2026-10-26';
 
-function getExamDate() { return localStorage.getItem(EXAM_DATE_KEY) || DEFAULT_EXAM_DATE; }
+function getExamDate() { const s = localStorage.getItem(EXAM_DATE_KEY); return (s && new Date(s + 'T23:59:59') >= new Date()) ? s : DEFAULT_EXAM_DATE; }
 
 function setExamDate(dateStr) {
   if (!dateStr) return;

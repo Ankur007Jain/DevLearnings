@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP-700 Pass Plan</title>
+<link rel="stylesheet" href="dp700_styles.css">
+<style>
+.plan-top { display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin-bottom:18px; }
+.plan-top .bar { flex:1; min-width:180px; height:8px; background:#e2e8f0; border-radius:999px; overflow:hidden; }
+.plan-top .fill { height:100%; width:0; background:var(--accent); transition:width .3s; }
+.plan-top .count { font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; }
+.plan-top button { padding:6px 12px; border:1px solid var(--border); border-radius:20px; background:var(--card); font-size:12px; font-weight:600; color:var(--accent); cursor:pointer; }
+.plan-top button:hover { border-color:var(--accent); }
+.plan-top button.reset { color:#b91c1c; border-color:#fecaca; }
+.plan h2 { font-size:16px; font-weight:800; margin:28px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--border); }
+.plan h2:first-child { margin-top:0; }
+.plan p { margin:8px 0; max-width:78ch; }
+.plan ul, .plan ol { margin:6px 0 10px 20px; max-width:84ch; }
+.plan li { margin:3px 0; }
+.plan code { background:#f1f5f9; border:1px solid var(--border); border-radius:4px; padding:0 4px; font-size:12.5px; }
+.plan a { color:var(--accent); }
+.tbl { overflow-x:auto; margin:10px 0 14px; padding-bottom:1px; }
+.plan table { border-collapse:collapse; width:100%; font-size:13px; background:var(--card); }
+.plan th, .plan td { border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top; }
+.plan th { background:#f1f5f9; font-weight:700; }
+.day { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 14px 6px; margin:10px 0; }
+.day h4 { font-size:13.5px; font-weight:700; margin-bottom:4px; }
+.day.today { border:2px solid var(--accent); box-shadow:0 0 0 3px #cffafe; }
+.day.today h4::after { content:"Today"; margin-left:8px; font-size:10px; font-weight:800; color:#fff; background:var(--accent); padding:1px 7px; border-radius:999px; vertical-align:middle; }
+.day.past:not(.today) { opacity:.85; }
+.day.done h4 { color:var(--green); }
+ul.tasks { list-style:none; margin-left:0; }
+li.task label { display:flex; gap:9px; align-items:flex-start; cursor:pointer; padding:3px 0; }
+li.task input { margin-top:4px; width:15px; height:15px; accent-color:var(--green); flex-shrink:0; }
+li.task input:checked + span { color:var(--muted); text-decoration:line-through; }
+li.task input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🗓️</span>
+  <h1>DP-700 Pass Plan</h1>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Oct 26, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span></div>
+</div>
+
+<nav class="tabs tabs-rows">
+  <div class="nav-row">
+    <span class="nav-row-label">📚 Study</span>
+    <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+    <a href="dp700_plan.html" class="tab-btn active">🗓️ Pass Plan</a>
+    <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
+    <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
+    <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
+    <a href="dp700_pdf_notes.html" class="tab-btn">📚 PDF Notes</a>
+    <a href="dp700_kql.html" class="tab-btn">🔍 KQL Lab</a>
+    <a href="dp700_labs.html" class="tab-btn">🧪 MS Labs</a>
+    <a href="dp700_exam.html" class="tab-btn">⚡ Quick Q&amp;A</a>
+    <a href="dp700_scenarios.html" class="tab-btn">🎭 Scenarios</a>
+  </div>
+  <div class="nav-row nav-row-mocks">
+    <span class="nav-row-label">📋 Mocks</span>
+    <a href="dp700_mock2.html" class="tab-btn">📋 Full Mock</a>
+    <a href="dp700_mock3.html" class="tab-btn">🎯 Mock 3</a>
+    <a href="dp700_mock4.html" class="tab-btn">🎓 Mock 4</a>
+    <a href="dp700_mock5.html" class="tab-btn">🏆 Mock 5</a>
+    <a href="dp700_mock6.html" class="tab-btn">🌟 Mock 6</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="plan-top">
+    <span class="count" id="planCount">0 / 73 tasks</span>
+    <div class="bar"><div class="fill" id="planFill"></div></div>
+    <button onclick="jumpToday()">Jump to today</button>
+    <button class="reset" onclick="resetPlan()">Reset checkboxes</button>
+  </div>
+  <div class="plan">
+<h2>Exam facts and what changed</h2>
+<p>Your Oct 26 sitting runs on the <strong>Oct 19, 2026 skills outline</strong>, which goes live one week before your exam. Your Study Hub notes were fact-checked against the July 21 outline on Sep 6, so only the Oct 19 changes are new.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exam</td>
+<td>DP-700: Implementing Data Engineering Solutions Using Microsoft Fabric</td>
+</tr>
+<tr>
+<td>Certification</td>
+<td>Microsoft Certified: Fabric Data Engineer Associate</td>
+</tr>
+<tr>
+<td>Exam time / seat time</td>
+<td>100 min / 120 min (seat time covers instructions and agreement)</td>
+</tr>
+<tr>
+<td>Questions</td>
+<td>Microsoft says most exams have 40–60; DP-700's count is not published</td>
+</tr>
+<tr>
+<td>Pass mark</td>
+<td>700 / 1000</td>
+</tr>
+<tr>
+<td>Domains</td>
+<td>Implement &amp; manage · Ingest &amp; transform · Monitor &amp; optimize, each 30–35%</td>
+</tr>
+<tr>
+<td>Microsoft Learn in the exam</td>
+<td>Opens in a split pane; learn.microsoft.com only; Ctrl+F works on a page; the timer keeps running</td>
+</tr>
+<tr>
+<td>Breaks</td>
+<td>Allowed, but the clock runs and you cannot return to any question seen before the break</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What changed since your notes</strong></p>
+<ul>
+<li><strong>Jul 21, 2026:</strong> "Configure Dataflows Gen2 workspace settings" was replaced by <strong>"Configure Apache Airflow workspace settings."</strong> Your Sep 6 notes cover it; the tracker's topic list did not until today's update.</li>
+<li><strong>Oct 19, 2026:</strong> Microsoft's change log marks <strong>workspace settings</strong> and <strong>optimize performance</strong> as "Minor" changes and everything else "No change." The page does not spell out the exact wording delta, so give those two areas an extra pass on Oct 19 instead of guessing.</li>
+<li>Easy-to-skip bullets that are on the current list: Fabric audit logs, OneLake security, database projects, native tables vs OneLake shortcuts in Real-Time Intelligence, and Query acceleration for shortcuts vs standard shortcuts.</li>
+</ul>
+<h2>Strategy</h2>
+<p>Spend weeks 1–2 closing Domain 1 and Domain 2 gaps, then give Domain 3 error resolution extra time, since your last-attempt report flagged it even though Mock 6 scored Domain 3 at 100%; every week ends with a timed mock and a hard score gate.</p>
+<p><strong>Time budget (assumed):</strong> about 1.5 hours on weekday evenings and 4 hours on Saturday and Sunday, roughly 40 hours in total. If a day slips, move its block to the next weekend morning rather than skipping it.</p>
+<p><strong>Method, same loop that worked before:</strong> practice question → wrong answer → gotcha box in <code>dp700_notes.html</code> or <code>dp700_kql.html</code> → retry the same topic 48 hours later. For every miss, write one line on why each wrong option is wrong. You have seen Mocks 2–5 and the Microsoft Practice Assessment before, so recognition inflates those scores; the explain-every-option rule is how you tell real recall from memory of the answer key.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Topic area</th>
+<th>Last known level</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Security &amp; governance: workspace and item permissions, RLS/CLS/OLS, masking, OneLake security, labels, endorsement, audit logs</td>
+<td>Domain 1 at 57% on Mock 6</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Lifecycle: Git integration, database projects, deployment pipelines</td>
+<td>Several logged traps</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Workspace settings: Spark, domains, OneLake, Apache Airflow</td>
+<td>Airflow is the newest bullet</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Loading patterns: full vs incremental, CDC, dimensional prep, COPY INTO vs CTAS</td>
+<td>Domain 2 at 55% on Mock 6</td>
+<td>High</td>
+</tr>
+<tr>
+<td>T-SQL grouping: GROUPING SETS vs ROLLUP vs CUBE</td>
+<td>Known weak spot</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Pipelines: Copy activity, parameters, dynamic expressions</td>
+<td>Known weak spot</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Real-Time Intelligence: Eventstream, Eventhouse, KQL, windowing</td>
+<td>Known weak spot</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Error resolution (Domain 3): pipeline, Dataflow Gen2, notebook, Eventhouse, Eventstream, T-SQL, shortcut errors</td>
+<td>Flagged weak on last attempt; Mock 6 hid it</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Spark and Delta Lake</td>
+<td>Strong</td>
+<td>Maintain</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Readiness gates</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Gate</th>
+<th>Target</th>
+<th>If you miss it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sat Oct 10</td>
+<td>Mock 2, timed at 100 min</td>
+<td>75%+, no domain below 65%</td>
+<td>Repeat the two lowest Week 1 days before starting Week 2</td>
+</tr>
+<tr>
+<td>Sat Oct 17</td>
+<td>Microsoft Practice Assessment + community Mock 1</td>
+<td>80%+ on the assessment, 75%+ on the mock</td>
+<td>Swap Mon–Tue of Week 3 to the weakest domain</td>
+</tr>
+<tr>
+<td>Thu Oct 22</td>
+<td>Community Mock 3, timed</td>
+<td>80%+</td>
+<td>Below 70%: check the reschedule cutoff in your Pearson VUE confirmation and decide that day</td>
+</tr>
+</tbody>
+</table></div>
+<p>Your tracker's last-attempt banner lists Security &amp; Governance, Streaming and Error Resolution as weak; the official report outranks any mock, so those three lead each week.</p>
+<h2>Week 1 (Sat Oct 3 – Fri Oct 9): Domain 1</h2>
+<p>This week closes the security, lifecycle and workspace-settings gaps that pulled Domain 1 down to 57%. Do each hands-on step in a trial or sandbox workspace, not a production one.</p>
+<div class="day" data-date="2026-10-03"><h4>Sat Oct 3 · 2 h · Baseline</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t001"><span>Read the Oct 19 skills list end to end and rate every bullet red, amber or green in <code>DP700_Tracker.html</code></span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t002"><span>Take the Microsoft Practice Assessment once, cold, and log the per-domain scores</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t003"><span>Read the trap checklist at the end of this doc, then push the updated Study Hub files to GitHub</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-04"><h4>Sun Oct 4 · 4 h · Workspace, item and OneLake access</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t004"><span>Build a matrix: Admin, Member, Contributor, Viewer × create items, share, manage access, read via SQL endpoint, run notebooks</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t005"><span>Share one lakehouse three ways (Read, ReadData, ReadAll) and test what the SQL endpoint and Spark each expose</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t006"><span>Create a OneLake security role scoped to one table or folder; check on Learn which workspace roles it applies to and which bypass it</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t007"><span>Write the gotchas into section 1.6 of <code>dp700_notes.html</code></span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-05"><h4>Mon Oct 5 · 1.5 h · Warehouse granular security</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t008"><span>RLS: write a predicate function and <code>CREATE SECURITY POLICY</code>; test it with <code>EXECUTE AS USER</code></span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t009"><span>Column-level: <code>GRANT SELECT</code> on a column list; object-level: <code>DENY</code> on a table or view</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t010"><span>Dynamic data masking: try <code>default()</code>, <code>email()</code>, <code>partial()</code>, <code>random()</code>; then grant <code>UNMASK</code> and compare</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-06"><h4>Tue Oct 6 · 1.5 h · Governance</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t011"><span>Sensitivity labels: who can apply them and how they flow to downstream items</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t012"><span>Endorsement: Promoted vs Certified vs Master data, and who is allowed to certify</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t013"><span>Fabric audit logs: find on Learn where audit events are searched and which role is needed</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-07"><h4>Wed Oct 7 · 1.5 h · Lifecycle management</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t014"><span>Git integration: connect a workspace to a branch, commit, then update from Git; note which item types are supported</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t015"><span>Database project: create an SDK-style project for a Warehouse, build it, publish it once</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t016"><span>Deployment pipelines: stages, assigning vs deploying, deployment rules, pipeline admin vs workspace roles</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-08"><h4>Thu Oct 8 · 1.5 h · Workspace settings</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t017"><span>Spark: starter vs custom pools, environments, high concurrency, native execution engine, runtime version</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t018"><span>Domains: create one, assign workspaces, domain admin vs domain contributor</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t019"><span>OneLake workspace settings</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t020"><span>Apache Airflow: read the Airflow job concepts page and the workspace setting, then write 5 Q&amp;A pairs into your notes</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-09"><h4>Fri Oct 9 · 1.5 h · Orchestration</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t021"><span>Decision table: Dataflow Gen2 vs pipeline vs notebook (skill set, scale, code vs low-code, orchestration)</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t022"><span>Scheduled vs event-based triggers, including storage events and job events</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t023"><span>Notebook orchestration: <code>notebookutils.notebook.run</code> vs <code>runMultiple</code> with a DAG and dependencies</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t024"><span>Pipelines: parameters, <code>@pipeline().parameters</code>, <code>@activity('X').output</code>, and the Lookup → ForEach metadata-driven pattern</span></label></li>
+</ul></div>
+<h2>Week 2 (Sat Oct 10 – Fri Oct 16): Domain 2 and Real-Time Intelligence</h2>
+<p>This week targets loading patterns, GROUPING SETS, Copy activity and Real-Time Intelligence, the four Domain 2 areas you logged as weak.</p>
+<div class="day" data-date="2026-10-10"><h4>Sat Oct 10 · 4 h · Gate, then loading patterns</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t025"><span>Mock 2 timed at 100 min, not its 130; log domain scores and write a gotcha for every miss</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t026"><span>Full vs incremental loads: watermark column, CDC, and mirroring as the no-code option</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t027"><span>Upserts: Delta <code>MERGE</code> in a notebook and the T-SQL version in a Warehouse</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t028"><span>Dimensional prep: surrogate keys, SCD Type 1 vs Type 2, late-arriving dimension rows</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-11"><h4>Sun Oct 11 · 4 h · Batch ingestion</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t029"><span>Pick a data store: one line each on when to use Lakehouse, Warehouse, Eventhouse and SQL database</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t030"><span>Shortcuts: internal vs ADLS Gen2 vs S3, shortcut caching, and whose permissions apply</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t031"><span>Mirroring: which sources, what it replicates, where it lands</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t032"><span>Copy activity: staging, fault tolerance, write behavior, degree of parallelism</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t033"><span>Warehouse loading: one working example each of <code>COPY INTO</code>, CTAS and <code>INSERT … SELECT</code></span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-12"><h4>Mon Oct 12 · 1.5 h · T-SQL grouping drill</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t034"><span>Write one sales query three ways: <code>ROLLUP(Region, City)</code>, <code>CUBE(Region, City)</code>, <code>GROUPING SETS ((Region, City), (Region), ())</code>; predict row counts before running</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t035"><span>Use <code>GROUPING()</code> to label subtotal and grand-total rows</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t036"><span>Window functions: <code>ROW_NUMBER()</code> to dedupe, <code>LAG</code>/<code>LEAD</code> to spot late rows</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-13"><h4>Tue Oct 13 · 1.5 h · PySpark transforms</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t037"><span><code>dropDuplicates</code> vs <code>distinct</code>; <code>fillna</code>, <code>dropna</code>, <code>coalesce</code> for missing values</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t038"><span><code>groupBy().agg()</code> and PySpark window functions</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t039"><span>Denormalize: join a fact to its dimensions, with a broadcast join for the small one</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t040"><span>For four sample scenarios, choose Dataflow Gen2, notebook, KQL or T-SQL and say why</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-14"><h4>Wed Oct 14 · 1.5 h · Real-Time Intelligence, part 1</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t041"><span>Choose a streaming engine: Eventstream vs Spark Structured Streaming vs KQL</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t042"><span>Eventstream: sources, destinations, transformations, derived streams</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t043"><span>Eventhouse: native tables vs OneLake shortcuts, and Query acceleration vs standard shortcuts</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-15"><h4>Thu Oct 15 · 1.5 h · KQL</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t044"><span>Redo all 11 exercises in <code>dp700_kql.html</code> without looking at the answers</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t045"><span>Operators: <code>where</code>, <code>project</code>, <code>extend</code>, <code>summarize … by bin()</code>, <code>arg_max</code>, join kinds, <code>make-series</code></span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t046"><span>Update policies vs materialized views: what each is for</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-16"><h4>Fri Oct 16 · 1.5 h · Streaming patterns</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t047"><span>Window types: tumbling, hopping, sliding, session, snapshot; sketch each over the same 10 events</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t048"><span>Structured Streaming: <code>readStream</code>, <code>writeStream</code>, <code>checkpointLocation</code>, trigger, <code>withWatermark</code>, <code>foreachBatch</code></span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t049"><span>Trace one streaming load end to end: Eventstream → Eventhouse, and Eventstream → Lakehouse</span></label></li>
+</ul></div>
+<h2>Week 3 (Sat Oct 17 – Fri Oct 23): Domain 3 and full mocks</h2>
+<p>This week keeps Domain 3 sharp, absorbs the Oct 19 outline change, and moves from topic study to timed full-length mocks.</p>
+<div class="day" data-date="2026-10-17"><h4>Sat Oct 17 · 4 h · Gate</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t050"><span>Microsoft Practice Assessment, fresh attempt; target 80%+</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t051"><span>Community Mock 1 (kengio study guide) timed at 100 min; target 75%+</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t052"><span>A gotcha for every miss, with a line on why each wrong option is wrong</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-18"><h4>Sun Oct 18 · 4 h · Monitor and troubleshoot</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t053"><span>Monitoring hub vs Capacity Metrics app vs workspace monitoring: which question each one answers</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t054"><span>Semantic model refresh history; an Activator alert on a failed pipeline or job</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t055"><span>One error drill each: pipeline activity output and retries; Dataflow Gen2 refresh history; notebook Spark UI and logs; Eventhouse <code>.show ingestion failures</code>; Eventstream runtime logs; T-SQL syntax a Warehouse rejects; a broken shortcut (path, connection, permission)</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-19"><h4>Mon Oct 19 · 1.5 h · New outline goes live; optimize part 1</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t056"><span>Re-open the official study guide and compare the workspace-settings and optimize-performance bullets with this doc; add anything new to your notes</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t057"><span>Lakehouse tables: <code>OPTIMIZE</code>, V-Order, Z-Order, <code>VACUUM</code>, partitioning, optimized write</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t058"><span>Warehouse: statistics, caching, and the query insights views</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-20"><h4>Tue Oct 20 · 1.5 h · Optimize part 2</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t059"><span>Spark: pool sizing, high concurrency sessions, native execution engine, shuffle partitions</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t060"><span>Pipelines: ForEach sequential vs parallel and batch count, Copy staging and throughput</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t061"><span>Eventstream and Eventhouse: caching vs retention policy, update policies, materialized views</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-21"><h4>Wed Oct 21 · 1.5 h · Mock and fix</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t062"><span>Community Mock 2 timed at 100 min</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t063"><span>Redo the three lowest sub-topics with a matching lab from <code>dp700_labs.html</code></span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-22"><h4>Thu Oct 22 · 1.5 h · Final gate</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t064"><span>Community Mock 3 timed at 100 min; target 80%+</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t065"><span>Decide: keep Oct 26, or under 70% check the reschedule cutoff in your Pearson VUE confirmation today</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-23"><h4>Fri Oct 23 · 1 h · Exam UI and Learn lookups</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t066"><span>Run the exam sandbox: case study tabs, mark for review, review screen</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t067"><span>Lookup drill: find five facts on learn.microsoft.com in under 90 seconds each (a masking function's syntax, <code>VACUUM</code>'s default retention, deployment rule types, shortcut source types, a KQL operator's arguments)</span></label></li>
+</ul></div>
+<h2>Final 48 hours and exam day</h2>
+<p>Stop learning new material on Saturday at noon; the last two days are for recall, logistics and sleep.</p>
+<div class="day" data-date="2026-10-24"><h4>Sat Oct 24 · 2 h · Light review</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t068"><span>Re-read the trap checklist and every gotcha box in <code>dp700_notes.html</code></span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t069"><span>One untimed 30-question set from the kengio live quiz; review only</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t070"><span>Nothing new after noon</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-25"><h4>Sun Oct 25 · 1 h · Recall and logistics</h4><ul class="tasks">
+<li class="task"><label><input type="checkbox" data-id="t071"><span>Trap checklist once more, the KQL operator order, and ROLLUP vs CUBE vs GROUPING SETS</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t072"><span>Online exam: run the Pearson VUE system test on the same machine and network, clear the desk, set up a closed room, keep ID ready; test center: plan the route</span></label></li>
+<li class="task"><label><input type="checkbox" data-id="t073"><span>Normal bedtime</span></label></li>
+</ul></div>
+<div class="day" data-date="2026-10-26"><h4>Mon Oct 26 · Exam playbook</h4><ol>
+<li>Light breakfast and one read of the trap checklist. No new material.</li>
+<li>Pace: check the question count on the first screen and set a halfway checkpoint around minute 45.</li>
+<li>First pass: answer what you know and mark for review anything that needs a lookup.</li>
+<li>Use Microsoft Learn only on marked questions, about 2 minutes each. Microsoft says it is designed so you cannot look up everything in time.</li>
+<li>Read each question's last line first and find the qualifier: least privilege, minimal development effort, lowest latency, no-code. It usually decides between the two plausible options.</li>
+<li>Case studies: skim the requirements, read the question, then go back to the exact requirement it tests.</li>
+<li>Avoid breaks: the clock runs and you lose access to every question seen before the break.</li>
+<li>Never leave a question blank; pick your best option and move on.</li>
+</ol></div>
+<h2>Trap checklist</h2>
+<p>These are the mistakes you made in earlier practice; re-read them before every mock and once on exam morning.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Trap</th>
+<th>Remember</th>
+<th>Notes section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pipeline admin role</td>
+<td>Manages the deployment pipeline only; it is not workspace Admin or a workspace role</td>
+<td>1.4</td>
+</tr>
+<tr>
+<td>Assign vs deploy</td>
+<td>Assigning a workspace to a stage only links it; deploying is a separate step</td>
+<td>1.4</td>
+</tr>
+<tr>
+<td>Database projects</td>
+<td>SDK-style is the Fabric-native project type</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>Native execution engine and UDFs</td>
+<td>Your Sep 6 fact-check reversed the old "disable it for UDFs" advice: the engine now supports UDFs</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td>High concurrency</td>
+<td>Sessions are shared only within one user's notebooks</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td>COPY INTO</td>
+<td>Warehouse only; know the wildcard path syntax and the rejected-row location option</td>
+<td>2.4</td>
+</tr>
+<tr>
+<td>CTAS</td>
+<td>Lowest-effort way to combine Warehouse and Lakehouse data into a new table</td>
+<td>2.4</td>
+</tr>
+<tr>
+<td>Least privilege on one item</td>
+<td>Item permission, never workspace Viewer, which exposes every item</td>
+<td>1.6</td>
+</tr>
+<tr>
+<td>Eventhouse vs Lakehouse</td>
+<td>Eventhouse is the real-time KQL store; a PySpark + SQL batch scenario points to Lakehouse</td>
+<td>2.7</td>
+</tr>
+<tr>
+<td>KQL dynamic columns</td>
+<td><code>extend</code> to cast the field, filter on the extended column, then <code>project</code></td>
+<td>KQL Ex. 11</td>
+</tr>
+<tr>
+<td>ROLLUP / CUBE / GROUPING SETS</td>
+<td><code>ROLLUP(a,b)</code> = (a,b), (a), (); <code>CUBE(a,b)</code> adds (b); <code>GROUPING SETS</code> = only the sets you list</td>
+<td>2.4</td>
+</tr>
+<tr>
+<td>Qualifier words</td>
+<td>Least privilege, minimal effort, lowest latency and no-code change the right answer</td>
+<td>All</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Sources</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-700" target="_blank" rel="noopener">Study Guide for Exam DP-700, skills measured as of Oct 19, 2026</a> (Microsoft Learn)</li>
+<li><a href="https://learn.microsoft.com/en-us/credentials/certifications/fabric-data-engineer-associate/" target="_blank" rel="noopener">Microsoft Certified: Fabric Data Engineer Associate</a> (Microsoft Learn): Oct 19 update notice, 100-minute duration, Practice Assessment and exam sandbox links</li>
+<li><a href="https://learn.microsoft.com/en-us/credentials/support/exam-duration-exam-experience" target="_blank" rel="noopener">Exam duration and exam experience</a> (Microsoft Learn): seat time, breaks, Microsoft Learn access during the exam</li>
+<li><a href="https://github.com/kengio/dp-700-study-guide" target="_blank" rel="noopener">kengio/dp-700-study-guide</a> (community, MIT license): July 2026 change note, 3 free mocks, live practice quiz; verify its answers against Learn</li>
+</ul>
+  </div>
+  <p style="margin-top:24px;font-size:12px;color:var(--muted)">Source: <code>DP700_Pass_Plan.md</code> in this folder, exported from the Claude Doc on Oct 3, 2026. Checkbox progress is saved in this browser only.</p>
+</div>
+
+<script>
+const PLAN_KEY = 'dp700_plan_v1';
+const DEFAULT_EXAM_DATE = '2026-10-26';
+function loadPlan() { try { return JSON.parse(localStorage.getItem(PLAN_KEY)) || {}; } catch (e) { return {}; } }
+function savePlan(s) { try { localStorage.setItem(PLAN_KEY, JSON.stringify(s)); } catch (e) {} }
+function getExamDate() {
+  let s = null; try { s = localStorage.getItem('dp700_exam_date'); } catch (e) {}
+  return (s && new Date(s + 'T23:59:59') >= new Date()) ? s : DEFAULT_EXAM_DATE;
+}
+function render() {
+  const st = loadPlan();
+  const boxes = document.querySelectorAll('li.task input');
+  let done = 0;
+  boxes.forEach(b => { b.checked = !!st[b.dataset.id]; if (b.checked) done++; });
+  document.getElementById('planCount').textContent = done + ' / ' + boxes.length + ' tasks';
+  document.getElementById('planFill').style.width = Math.round(done / boxes.length * 100) + '%';
+  document.querySelectorAll('.day').forEach(d => {
+    const bs = d.querySelectorAll('li.task input');
+    d.classList.toggle('done', bs.length > 0 && [...bs].every(b => b.checked));
+  });
+}
+document.addEventListener('change', e => {
+  if (!e.target.matches('li.task input')) return;
+  const st = loadPlan(); st[e.target.dataset.id] = e.target.checked; savePlan(st); render();
+});
+function resetPlan() {
+  if (!confirm('Clear all plan checkboxes in this browser?')) return;
+  try { localStorage.removeItem(PLAN_KEY); } catch (e) {}
+  render();
+}
+function todayIso() { const t = new Date(); return t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0'); }
+function markDays() {
+  const t = todayIso();
+  document.querySelectorAll('.day').forEach(d => {
+    d.classList.toggle('today', d.dataset.date === t);
+    d.classList.toggle('past', d.dataset.date < t);
+  });
+}
+function jumpToday() {
+  const t = todayIso();
+  const days = [...document.querySelectorAll('.day')];
+  const target = days.find(d => d.dataset.date === t) || days.find(d => d.dataset.date > t) || days[days.length - 1];
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function updateCountdown() {
+  const exam = new Date(getExamDate() + 'T09:00:00');
+  document.getElementById('examDateText').textContent = exam.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  const diff = exam - new Date();
+  const el = document.getElementById('countdown');
+  if (diff <= 0) { el.textContent = 'Exam day'; return; }
+  el.textContent = Math.floor(diff / 86400000) + 'd ' + Math.floor((diff % 86400000) / 3600000) + 'h remaining';
+}
+render(); markDays(); updateCountdown(); setInterval(updateCountdown, 60000);
+</script>
+</body>
+</html>
