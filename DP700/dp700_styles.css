@@ -227,3 +227,6 @@ strong { font-weight: 700; }
   .page { padding: 16px; }
 }
 .nav-sep{color:#4a5568;padding:0 4px;font-size:14px;align-self:center;user-select:none}
+
+/* ── New-topic tag (Oct 2026 outline sync) ── */
+.tag-new { font-size: 10px; color: #0e7490; font-weight: 700; background: #cffafe; padding: 1px 6px; border-radius: 4px; }

@@ -214,7 +214,7 @@
   <span style="font-size:22px">🎯</span>
   <h1>DP-700 Study Hub</h1>
   <span class="badge">RETAKE</span>
-  <div class="exam-date">Exam: <strong id="examDateText">Mon Jun 2, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span>
+  <div class="exam-date">Exam: <strong id="examDateText">Mon Oct 26, 2026</strong> &nbsp;·&nbsp; <span id="countdown"></span>
     <button onclick="toggleExamDateEdit()" title="Change exam date" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:0.75;margin-left:4px">✏️</button>
     <input type="date" id="examDateInput" style="display:none;margin-left:6px;font-size:12px;padding:2px 6px;border-radius:4px;border:1px solid var(--border)" onchange="setExamDate(this.value)">
   </div>
@@ -224,6 +224,7 @@
   <div class="nav-row">
     <span class="nav-row-label">📚 Study</span>
     <a href="DP700_Tracker.html" class="tab-btn">📊 Dashboard</a>
+    <a href="dp700_plan.html" class="tab-btn">🗓️ Pass Plan</a>
     <a href="dp700_notes.html" class="tab-btn">📝 Study Notes</a>
     <a href="dp700_pb_notes.html" class="tab-btn">📖 PB Notes</a>
     <a href="dp700_official_notes.html" class="tab-btn">📄 Official Notes</a>
@@ -275,7 +276,7 @@
   </div>
 
   <!-- Tips -->
-  <div style="background:#ecfeff;border:1px solid #a5f3fc;border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:#0e7490">✅ All 15 lab links re-verified live (HTTP 200) against microsoftlearning.github.io/mslearn-fabric on 2026-09-06. Note: the exam date badge above (Jun 2, 2026) is in the past — update it if you've rescheduled.</div>
+  <div style="background:#ecfeff;border:1px solid #a5f3fc;border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:#0e7490">✅ All 15 lab links re-verified live (HTTP 200) against microsoftlearning.github.io/mslearn-fabric on 2026-09-06.</div>
   <div class="labs-tip">
     <strong>💡 How to use these labs:</strong> These are the 15 official hands-on labs mapped to DP-700 by Microsoft Learning.
     Each lab runs in a free Microsoft Fabric trial environment — click <strong>Open Lab ↗</strong> to go directly to the instructions.
@@ -615,9 +616,9 @@ function toggleExpand(id, btn) {
 }
 
 const EXAM_DATE_KEY = 'dp700_exam_date';
-const DEFAULT_EXAM_DATE = '2026-06-02';
+const DEFAULT_EXAM_DATE = '2026-10-26';
 
-function getExamDate() { return localStorage.getItem(EXAM_DATE_KEY) || DEFAULT_EXAM_DATE; }
+function getExamDate() { const s = localStorage.getItem(EXAM_DATE_KEY); return (s && new Date(s + 'T23:59:59') >= new Date()) ? s : DEFAULT_EXAM_DATE; }
 
 function setExamDate(dateStr) {
   if (!dateStr) return;
