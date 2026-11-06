@@ -352,6 +352,30 @@
           Microsoft now calls this feature <strong>"OneLake security"</strong> — it's the <em>data-plane</em> security model, distinct from workspace roles + item permissions (the <em>control-plane</em> model). Create a role on an item → scope it to folders, tables, schemas, <strong>and now also rows/columns directly</strong> → assign Entra users or groups.<br>
           This is SEPARATE from workspace roles. It only restricts/grants users in the <strong>Viewer</strong> workspace role or with <strong>Read</strong> item permission — Admins/Members/Contributors already have full data access regardless. Every lakehouse ships with a built-in <strong>DefaultReader</strong> role you can edit or delete.
         </div>
+        <h4>Item Permissions at a Glance (what each one actually exposes)</h4>
+        <table class="dt">
+          <tr><th>Item permission</th><th>See item metadata</th><th>See data in SQL</th><th>See data in OneLake</th></tr>
+          <tr><td><strong>Write</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td><strong>Read</strong></td><td>Yes</td><td>No</td><td>No</td></tr>
+          <tr><td><strong>ReadData</strong></td><td>No</td><td>Only in <strong>Delegated</strong> mode</td><td>No</td></tr>
+          <tr><td><strong>ReadAll</strong></td><td>No</td><td>No</td><td>Only through the <strong>DefaultReader</strong> role</td></tr>
+        </table>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — ReadData is NOT Read (missed in practice, 2026-11-06)</strong>
+          A user has <strong>only ReadData</strong> on a lakehouse (no workspace role, no OneLake security role).<br><br>
+          ❌ "They see nothing, or only metadata" — wrong. ReadData does <em>not</em> give item metadata (that is <strong>Read</strong>).<br>
+          ✅ They can query data through the <strong>SQL analytics endpoint only when it is in Delegated identity mode</strong>, and they see <strong>no data in OneLake</strong>.<br><br>
+          <strong>Mode facts that sit next to this question:</strong><br>
+          • New SQL analytics endpoints start in <strong>delegated identity mode</strong> (default). An Admin or Member must switch to <strong>User's identity mode</strong>.<br>
+          • Both modes need <strong>Read</strong> item permission to connect.<br>
+          • In User's identity mode, OneLake security roles govern table access and you can't define RLS/CLS/OLS in T-SQL; dynamic data masking isn't supported there.<br>
+          • Switching modes makes endpoints temporarily unavailable across the whole workspace, cancels running and queued queries, and removes inline functions (TVFs, scalar functions). Data is not affected.<br>
+          <em>Source: Microsoft Learn — OneLake security overview; SQL analytics endpoint security modes (checked 2026-11-06).</em>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: A user has only the ReadData item permission on a lakehouse. What can they see?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">Data through the SQL analytics endpoint <strong>only in Delegated mode</strong> (the default for new endpoints). <strong>No</strong> data in OneLake and <strong>no</strong> item metadata. ReadAll opens OneLake data only through DefaultReader; Read gives metadata but no data.</div>
+        </div>
         <div class="qa">
           <div class="qa-q">Q: A user must read only HR table in a lakehouse but nothing else in the workspace. Two steps needed?</div>
           <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
@@ -533,6 +557,26 @@
           <tr><td><strong>Git Support</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
           <tr><td><strong>Streaming</strong></td><td>Dataflow Gen2 streaming (preview)</td><td>No</td><td>Spark Structured Streaming</td></tr>
         </table>
+        <h4>Dataflow Gen2 Destinations: the Settings That Decide the Answer</h4>
+        <div class="priority-box"><strong>🚨 Exam Gotcha — Warehouse destination = fixed schema, staging on, same workspace (missed in practice, 2026-11-06)</strong>
+          Dataflow Gen2 → <strong>Fabric Warehouse</strong>:<br>
+          ✅ <strong>Fixed schema only</strong> (dynamic schema is not supported for a Warehouse).<br>
+          ✅ <strong>Staging is required</strong> before the write.<br>
+          ✅ Only loading into the <strong>same workspace as the dataflow</strong> is supported.<br>
+          ❌ Warehouse + dynamic schema, staging off, or a Warehouse in another workspace.<br><br>
+          <strong>Settings that sit next to this question:</strong><br>
+          • <strong>Update methods:</strong> Replace (data dropped and replaced each refresh) and Append (added). Fabric KQL databases and Azure Data Explorer don't support Replace.<br>
+          • <strong>Use automatic settings</strong> (default for new tables; Lakehouse, Azure SQL Database, Snowflake) = Replace + managed mapping + <strong>drop and recreate table on every refresh</strong> — this can remove relationships/measures on the table.<br>
+          • Manual + Replace: <strong>Dynamic schema</strong> drops and recreates the table when a schema difference is detected; <strong>Fixed schema</strong> only drops/replaces rows (relationships and measures stay) and fails the publish if the query schema no longer matches. When appending, schema changes aren't possible.<br>
+          • <strong>Lakehouse destination:</strong> V-Order (default on; keep on for read-heavy/Direct Lake tables), Synchronize SQL analytics endpoint metadata (default on; off = stale SQL results until next sync).<br>
+          • <strong>Incremental refresh:</strong> destinations Lakehouse, Warehouse, Azure SQL Database; only <strong>Replace</strong>; destination must be <strong>fixed schema</strong> and explicitly defined (the default destination configuration isn't supported).<br>
+          <em>Source: Microsoft Learn — Dataflow Gen2 data destinations and managed settings; Incremental refresh in Dataflow Gen2 (checked 2026-11-06).</em>
+        </div>
+        <div class="qa">
+          <div class="qa-q">Q: A Dataflow Gen2 loads into a Fabric Warehouse in the same workspace. Which destination configuration is valid?</div>
+          <button class="qa-toggle" onclick="toggleQA(this)">▶ Show Answer</button>
+          <div class="qa-answer">Fixed schema with staging on, in the same workspace as the dataflow. A dynamic schema isn't supported for a Warehouse destination.</div>
+        </div>
         <div class="exercise">
           <h4>🖥️ Hands-On: Compare Dataflow Gen2 vs Pipeline for the Same ETL Task</h4>
           <ol>
