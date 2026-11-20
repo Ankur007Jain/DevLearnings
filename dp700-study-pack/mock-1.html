@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock 1 · DP-700 Free Study Pack</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+<nav class="top">
+  <a class="home" href="index.html">DP-700 Study Pack</a>
+  <a href="reading-pack.html">Reading pack</a>
+  <a href="question-bank.html">Question bank</a>
+  <a href="mock-1.html">Mock 1</a>
+  <a href="mock-2.html">Mock 2</a>
+  <a href="mock-3.html">Mock 3</a>
+</nav>
+<h1 id="dp-700-mock-1">DP-700 Mock 1</h1>
+<p>45 questions in three parts, starting with a case study. One best
+answer per question unless the question says otherwise. Each answer is
+hidden under its question, and the full key is at the end. All companies
+and scenarios are fictional, and the questions were written from
+Microsoft Learn documentation, not taken from the real exam.</p>
+<h2 id="part-1-case-study-tallgrass-freight-fictional">Part 1, case
+study: Tallgrass Freight (fictional)</h2>
+<p><strong>Overview.</strong> Tallgrass Freight runs a trucking fleet
+and is building its analytics on Fabric.</p>
+<p><strong>Existing environment.</strong> - One F64 capacity. Workspaces
+<code>Ops-Dev</code>, <code>Ops-Test</code> and <code>Ops-Prod</code>
+are stages of one deployment pipeline. - An Azure SQL database,
+<code>Dispatch</code>, is the operational system. CDC is enabled on
+<code>Dispatch</code> for a legacy tool that is being retired. - Trucks
+send GPS events to an Azure event hub with 2 partitions. An eventstream
+reads from it. - Warehouse <code>FleetDW</code> has a
+<code>Drivers</code> table with a row-level security policy that filters
+by region, and a <code>LicenseNo</code> column. - A notebook,
+<code>LoadFleet</code>, uses a different default lakehouse in each
+stage. It runs nightly on a schedule. - Workspace monitoring is not
+enabled.</p>
+<p><strong>Business requirements.</strong> 1. <code>Dispatch</code> must
+be replicated into OneLake in near real time. 2. Auditors may query
+<code>Drivers</code>, but any query that names <code>LicenseNo</code>
+must fail. 3. The on-call team must get an email when the nightly
+<code>LoadFleet</code> run fails, at no extra cost.</p>
+<p><strong>Technical requirements.</strong> - No pipelines or Copy jobs
+may be added for replication. - <code>LoadFleet</code> must pick up the
+correct lakehouse after every deployment, with no manual step. - The
+on-call team is an Entra security group plus a vendor engineer who has a
+B2B guest account.</p>
+<p><strong>Known issues.</strong> - A workspace Admin validating
+<code>Drivers</code> sees only some rows. - GPS ingestion is capped near
+10 MB/s, even after the eventstream’s throughput level was set to
+High.</p>
+<p><strong>Q1.</strong> What must happen so <code>Dispatch</code> can
+meet requirement 1? - <strong>A.</strong> Create a Copy job with
+CDC-based incremental copy - <strong>B.</strong> Create a metadata
+mirror of <code>Dispatch</code> - <strong>C.</strong> Disable CDC on
+<code>Dispatch</code>, then set up database mirroring -
+<strong>D.</strong> Mirror from a read-only secondary replica of
+<code>Dispatch</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> An Azure SQL database can’t be mirrored
+while CDC is enabled, and only a writable primary can be mirrored.</p>
+</details>
+<p><strong>Q2.</strong> What explains the GPS ingestion cap? -
+<strong>A.</strong> The event hub has fewer than four partitions, which
+limits throughput whatever the level - <strong>B.</strong> The F64
+capacity is too small for the High level - <strong>C.</strong> The
+eventstream’s retention period is too short - <strong>D.</strong> The
+throughput level applies only to destinations</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Fewer than four Event Hubs partitions
+limits throughput whatever the level.</p>
+</details>
+<p><strong>Q3.</strong> Which change meets requirement 2 and fixes the
+Admin’s issue? - <strong>A.</strong> Mask <code>LicenseNo</code> with
+dynamic data masking, and grant the Admin <code>UNMASK</code> -
+<strong>B.</strong> Grant auditors <code>SELECT</code> on the allowed
+columns only, and change the security predicate to include the Admin -
+<strong>C.</strong> Grant auditors <code>SELECT</code> on the allowed
+columns only, and rely on the Admin role bypassing row-level security -
+<strong>D.</strong> Mask <code>LicenseNo</code> with dynamic data
+masking, and change the security predicate to include the Admin</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Column-level security makes a query that
+names the column fail; the row-level security predicate must allow the
+Admin, who doesn’t bypass it.</p>
+</details>
+<p><strong>Q4.</strong> How do you meet the <code>LoadFleet</code>
+lakehouse requirement? - <strong>A.</strong> Create a default lakehouse
+rule in the <code>Ops-Dev</code> stage - <strong>B.</strong> Create a
+parameter rule on the notebook in each target stage -
+<strong>C.</strong> Create a data source rule on the notebook in each
+target stage - <strong>D.</strong> Have the notebook’s owner create a
+default lakehouse rule in the <code>Ops-Test</code> and
+<code>Ops-Prod</code> stages</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> A notebook supports only a default
+lakehouse rule, created in the target stages by the item owner.</p>
+</details>
+<p><strong>Q5.</strong> How do you meet requirement 3? -
+<strong>A.</strong> Configure Schedule failure emails in the Monitor
+hub, with the security group and the vendor’s guest account as
+recipients - <strong>B.</strong> Create an Activator-based alert rule
+for the notebook - <strong>C.</strong> Put the notebook in a pipeline
+with an Outlook activity on failure - <strong>D.</strong> Configure
+Schedule failure emails, typing the vendor’s external email address</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Free schedule failure emails go to Entra
+users, groups and B2B guests. Activator rules are paid and need
+workspace monitoring.</p>
+</details>
+<h2 id="part-1-standalone-questions">Part 1, standalone questions</h2>
+<p><strong>Q6.</strong> In a <code>runMultiple</code> DAG, the
+<code>Load</code> notebook must start only after <code>Extract</code>
+finishes, and must retry once after 10 seconds if it fails. Which
+activity definition does this? - <strong>A.</strong>
+<code>{"name": "Load", "path": "LoadNb", "dependsOn": ["Extract"], "retry": 1}</code>
+- <strong>B.</strong>
+<code>{"name": "Load", "path": "LoadNb", "dependencies": ["Extract"], "retry": 1, "retryIntervalInSeconds": 10}</code>
+- <strong>C.</strong>
+<code>{"name": "Load", "path": "LoadNb", "concurrency": 1, "timeoutInSeconds": 10}</code>
+- <strong>D.</strong>
+<code>{"name": "Load", "path": "LoadNb", "args": {"after": "Extract", "retry": 1}}</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> In a DAG activity, dependencies sets the
+order, and retry with retryIntervalInSeconds sets the retry.</p>
+</details>
+<p><strong>Q7.</strong> A pipeline parameter <code>myNumber</code> holds
+42. Which expression returns it as a number, not a string? -
+<strong>A.</strong> <code>"@{pipeline().parameters.myNumber}"</code> -
+<strong>B.</strong> <code>"@@pipeline().parameters.myNumber"</code> -
+<strong>C.</strong> <code>"pipeline().parameters.myNumber"</code> -
+<strong>D.</strong> <code>"@pipeline().parameters.myNumber"</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> “<span class="citation"
+data-cites="pipeline">@pipeline</span>().parameters.x” returns the value
+with its type; “<span class="citation" data-cites="...">@...</span>”
+always returns a string; @@ escapes.</p>
+</details>
+<p><strong>Q8.</strong> Where can you create shortcuts in a lakehouse? -
+<strong>A.</strong> In Tables only at the top level; in Files at any
+folder level - <strong>B.</strong> In Tables at any level; in Files only
+at the top level - <strong>C.</strong> At any level in both -
+<strong>D.</strong> Only at the top level in both</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Shortcuts go only at the top level of
+Tables, but at any level of Files.</p>
+</details>
+<p><strong>Q9.</strong> A lakehouse has a shortcut
+<code>MyShortcut</code> to an ADLS Gen2 folder, and the user has write
+permission on that storage. The user deletes the folder
+<code>MyShortcut/Foo/Bar</code> in the lakehouse. What happens? -
+<strong>A.</strong> Only the shortcut is removed - <strong>B.</strong>
+The delete fails, because shortcuts are read-only - <strong>C.</strong>
+The <code>Bar</code> folder is deleted in the ADLS Gen2 account -
+<strong>D.</strong> <code>Bar</code> is hidden in the lakehouse but
+stays in ADLS Gen2</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Deleting inside a shortcut deletes in the
+target if you have permission there. Deleting the shortcut removes only
+the shortcut.</p>
+</details>
+<p><strong>Q10.</strong> An Azure SQL database with row-level security
+and dynamic data masking is mirrored to Fabric. What applies to the
+mirrored data in OneLake? - <strong>A.</strong> Both are enforced
+automatically on the mirrored data - <strong>B.</strong> Neither is
+propagated; the data must be secured again in Fabric -
+<strong>C.</strong> Row-level security is propagated, masking is not -
+<strong>D.</strong> Mirroring fails while either feature is in use</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Row-level security, column permissions
+and masking on the source aren’t propagated to the mirrored data.</p>
+</details>
+<p><strong>Q11.</strong> You create a OneLake shortcut in a KQL
+database. How do you query it? - <strong>A.</strong> By table name, like
+any KQL table - <strong>B.</strong> With the
+<code>materialized_view()</code> function - <strong>C.</strong> With
+<code>OPENROWSET</code> - <strong>D.</strong> With the
+<code>external_table()</code> function</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> A KQL database treats a shortcut as an
+external table, queried with external_table().</p>
+</details>
+<p><strong>Q12.</strong> A workspace has Amazon S3 shortcuts, and egress
+costs are high. Files are 200 MB to 3 GB. Which statement about shortcut
+caching is correct? - <strong>A.</strong> Turn it on in the workspace’s
+OneLake settings with a retention of up to 28 days; files over 1 GB
+won’t be cached - <strong>B.</strong> Turn it on with a 90-day
+retention; all files are cached - <strong>C.</strong> Caching isn’t
+available for S3 shortcuts - <strong>D.</strong> Turn it on per
+shortcut; only files over 1 GB are cached</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Caching covers S3, S3-compatible, GCS and
+gateway shortcuts; retention is 1 to 28 days; files over 1 GB aren’t
+cached.</p>
+</details>
+<p><strong>Q13.</strong> A capacity has used 30 minutes of future
+capacity. What do users experience? - <strong>A.</strong> Nothing; this
+is within overage protection - <strong>B.</strong> Interactive requests
+are rejected - <strong>C.</strong> Interactive requests are delayed by
+20 seconds - <strong>D.</strong> All requests are rejected</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> 10 to 60 minutes of future capacity is
+the interactive delay stage: a 20-second delay.</p>
+</details>
+<p><strong>Q14.</strong> A notebook that lists tables in a loop starts
+failing with HTTP 429. What is the documented fix? - <strong>A.</strong>
+Turn on Autoscale Billing for Spark - <strong>B.</strong> Retry with
+exponential backoff and jitter, honoring <code>Retry-After</code> -
+<strong>C.</strong> Grant the user ReadAll on the lakehouse -
+<strong>D.</strong> Restart the capacity</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> HTTP 429 is an API rate limit: back off
+with jitter and honor Retry-After. HTTP 430 is the capacity error.</p>
+</details>
+<p><strong>Q15.</strong> You connect a workspace to a Git branch for the
+first time. Both the workspace and the branch already have content. What
+happens? - <strong>A.</strong> The connection fails until one side is
+emptied - <strong>B.</strong> The branch content always overwrites the
+workspace - <strong>C.</strong> The two are merged item by item -
+<strong>D.</strong> You must choose a direction: commit overwrites Git,
+update overwrites the workspace</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> When both sides have content you choose a
+direction: commit overwrites Git, update overwrites the workspace.</p>
+</details>
+<h2 id="part-2">Part 2</h2>
+<p><strong>Q16.</strong> A Dataflow Gen2 must use incremental refresh
+over the past 2 years into a Lakehouse table. Which configuration is
+valid? - <strong>A.</strong> Monthly buckets, replace update method,
+fixed schema - <strong>B.</strong> Weekly buckets, replace update
+method, fixed schema - <strong>C.</strong> Monthly buckets, append
+update method, fixed schema - <strong>D.</strong> Monthly buckets,
+replace update method, dynamic schema</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Incremental refresh needs replace and a
+fixed schema, with at most 50 buckets per query (weekly over 2 years is
+104).</p>
+</details>
+<p><strong>Q17.</strong> Each event in an eventstream carries an array
+field <code>items</code>. Which no-code operator produces one row per
+array element? - <strong>A.</strong> Manage fields - <strong>B.</strong>
+Group by - <strong>C.</strong> Expand - <strong>D.</strong> Union</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Expand creates one row per array
+value.</p>
+</details>
+<p><strong>Q18.</strong> A KQL table <code>Raw</code> receives JSON.
+Each row must be parsed into a typed table at ingestion, the raw rows
+must not be kept, and a failed transform must lose nothing. Which
+design? - <strong>A.</strong> A materialized view over <code>Raw</code>
+- <strong>B.</strong> A non-transactional update policy, with a
+<code>0s</code> soft-delete on <code>Raw</code> - <strong>C.</strong> A
+transactional update policy, with the default retention on
+<code>Raw</code> - <strong>D.</strong> A transactional update policy,
+with a <code>0s</code> soft-delete on <code>Raw</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> A 0s soft-delete on the source requires a
+transactional update policy, so a failure loses nothing.</p>
+</details>
+<p><strong>Q19.</strong> A Spark stream must drop duplicates by
+<code>event_id</code> alone, with events up to 10 minutes late and
+bounded state. Which code? - <strong>A.</strong>
+<code>events.dropDuplicates(["event_id"])</code> - <strong>B.</strong>
+<code>events.withWatermark("event_time", "10 minutes").dropDuplicatesWithinWatermark(["event_id"])</code>
+- <strong>C.</strong>
+<code>events.withWatermark("event_time", "10 minutes").dropDuplicates(["event_id", "event_time"])</code>
+- <strong>D.</strong>
+<code>events.dropDuplicatesWithinWatermark(["event_id"])</code> with no
+watermark</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> dropDuplicatesWithinWatermark with a
+watermark uses event_id alone and keeps bounded state.</p>
+</details>
+<p><strong>Q20.</strong> Which value is not a supported
+<code>FILE_TYPE</code> for <code>COPY INTO</code> in a Fabric Warehouse?
+- <strong>A.</strong> CSV - <strong>B.</strong> PARQUET -
+<strong>C.</strong> AVRO - <strong>D.</strong> JSONL</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> COPY INTO supports CSV, JSONL and
+PARQUET.</p>
+</details>
+<p><strong>Q21.</strong> <code>DimCustomer</code> is SCD type 2. A
+customer changed region in March, which created a new version row. A
+sale for that customer loads in April. Which key does the fact row get?
+- <strong>A.</strong> The surrogate key of the customer’s current
+version - <strong>B.</strong> The surrogate key of the customer’s first
+version - <strong>C.</strong> The customer’s business key from the
+source - <strong>D.</strong> The key of the Unknown member</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> The fact load looks up the surrogate key
+of the dimension’s current version.</p>
+</details>
+<p><strong>Q22.</strong> A nightly report reads a KQL materialized view.
+It tolerates slightly stale data and must run as cheaply as possible.
+How should it query? - <strong>A.</strong> By the view’s name -
+<strong>B.</strong> By querying the source table with the same
+<code>summarize</code> - <strong>C.</strong> By the view’s name with
+<code>take 100</code> - <strong>D.</strong> With
+<code>materialized_view("ViewName")</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> materialized_view() reads only the
+materialized part: cheapest, possibly stale.</p>
+</details>
+<p><strong>Q23.</strong> Two procedures run <code>MERGE</code> on the
+same Warehouse table at the same time, touching different rows. One
+fails with error 24556. What is the fix? - <strong>A.</strong> Add a
+<code>ROWLOCK</code> hint - <strong>B.</strong> Run them one after the
+other, or retry with backoff - <strong>C.</strong> Set the isolation
+level to <code>READ COMMITTED</code> - <strong>D.</strong> Enable result
+set caching</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Conflicts are detected at table level;
+run sequentially or retry with backoff.</p>
+</details>
+<p><strong>Q24.</strong> A Warehouse query finished 5 minutes ago and
+isn’t in <code>queryinsights.exec_requests_history</code>. Why? -
+<strong>A.</strong> Completed queries can take up to 15 minutes to
+appear - <strong>B.</strong> Only failed queries are stored -
+<strong>C.</strong> Only workspace Admins can see other users’ queries -
+<strong>D.</strong> The view exists only for the SQL analytics
+endpoint</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Completed queries can take up to 15
+minutes to appear in query insights.</p>
+</details>
+<p><strong>Q25.</strong> In the Lakehouse maintenance dialog, a user
+runs VACUUM with a 2-day retention. What happens by default? -
+<strong>A.</strong> It runs, and time travel is unaffected -
+<strong>B.</strong> The retention is rounded up to 7 days -
+<strong>C.</strong> The request fails, because the retention is under
+seven days - <strong>D.</strong> It deletes the table’s whole
+history</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> A VACUUM retention under seven days fails
+by default.</p>
+</details>
+<p><strong>Q26.</strong> With the native execution engine enabled, which
+job falls back to the regular Spark engine? - <strong>A.</strong> A join
+over Parquet files - <strong>B.</strong> An aggregation over Delta
+tables - <strong>C.</strong> A load of CSV files - <strong>D.</strong> A
+job that reads JSON files</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> The native execution engine supports
+Parquet, Delta and CSV; JSON and XML fall back.</p>
+</details>
+<p><strong>Q27.</strong> A Fabric admin sets a default domain for a
+security group. One member already administers a workspace that is
+assigned to another domain. What happens to that workspace? -
+<strong>A.</strong> It moves to the default domain - <strong>B.</strong>
+It keeps its current domain - <strong>C.</strong> It belongs to both
+domains - <strong>D.</strong> It becomes unassigned</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> A default domain doesn’t override a
+workspace’s existing domain.</p>
+</details>
+<p><strong>Q28.</strong> In a Git-connected workspace, who can commit
+workspace changes to Git? - <strong>A.</strong> Only a workspace Admin -
+<strong>B.</strong> A Viewer with write access to the repository -
+<strong>C.</strong> A Contributor with write permission on all items,
+and Contribute permission in Git - <strong>D.</strong> Only a Member</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Commit needs Contributor (write on all
+items) plus Contribute permission in Git.</p>
+</details>
+<p><strong>Q29.</strong> In which case does a sensitivity label flow
+downstream? - <strong>A.</strong> From a labeled lakehouse to a Power BI
+semantic model built on it - <strong>B.</strong> From a labeled Power BI
+report to the lakehouse behind it - <strong>C.</strong> From a labeled
+report to a .txt export - <strong>D.</strong> From a tenant’s mandatory
+labeling policy to a new warehouse</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Fabric to Power BI is a supported
+downstream direction; Power BI to Fabric isn’t.</p>
+</details>
+<p><strong>Q30.</strong> You edit the definition of a OneLake security
+role, without changing its members. About how long before the change
+applies? - <strong>A.</strong> Immediately - <strong>B.</strong> About 5
+minutes - <strong>C.</strong> About an hour - <strong>D.</strong> About
+24 hours</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Role definition changes take about 5
+minutes; group membership changes about an hour.</p>
+</details>
+<h2 id="part-3">Part 3</h2>
+<p><strong>Q31.</strong> An eventstream SQL operator must output, every
+minute, the average speed per truck over the last 10 minutes, using the
+device’s <code>gpsTime</code>. Which query parts do this? -
+<strong>A.</strong> <code>FROM input</code> with
+<code>HoppingWindow(minute, 10, 1)</code> - <strong>B.</strong>
+<code>FROM input TIMESTAMP BY gpsTime</code> with
+<code>TumblingWindow(minute, 10)</code> - <strong>C.</strong>
+<code>FROM input TIMESTAMP BY gpsTime</code> with
+<code>HoppingWindow(minute, 10, 1)</code> - <strong>D.</strong>
+<code>FROM input TIMESTAMP BY gpsTime</code> with
+<code>SlidingWindow(minute, 10)</code></p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> HoppingWindow for the overlapping window,
+TIMESTAMP BY for device time.</p>
+</details>
+<p><strong>Q32.</strong> An eventstream applies a Filter operator, then
+sends the result to an Eventhouse. Which ingestion mode does that
+destination use? - <strong>A.</strong> Event processing before ingestion
+- <strong>B.</strong> Direct ingestion - <strong>C.</strong> Either mode
+works after an operator - <strong>D.</strong> Direct ingestion with a
+mapping transformation</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Operators before an Eventhouse
+destination require event processing before ingestion.</p>
+</details>
+<p><strong>Q33.</strong> Marketing data in Snowflake must be queryable
+from Fabric, and no copy may be made in OneLake. Which feature? -
+<strong>A.</strong> Database mirroring - <strong>B.</strong> Open
+mirroring - <strong>C.</strong> A Copy job - <strong>D.</strong>
+Metadata mirroring</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> Metadata mirroring leaves the data in
+Snowflake. Open mirroring means writing your own replication
+application.</p>
+</details>
+<p><strong>Q34.</strong> An operational application needs high
+concurrency, ACID transactions and enforced foreign keys. Which Fabric
+store? - <strong>A.</strong> Fabric Data Warehouse - <strong>B.</strong>
+SQL database in Fabric - <strong>C.</strong> Lakehouse -
+<strong>D.</strong> Eventhouse</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> SQL database in Fabric: operational,
+ACID, enforced foreign keys.</p>
+</details>
+<p><strong>Q35.</strong> Which Dataflow Gen2 destination doesn’t support
+the replace update method? - <strong>A.</strong> Fabric KQL database -
+<strong>B.</strong> Lakehouse - <strong>C.</strong> Warehouse -
+<strong>D.</strong> Azure SQL Database</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> KQL database (and Azure Data Explorer)
+destinations don’t support replace.</p>
+</details>
+<p><strong>Q36.</strong> What does Spark autotune adjust? -
+<strong>A.</strong> Executor memory and cores - <strong>B.</strong> The
+number of nodes in the pool - <strong>C.</strong> Shuffle partitions,
+the broadcast join threshold and the maximum partition bytes -
+<strong>D.</strong> V-Order and optimized write</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Autotune adjusts those three Spark
+settings only.</p>
+</details>
+<p><strong>Q37.</strong> Which statement about V-Order in a Fabric
+Warehouse is correct? - <strong>A.</strong> It is off by default -
+<strong>B.</strong> It can be switched on and off for each table -
+<strong>C.</strong> Disabling it makes report queries faster -
+<strong>D.</strong> It is on by default, is disabled for the whole
+warehouse, and can’t be re-enabled</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> Warehouse V-Order is on by default, is
+disabled per warehouse, and can’t be re-enabled.</p>
+</details>
+<p><strong>Q38.</strong> After a nightly load multiplies a Warehouse
+table’s row count, the first query each morning is slow and later ones
+are fast. What should you add to the load? - <strong>A.</strong>
+<code>OPTIMIZE</code> on the table - <strong>B.</strong>
+<code>UPDATE STATISTICS</code> on the heavily used columns -
+<strong>C.</strong> Multi-column statistics on the join keys -
+<strong>D.</strong> A step that disables automatic statistics</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Statistics refresh synchronously at query
+time; update them after a big load.</p>
+</details>
+<p><strong>Q39.</strong> A KQL table must keep 365 days queryable.
+Dashboards read only the last 30 days, and cost must come down. What do
+you set? - <strong>A.</strong> A 30-day retention policy -
+<strong>B.</strong> A materialized view - <strong>C.</strong> A caching
+policy that keeps 30 days hot, with retention left at 365 days -
+<strong>D.</strong> Nothing; the default caching policy is the
+cheapest</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Caching policy sets hot data; retention
+sets queryable data.</p>
+</details>
+<p><strong>Q40.</strong> A pipeline must refresh a semantic model so
+that the refresh commits all at once, and the next activity waits for it
+to finish. Which settings on the Semantic model refresh activity? -
+<strong>A.</strong> Commit mode Transactional, Wait on completion on -
+<strong>B.</strong> Commit mode Partial Batch, Wait on completion on -
+<strong>C.</strong> Commit mode Transactional, Wait on completion off -
+<strong>D.</strong> Commit mode Partial Batch, Wait on completion
+off</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Transactional commits all at once; Wait
+on completion holds the next activity.</p>
+</details>
+<p><strong>Q41.</strong> An engineer with the Viewer role must find out
+whether an eventstream’s Eventhouse destination is failing to convert
+events to the output schema, and read the error-level logs. Where? -
+<strong>A.</strong> The workspace monitoring database -
+<strong>B.</strong> The destination node’s Data insights tab,
+Deserialization errors - <strong>C.</strong> The eventstream’s
+IncomingMessages metric - <strong>D.</strong> The destination node’s
+Data insights tab, Data conversion errors, then the Runtime logs tab</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: D.</strong> Data conversion errors is the output-side
+metric; Runtime logs give error detail; a Viewer can see both.</p>
+</details>
+<p><strong>Q42.</strong> What does a user need in order to deploy
+content to a deployment pipeline stage that already has content? -
+<strong>A.</strong> Pipeline admin only - <strong>B.</strong> Pipeline
+admin, plus at least Contributor in both the source and target
+workspaces - <strong>C.</strong> Admin in both workspaces -
+<strong>D.</strong> Pipeline admin, plus Viewer in the target
+workspace</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> Pipeline admin plus at least Contributor
+in both workspaces.</p>
+</details>
+<p><strong>Q43.</strong> What does a user need in order to create a
+OneLake shortcut? - <strong>A.</strong> Write on the item where the
+shortcut is created, and Read on the target - <strong>B.</strong> Read
+on the item where the shortcut is created, and Write on the target -
+<strong>C.</strong> Write on both - <strong>D.</strong> The Admin role
+in both workspaces</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: A.</strong> Write where the shortcut is created, Read
+on the target.</p>
+</details>
+<p><strong>Q44.</strong> Environments set their own driver and executor
+sizes, but every notebook runs with the default pool’s configuration.
+Which setting fixes this? - <strong>A.</strong> Reserve maximum cores
+for active Spark jobs - <strong>B.</strong> High concurrency mode for
+notebooks - <strong>C.</strong> Customize compute configurations for
+items - <strong>D.</strong> Customized workspace pools</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: C.</strong> Customize compute configurations for
+items lets an environment set driver and executor size.</p>
+</details>
+<p><strong>Q45.</strong> A lakehouse has OneLake security enabled, and
+its <code>DefaultReader</code> role is deleted. Who keeps data access? -
+<strong>A.</strong> Users with the ReadAll item permission -
+<strong>B.</strong> Workspace Admins, Members and Contributors -
+<strong>C.</strong> Everyone who had access before - <strong>D.</strong>
+No one</p>
+<details>
+<summary>
+Show answer
+</summary>
+<p><strong>Answer: B.</strong> ReadAll users lose access; Admins,
+Members and Contributors keep it through their Write permission.</p>
+</details>
+<h2 id="answer-key">Answer key</h2>
+<details>
+<summary>
+Show answer
+</summary>
+<ol type="1">
+<li>C</li>
+<li>A</li>
+<li>B</li>
+<li>D</li>
+<li>A</li>
+<li>B</li>
+<li>D</li>
+<li>A</li>
+<li>C</li>
+<li>B</li>
+<li>D</li>
+<li>A</li>
+<li>C</li>
+<li>B</li>
+<li>D</li>
+<li>A</li>
+<li>C</li>
+<li>D</li>
+<li>B</li>
+<li>C</li>
+<li>A</li>
+<li>D</li>
+<li>B</li>
+<li>A</li>
+<li>C</li>
+<li>D</li>
+<li>B</li>
+<li>C</li>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+<li>A</li>
+<li>D</li>
+<li>B</li>
+<li>A</li>
+<li>C</li>
+<li>D</li>
+<li>B</li>
+<li>C</li>
+<li>A</li>
+<li>D</li>
+<li>B</li>
+<li>A</li>
+<li>C</li>
+<li>B</li>
+</ol>
+</details>
+<p class="disclaimer">Free, unofficial study material for Microsoft exam DP-700. Practice questions are written from public Microsoft Learn documentation; they are not real exam questions. Not affiliated with or endorsed by Microsoft. Facts quoted from Microsoft Learn come from <a href="https://github.com/MicrosoftDocs/fabric-docs">MicrosoftDocs/fabric-docs</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Docs change often, so check the linked pages before you rely on a fact.</p>
+</div>
+</body>
+</html>
