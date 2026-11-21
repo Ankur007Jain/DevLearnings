@@ -1,0 +1,3 @@
+sql-review-output.json
+__pycache__/
+.pytest_cache/

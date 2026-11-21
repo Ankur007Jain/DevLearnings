@@ -1,0 +1,80 @@
+# SQL pull-request review agent (v1)
+#
+# On every pull request that adds or changes .sql files, this workflow:
+#   1. reads the changed SQL files and their diffs,
+#   2. finds the Jira key in the PR title, branch or description and fetches the story,
+#   3. runs rule-based T-SQL checks,
+#   4. asks Claude to review the SQL against the story,
+#   5. posts one review comment on the PR (and updates it on later pushes).
+#
+# It never connects to a database and never blocks a merge.
+# Setup and options: sql-pr-review-agent/README.md
+
+name: SQL PR review agent
+
+on:
+  pull_request:
+    # "edited" re-runs the review when the title or description changes,
+    # for example after adding the Jira key.
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+    paths:
+      - '**.sql'
+      - '**.SQL'
+
+permissions:
+  contents: read        # read the changed files
+  pull-requests: write  # post the review comment
+
+concurrency:
+  group: sql-pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Review changed SQL
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: sql-pr-review-agent/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r sql-pr-review-agent/requirements.txt
+
+      - name: Review SQL
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional. Without it the comment has rule-based checks only.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Optional repository variables (Settings > Secrets and variables > Actions > Variables).
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}     # default claude-opus-5-5
+          REVIEW_EFFORT: ${{ vars.REVIEW_EFFORT }}         # default high
+          # Optional. Without these the review uses the PR description as the story.
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_API_VERSION: ${{ vars.JIRA_API_VERSION }}
+          JIRA_PROJECT_KEYS: ${{ vars.JIRA_PROJECT_KEYS }}
+          JIRA_EXTRA_FIELDS: ${{ vars.JIRA_EXTRA_FIELDS }}
+          REVIEW_OUTPUT_PATH: sql-review-output.json
+        run: python sql-pr-review-agent/review_sql_pr.py
+
+      - name: Save the review record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-review-pr${{ github.event.pull_request.number }}-attempt${{ github.run_attempt }}
+          path: sql-review-output.json
+          if-no-files-found: ignore
+          retention-days: 30
