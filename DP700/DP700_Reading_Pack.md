@@ -4,7 +4,7 @@ Oct 11, 2026 · @AJ
 
 ## How to use this pack
 
-Your Nov 17 exam uses the skills outline dated **October 19, 2026**. This pack covers every bullet in that outline, ordered as a learning path rather than in blueprint order. Every fact comes from a Microsoft Learn page opened on Oct 11, 2026, and each part links its sources.
+Your Nov 17 exam uses the skills outline dated **October 19, 2026**. This pack covers every bullet in that outline, grouped under the three exam domains. Part numbers are fixed labels that the Update log and the Part 14 table refer to, so they are not sequential inside a domain. Every fact comes from a Microsoft Learn page opened on Oct 11, 2026, and each part links its sources.
 
 | Item | Detail |
 | --- | --- |
@@ -15,24 +15,24 @@ Your Nov 17 exam uses the skills outline dated **October 19, 2026**. This pack c
 | Oct 19 change log | "Configure Microsoft Fabric workspace settings" and "Optimize performance" are marked Minor; everything else is marked No change |
 | Preview features | Most questions cover GA features; preview features can appear if they are commonly used |
 
-**Reading order.** Build first (parts 1–6), then run and protect what you built (parts 7–9), then watch, fix and tune it (parts 10–12).
+**Reading order.** Work one domain at a time. Domain 1: Parts 2, 7, 8, 9. Domain 2: Parts 1, 3, 4, 5, 6. Domain 3: Parts 10, 11, 12. Parts 13 and 14, the labs and the accuracy notes follow as reference and practice.
 
 | Part | Topic | Exam domain |
 | --- | --- | --- |
-| 1 | Foundations: OneLake and choosing a data store | Ingest and transform |
 | 2 | Workspace settings: Spark, domains, OneLake, Airflow | Implement and manage |
+| 7 | Orchestration: tool choice, schedules, triggers, parameters | Implement and manage |
+| 8 | Security and governance | Implement and manage |
+| 9 | Lifecycle management: Git, database projects, deployment pipelines | Implement and manage |
+| 1 | Foundations: OneLake and choosing a data store | Ingest and transform |
 | 3 | Batch ingestion: shortcuts, mirroring, pipelines, Copy job, Dataflow Gen2, warehouse loading | Ingest and transform |
 | 4 | Loading patterns: full and incremental, dimensional model, data quality | Ingest and transform |
 | 5 | Batch transformation: choosing the tool, denormalize, aggregate | Ingest and transform |
 | 6 | Streaming: Eventstream, windowing, Spark structured streaming, Eventhouse and KQL | Ingest and transform |
-| 7 | Orchestration: tool choice, schedules, triggers, parameters | Implement and manage |
-| 8 | Security and governance | Implement and manage |
-| 9 | Lifecycle management: Git, database projects, deployment pipelines | Implement and manage |
 | 10 | Monitoring and alerts | Monitor and optimize |
 | 11 | Identify and resolve errors | Monitor and optimize |
 | 12 | Optimize performance | Monitor and optimize |
 
-After each part, run the matching lab in **Hands-on tutorials** near the end. The **Accuracy notes** section lists places where your Study Hub disagrees with current docs; read it before your next mock.
+After each part, run the matching lab in **Hands-on tutorials** near the end. The labs stay in build order (Part 1 to Part 12) because later labs extend earlier ones. The **Accuracy notes** section lists places where your Study Hub disagrees with current docs; read it before your next mock.
 
 **Update log (newest first).** Graded misses and Learn-verified facts get added here after each answered coach question.
 
@@ -43,42 +43,29 @@ After each part, run the matching lab in **Hands-on tutorials** near the end. Th
 | Nov 6, 2026 | Parts 8, 14 | Added a table of where sensitivity labels carry and where they don't, plus the two statements missed in coach question 3. |
 | Nov 6, 2026 | Parts 11, 14 | Added a table of Spark and notebook capacity and permission errors (HTTP 430, 429, ReadAll, 403, Capacity Not Active). |
 | Nov 7, 2026 | Parts 10, 14 | Added the Monitor hub job alerts comparison (free failure emails vs paid Activator rules) and three facts from case study 1. |
+| Nov 12, 2026 | Whole pack | Regrouped the chapters under the three exam domains. Part numbers are unchanged, so they are not sequential inside a domain. |
+| Nov 12, 2026 | Parts 3, 6, 14 | Added Dataflow Gen2 incremental refresh (Part 3) and the SQL operator's event-time rule and limits (Part 6), from coach questions 6 and 8. |
+| Nov 12, 2026 | Part 14 | Added a reading section on code patterns (window syntax per engine, Spark deduplication, COPY INTO) and two missed facts from questions 18 and 20. |
+| Nov 13, 2026 | Parts 12, 14 | Added optimization rules from practice (eventstream throughput, autotune, warehouse V-Order and cold start, copy parallelism) and three missed facts from questions 22 to 41. |
+| Nov 13, 2026 | Part 14 | Added four missed facts from the Implement and manage set (questions 42 to 51): labels, masking, roles, and two workspace-setting names. |
+| Nov 15, 2026 | Part 14 | Added four missed facts from the second Implement and manage set (questions 52 to 61): column-level security, DefaultReader, deployment rules, endorsement. |
+| Nov 15, 2026 | Part 14 | Added three rows of missed facts from full mock 1 (34 of 45). |
+| Nov 15, 2026 | Part 6 | Added a note on why the default streaming trigger creates tiny files, from a clarification question. |
+| Nov 15, 2026 | Part 6 | Added a note on what "topology" means in the SQL operator rule (new destination nodes), from coach question 6. |
+| Nov 15, 2026 | Part 3 | Added a compiled summary of Dataflow Gen2 update methods, fixed vs dynamic schema and incremental refresh, from coach question 8. |
+| Nov 15, 2026 | Part 6 | Added materialized view query by name vs materialized\_view() and the max\_age option. |
+| Nov 15, 2026 | Part 6 | Added why a 0s soft-delete source needs a transactional update policy, from coach question 15. |
+| Nov 15, 2026 | Part 6 | Clarified that an update policy's source table is the ingestion table, not Event Hubs. |
+| Nov 16, 2026 | Part 6 | Added what a structured streaming job is, the Spark job definition retry policy and its 90-day lifetime limit. |
+| Nov 16, 2026 | Part 13 | Added a restaurant memory picture, Direct Lake on SQL vs on OneLake fallback, and the default semantic model change. |
+| Nov 16, 2026 | Part 13 | Added Import mode: data stored on disk in the model, memory is a loading step. |
+| Nov 16, 2026 | Part 13 | Added how each semantic model mode stays current: Import refresh options and limits, Direct Lake automatic updates. |
+| Nov 16, 2026 | Part 13 | Added how to choose between Direct Lake, Import and DirectQuery. |
+| Nov 16, 2026 | Part 2 | Added a full explainer of pipeline expressions: @, @{ } and @@. |
 
-## Part 1 — Foundations: OneLake and choosing a data store
+# Domain 1 — Implement and manage an analytics solution (30–35%)
 
-Every Fabric data store writes to one OneLake per tenant in open Delta (or Iceberg) format, so the store choice is about who works on the data and how, not where it lives.
-
-### OneLake essentials
-
-- One OneLake per tenant. You can't delete it or create a second one.
-- Hierarchy: tenant → workspace → item (lakehouse, warehouse, eventhouse, KQL database). Each workspace sits on a capacity tied to a region.
-- Tables are stored as Delta Parquet or Apache Iceberg. Spark, T-SQL and Analysis Services all read the same single copy.
-- OneLake is compatible with ADLS Gen2 APIs and SDKs. A workspace appears as a container and an item as a folder.
-- Deleted files are kept for 7 days (soft delete).
-
-### Choose a data store
-
-| Store | Pick it when | Primary languages | Writes |
-| --- | --- | --- | --- |
-| Lakehouse | Big data and ML; unstructured, semi-structured or structured files; data engineering in notebooks | PySpark, Spark SQL, Scala, R | Spark writes; T-SQL is read-only through the SQL analytics endpoint |
-| Warehouse | Enterprise data warehouse, SQL-based BI, star schemas, full multi-table T-SQL transactions | T-SQL | INSERT, UPDATE, DELETE, MERGE, COPY INTO, CTAS |
-| Eventhouse (KQL databases) | Streaming events and high-granularity time, space or text data for interactive analytics | KQL, T-SQL | Streaming or queued ingestion |
-| SQL database in Fabric | OLTP: ACID, high concurrency, enforced foreign keys, automatic index tuning; same engine as Azure SQL Database | T-SQL | Full OLTP DML; mirrored to OneLake automatically |
-| Cosmos DB in Fabric | NoSQL and AI apps with vector data | REST APIs, app SDKs | Document writes |
-
-All stores are in OneLake in open format by default. The exception is a KQL database, where OneLake availability is opt-in.
-
-### Lakehouse SQL analytics endpoint
-
-- It is **read-only** over Delta tables. Use Spark to change data.
-- You can create views, functions, stored procedures and SQL security (object- and row-level) in it.
-- Only Delta tables under `/Tables` appear. Files under `/Files` and external Delta tables created in Spark don't; add a shortcut under Tables to expose them.
-- SQL permissions apply only to queries through the endpoint, not to Spark or OneLake access.
-- Up to 150 warehouse and SQL analytics endpoint items per workspace.
-
-Exam cue: "the team writes T-SQL including INSERT/UPDATE/DELETE" → Warehouse. "Mixed PySpark builders and T-SQL readers" → Lakehouse. "Telemetry, logs, time series, KQL" → Eventhouse.
-
-Sources: [OneLake overview](https://learn.microsoft.com/en-us/fabric/onelake/onelake-overview) · [Choose a data store](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-data-store) · [SQL analytics endpoint](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sql-analytics-endpoint)
+This domain covers Part 2 (workspace settings), Part 7 (orchestration), Part 8 (security and governance) and Part 9 (lifecycle management).
 
 ## Part 2 — Configure workspace settings
 
@@ -149,259 +136,6 @@ Each extra node adds capacity for 3 more workers. Private networks and VNets are
 
 Sources: [Workspace admin settings](https://learn.microsoft.com/en-us/fabric/data-engineering/workspace-admin-settings) · [Spark compute](https://learn.microsoft.com/en-us/fabric/data-engineering/spark-compute) · [High concurrency](https://learn.microsoft.com/en-us/fabric/data-engineering/high-concurrency-overview) · [Domains](https://learn.microsoft.com/en-us/fabric/governance/domains) · [OneLake shortcuts (caching)](https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts) · [OneLake diagnostics](https://learn.microsoft.com/en-us/fabric/onelake/onelake-diagnostics-overview) · [Airflow workspace settings](https://learn.microsoft.com/en-us/fabric/data-factory/apache-airflow-jobs-workspace-settings)
 
-## Part 3 — Batch ingestion
-
-Pick the ingestion tool by whether you need to copy the data at all, how much transformation happens on the way in, and who builds it.
-
-| Option | Copies data? | Best for | Transformation | Builder |
-| --- | --- | --- | --- | --- |
-| OneLake shortcut | No (reference in place) | Using data already in OneLake, ADLS, S3, GCS and others without duplication | None | Anyone with access |
-| Mirroring | Yes, continuous near real-time replica in Delta | Keeping an operational database in sync in OneLake | None | Low effort, no ETL |
-| Pipeline copy activity | Yes | Large-scale, scheduled, no-code movement; 50+ sources, 40+ destinations; petabyte scale | Light: type conversion, column mapping, merge/split files, flatten hierarchy | Data engineer or integrator |
-| Copy job | Yes | Full or incremental copy (watermark or CDC) without building a pipeline | Light | Analyst, integrator, engineer |
-| Dataflow Gen2 | Yes | Power Query transformations before load; 150+ connectors | Low to high: 300+ transformation functions | Analyst or engineer who knows Power Query (M) |
-| Notebook (Spark) | Yes | Code-first ingestion and complex logic | Low to high | Engineer (PySpark, Spark SQL, Scala, R) |
-
-**How to choose**
-
-1. Does the data need to be copied at all? Data already in OneLake or cloud storage: shortcut. An operational database to keep in sync: mirroring. Mirroring only goes from the source into OneLake, never back out.
-2. Is there transformation on the way in? None or light: Copy job for a simple scheduled load, or the pipeline Copy activity as one step in a larger workflow. Heavy, with Power Query: Dataflow Gen2. Heavy, in code: notebook.
-3. Is the target a Warehouse and the job a bulk file load? COPY INTO has the highest throughput.
-
-**Copy job vs pipeline Copy activity**
-
-|  | Copy job | Pipeline Copy activity |
-| --- | --- | --- |
-| What it is | Standalone item, no pipeline needed | Activity inside a pipeline |
-| Incremental loads | Built in: tracks the last successful run and resumes after a failure | You build the watermark logic with variables and parameters |
-| Deletes | CDC mode captures deletes and supports SCD Type 2 | Not covered in the Copy activity docs |
-| Scheduling | Its own schedules (several per job) and manual Run | Scheduled by the pipeline; event triggers apply to the pipeline |
-| Tuning | Limited; auto-partitioning is in preview | Throughput units, parallel copies, staging, compression, fault tolerance, consistency checks |
-| Chaining | Copy only, though it can run inside a pipeline through the Copy job activity | Chains with notebooks, stored procedures and alerts |
-| Best for | Simple, reliable movement with no transformation | Copy as one step of a workflow, or fine control over performance and errors |
-
-Sources: [What is Copy job](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [Copy activity](https://learn.microsoft.com/en-us/fabric/data-factory/copy-data-activity) · [Mirroring overview](https://learn.microsoft.com/en-us/fabric/mirroring/overview) · [Ingest data into a Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data-copy)
-
-### OneLake shortcuts
-
-- A shortcut behaves like a symbolic link. Deleting the shortcut leaves the target untouched. Deleting a file **inside** a shortcut deletes it at the target if you have write permission there.
-- You can create shortcuts in lakehouses and KQL databases. In a KQL database, query them with `external_table()`.
-- **Tables folder**: shortcuts only at the top level, no subfolders. Delta data is recognized as a table automatically. Names containing spaces aren't recognized as Delta tables.
-- **Files folder**: any level, any format, no table discovery.
-- **Internal** targets: lakehouses, warehouses, KQL databases, mirrored databases, mirrored Azure Databricks catalogs, semantic models and SQL databases. Access uses the **calling user's identity**, so the user needs permission on the target.
-- **External** targets: ADLS Gen2, Azure Blob, Amazon S3, S3-compatible, Google Cloud Storage, Dataverse, Iceberg, and OneDrive/SharePoint. On-premises targets go through the on-premises data gateway. ADLS and S3 shortcuts authorize through a cloud connection, and you need permission on that connection to bind it.
-- Limits: 100,000 shortcuts per item, 100 unique data source connections per item, 10 shortcuts per OneLake path, 5 direct shortcut-to-shortcut links, and no `%` or `+` in names.
-
-### Mirroring
-
-- **Database mirroring** replicates data. Sources include Azure SQL Database, Azure SQL Managed Instance, SQL Server, Azure Cosmos DB, Azure Database for PostgreSQL, Google BigQuery, Oracle, SAP, Snowflake, and Fabric SQL database (automatic).
-- **Metadata mirroring** syncs catalog, schema and table names only and reads data through shortcuts. Examples are Azure Databricks Unity Catalog and Snowflake.
-- **Open mirroring** lets any app write change data to a landing zone through public APIs.
-- The result is a mirrored database item plus a read-only SQL analytics endpoint. Changes can arrive as often as every 15 seconds.
-- Cost: replication compute is free and doesn't use capacity units. Each capacity unit includes 1 TB of free mirroring storage (F64 = 64 TB). Queries are billed normally, and replication stops while the capacity is paused.
-- Retention: mirrored databases created after mid-June 2025 default to 1 day of history (older ones 7 days). Change it in Settings → Delta table management.
-
-### Copy job
-
-- **Full copy** copies everything each run. **Incremental copy** does a full first load, then only changes.
-- Watermark-based incremental needs a ROWVERSION, datetime, date, integer or string-as-datetime column. It captures inserts and updates only.
-- CDC-based incremental needs CDC enabled on the source. It captures inserts, updates **and deletes**, and supports SCD Type 2.
-- Write methods: Append (default), Merge (uses the primary key by default), Overwrite, SCD Type 2.
-- Copy job tracks its own state. A failed run resumes from the last successful run, and you can reset to a full copy per job or per table.
-
-### Dataflow Gen2 destinations
-
-- Destinations: Lakehouse tables and files, Warehouse, KQL database, Fabric SQL database, Azure SQL, Azure Data Explorer, ADLS Gen2, SharePoint files, Snowflake, PostgreSQL.
-- Update methods are **Append** or **Replace**. KQL database and Azure Data Explorer don't support Replace.
-- Automatic (managed) settings apply only to Lakehouse and Azure SQL. They drop and recreate the table on every refresh.
-- A **Warehouse** destination requires staging, supports only a fixed schema, and only loads into a warehouse in the same workspace.
-
-### Load a Warehouse
-
-- **COPY INTO** gives the highest throughput. It reads CSV, JSONL and Parquet from ADLS Gen2, Azure Blob and OneLake. `BULK INSERT` maps to the same behavior.
-- By default COPY INTO uses the caller's Microsoft Entra identity. `CREDENTIAL = (IDENTITY = 'Workspace Identity')` uses the workspace identity for the source only.
-- **T-SQL across items**: `INSERT…SELECT`, `SELECT INTO` and `CREATE TABLE AS SELECT` (CTAS) can read warehouses, lakehouses and mirrored databases **in the same workspace** using three-part names. `OPENROWSET` reads Parquet, CSV or JSONL files in Azure storage.
-- Best practice: avoid singleton INSERTs, keep files at least 4 MB (ideally 100 MB–1 GB), and prefer ADLS Gen2 over Blob.
-- The warehouse writes V-Order Parquet by default; Microsoft advises keeping it on.
-
-```sql
--- Lakehouse to warehouse, same workspace
-INSERT INTO dbo.FactSales
-SELECT * FROM MyLakehouse.dbo.sales;
-```
-
-Sources: [Decision guide: copy, Copy job, dataflow, Eventstream, Spark](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-pipeline-dataflow-spark) · [OneLake shortcuts](https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts) · [Mirroring](https://learn.microsoft.com/en-us/fabric/mirroring/overview) · [Copy job](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [Dataflow Gen2 destinations](https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings) · [Ingest data into the Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data)
-
-## Part 4 — Loading patterns
-
-Load dimensions before facts, load facts incrementally whenever the source lets you detect new rows, and never truncate and reload a dimension that has generated surrogate keys. The streaming loading pattern is covered in Part 6.
-
-### Full vs incremental loads
-
-| Pattern | How new or changed rows are found | Captures deletes? | Fabric tools |
-| --- | --- | --- | --- |
-| Full load | Reload everything each run | Yes, implicitly | Copy activity, Copy job (full copy), Dataflow Gen2 Replace, CTAS |
-| High watermark | Store the last max ID or timestamp; next run reads rows above it | No | Lookup + Copy activity in a pipeline, Copy job (watermark), notebook |
-| Change data capture (CDC) | Source tracks each row change (SQL Server, Azure SQL MI) | Yes | Copy job (CDC), Eventstream CDC sources, mirroring |
-| Change tracking | Source flags changed rows (SQL Server, Azure SQL MI, Azure SQL DB) | Yes | Pipeline queries, notebook |
-
-Upserts: Fabric Warehouse supports `MERGE` as a generally available feature. In a lakehouse, use Delta `MERGE INTO … WHEN MATCHED … WHEN NOT MATCHED` from Spark.
-
-### Prepare data for a dimensional model
-
-**ETL order**: (optional) load staging tables → process dimensions, in dependency order → process facts → post-processing, such as a semantic model refresh.
-
-- Staging tables live in their own schema and are never exposed to business users. `TRUNCATE TABLE` is supported for clearing them. Mirroring and shortcuts can replace staging copies.
-- **Surrogate keys**: use the smallest integer type that fits. Fabric Warehouse `IDENTITY` columns are **bigint only**. Values are unique but not guaranteed sequential, and you can't set seed or increment. `ALTER TABLE` can't add an IDENTITY column; use CTAS instead.
-- Warehouse primary, unique and foreign keys must be `NOT ENFORCED`, so your ETL has to check referential integrity itself.
-- Date dimension keys usually use the `YYYYMMDD` format. Extend the table each year, ideally with a stored procedure.
-
-**Slowly changing dimensions**
-
-| Type | When a tracked attribute changes |
-| --- | --- |
-| SCD 1 | Overwrite the attribute in place; update last-modified columns |
-| SCD 2 | Expire the current row (set the end date and IsCurrent = FALSE), then insert a new row (start date = the old row's end date, IsCurrent = TRUE) |
-| SCD 3 | Update in place like SCD 1, keeping the prior value in its own column |
-
-Fact loads look up the surrogate key of the **current** version of an SCD 2 member.
-
-### Duplicate, missing and late-arriving data
-
-- **Late-arriving dimension (inferred member)**: the fact load inserts a dimension row with the natural key, "Unknown" attributes and `IsInferredMember = TRUE`. When the real details arrive, update that row in place (not as an SCD change) and set the flag to FALSE.
-- **Failed key lookup**: store a special "Unknown" member's key so the fact row still loads, then fix it in a later process.
-- **Deleted source rows**: soft-delete with an `IsDeleted` bit column instead of deleting dimension or fact rows.
-- **Duplicates**: PySpark `df.dropDuplicates(["key"])`; T-SQL `ROW_NUMBER() OVER (PARTITION BY key ORDER BY modified DESC)` and keep row 1; KQL `summarize arg_max(Timestamp, *) by key`.
-- **Missing values**: PySpark `df.fillna(...)` or `df.dropna(...)`; T-SQL `COALESCE` or `ISNULL`; KQL `coalesce()` and `isnull()` / `isempty()`.
-- **Late events in Spark streaming**: `withWatermark("eventTime", "10 minutes")` sets how long state waits for late rows.
-
-Sources: [Load tables in a dimensional model](https://learn.microsoft.com/en-us/fabric/data-warehouse/dimensional-modeling-load-tables) · [IDENTITY columns](https://learn.microsoft.com/en-us/fabric/data-warehouse/identity) · [T-SQL surface area (MERGE, constraints)](https://learn.microsoft.com/en-us/fabric/data-warehouse/tsql-surface-area) · [Copy job incremental and CDC](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [KQL arg\_max](https://learn.microsoft.com/en-us/kusto/query/arg-max-aggregation-function) · [Spark structured streaming watermarks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
-
-## Part 5 — Batch transformation
-
-Match the transformation tool to where the data lives and the builder's skills: Power Query for low-code shaping, Spark for large or complex lakehouse work, T-SQL inside a warehouse, KQL inside an eventhouse.
-
-### Choose a transformation tool
-
-| Tool | Use when | Skill set | Where results land |
-| --- | --- | --- | --- |
-| Dataflow Gen2 | Low-code cleansing and shaping with 300+ Power Query transformations; analysts or engineers who know Power Query | Power Query (M) | Lakehouse, Warehouse, KQL database, SQL database and other destinations |
-| Notebook | Large volumes, complex logic, ML prep, any file format; lakehouse medallion layers | PySpark, Spark SQL, Scala, R | Lakehouse Delta tables |
-| T-SQL | Data already in a warehouse; set-based CTAS, INSERT…SELECT, MERGE, stored procedures | T-SQL | Warehouse tables |
-| KQL | Data in an eventhouse; time-series, logs, telemetry; transform at ingestion with update policies | KQL | KQL database tables |
-
-### Denormalize
-
-Denormalizing joins dimension attributes onto facts to make wide, read-friendly tables for reporting.
-
-- PySpark: `fact.join(F.broadcast(dim), "key", "left")`. Broadcasting the small dimension avoids shuffling the large fact table.
-- T-SQL: `CREATE TABLE gold.SalesWide AS SELECT f.*, d.Category FROM dbo.FactSales f JOIN dbo.DimProduct d ON f.ProductKey = d.ProductKey;`
-- KQL: `Sales | lookup kind=leftouter Products on ProductId`
-
-### Group and aggregate
-
-Fabric Warehouse and the SQL analytics endpoint support `ROLLUP`, `CUBE` and `GROUPING SETS` in `GROUP BY`.
-
-| Clause | Output for (Region, Territory) |
-| --- | --- |
-| `ROLLUP(Region, Territory)` | Detail rows, a subtotal per Region, and a grand total (hierarchical) |
-| `CUBE(Region, Territory)` | Every combination: detail, per Region, per Territory, grand total |
-| `GROUPING SETS ((Region), ())` | Exactly the sets listed: here per-Region totals plus a grand total |
-| `GROUP BY ALL` | Groups by every non-aggregated column (Fabric Warehouse and SQL analytics endpoint only) |
-
-`GROUPING(col)` returns 1 when the NULL in a result row is a subtotal placeholder rather than real data. `GROUPING_ID()` combines those flags into one number.
-
-- PySpark: `df.groupBy("Region").agg(F.sum("Sales").alias("Total"))`; `df.rollup(...)` and `df.cube(...)` mirror the SQL clauses.
-- KQL: `Sales | summarize Total = sum(Amount) by Region, bin(Timestamp, 1h)`.
-
-Sources: [Decision guide: transform tools](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-pipeline-dataflow-spark) · [Choose a data store](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-data-store) · [GROUP BY in Fabric Warehouse](https://learn.microsoft.com/en-us/sql/t-sql/queries/select-group-by-transact-sql?view=fabric) · [GROUPING](https://learn.microsoft.com/en-us/sql/t-sql/functions/grouping-transact-sql?view=fabric) · [KQL summarize](https://learn.microsoft.com/en-us/kusto/query/summarize-operator) · [KQL lookup](https://learn.microsoft.com/en-us/kusto/query/lookup-operator)
-
-## Part 6 — Streaming and Real-Time Intelligence
-
-Eventstream is the no-code way to capture, transform and route events. Spark structured streaming is the code-first path into lakehouse Delta tables. KQL in an Eventhouse is where streaming data is stored and queried at speed.
-
-### Choose a streaming engine
-
-| Engine | Choose it when | Code | Typical destination |
-| --- | --- | --- | --- |
-| Eventstream | Ingest and route events from Event Hubs, IoT Hub, Kafka, CDC databases or Fabric events with light no-code transforms | No code (SQL operator in preview) | Eventhouse, Lakehouse, Activator, derived stream, custom endpoint |
-| Spark structured streaming | Complex logic, joins with reference data, writing Delta tables; production jobs needing retries | PySpark or Scala | Lakehouse Delta tables |
-| KQL (Eventhouse) | High-speed analytics over time-series, logs and telemetry; transform at ingestion with update policies; precompute with materialized views | KQL | KQL database tables |
-
-### Eventstream
-
-- **Sources** include Azure Event Hubs, IoT Hub, Event Grid, Service Bus, Kafka (Apache, Confluent, Amazon MSK), Amazon Kinesis, Google Pub/Sub, CDC from Azure SQL, SQL MI, SQL Server on VM, PostgreSQL, MySQL, Cosmos DB and MongoDB, Fabric workspace item, OneLake, job and capacity events, Azure Blob Storage events, custom endpoints (Kafka protocol supported) and sample data.
-- **Transformations**: Filter, Manage fields (add, remove, rename, change type; built-in string, date-time and math functions), Aggregate (sum, min, max or average recalculated as each event arrives), Group by (aggregations over a time window), Union (keeps only fields with the same name and type), Expand (one row per array element), Join (two streams on a condition).
-- **Destinations**: Eventhouse (Direct ingestion, or Event processing before ingestion), Lakehouse (Delta), Activator, Derived stream, Custom endpoint, Spark Notebook (preview). Several destinations can be attached at once.
-- Operators can sit before Lakehouse, Eventhouse (processing mode), Derived stream and Activator. For other destinations, send the operator output to a derived stream first.
-- Limits: 1 MB maximum message size, 90 days maximum retention, **at-least-once** delivery. Eventstream needs at least an F4 capacity.
-
-### Windowing functions
-
-The five window types apply to Eventstream Group by (and Azure Stream Analytics). Tumbling, hopping and session windows emit a result at the window end, timestamped with the window end. A sliding window emits only when its contents change. The maximum size is 7 days.
-
-| Window | Behavior | Parameters |
-| --- | --- | --- |
-| Tumbling | Fixed size, back to back, no overlap; each event lands in exactly one window | Size |
-| Hopping | Fixed size, starts every hop, so windows overlap when hop < size; an event can count in several windows. Hop = size makes it a tumbling window | Size, hop, optional offset |
-| Sliding | One window of fixed length that always covers the last N seconds. Emits output only when an event enters or exits the window; an event exits exactly one window length after it arrived. No hop and no fixed schedule | Size |
-| Session | Starts at the first event, extends while the next event arrives within the timeout, closes on timeout or at the maximum duration; optional partition key | Timeout, max duration |
-| Snapshot | Groups events that share the same timestamp (`GROUP BY System.Timestamp()`) | None |
-
-The same ideas in code:
-
-- Spark: `groupBy(window("eventTime", "10 minutes", "5 minutes"))` makes hopping windows; omit the slide for tumbling; `session_window("eventTime", "5 minutes")` for sessions.
-- KQL: `summarize count() by bin(Timestamp, 5m)` makes tumbling buckets.
-
-**Choosing a window**
-
-- Fixed schedule, no overlap: tumbling ("count orders every 10 minutes").
-- Fixed schedule, overlapping results: hopping ("every 10 minutes, report the last 30"). A 30-minute size with a 10-minute hop puts each event in three windows. If the hop is larger than the size, events in the gaps are never counted.
-- A result whenever the contents change: sliding. It has no hop. An event leaves exactly one window length after it arrived, so results also appear when nothing new arrives. It produces nothing while the window is empty and no event arrives. For a result every second regardless of change, use hopping with a 1-second hop.
-- Activity bursts separated by quiet gaps: session. The maximum duration is checked at fixed intervals, so one session can last up to twice the maximum.
-- Events with the same timestamp: snapshot.
-
-**Sliding vs tumbling.** A tumbling window is anchored to the clock: 3 seconds into the 10-to-20 second bucket, it has seen only 3 seconds of data and reports at second 20. A sliding window is anchored to now: it always covers the previous N seconds. Three failed logins at 9:58 and three at 10:02 fall into different 10-minute tumbling windows, but a 10-minute sliding window at 10:02 sees all six.
-
-Sources (Azure Stream Analytics query docs): [Windowing overview](https://learn.microsoft.com/stream-analytics-query/windowing-azure-stream-analytics) · [Hopping window](https://learn.microsoft.com/stream-analytics-query/hopping-window-azure-stream-analytics) · [Sliding window](https://learn.microsoft.com/stream-analytics-query/sliding-window-azure-stream-analytics) · [Session window](https://learn.microsoft.com/stream-analytics-query/session-window-azure-stream-analytics)
-
-### Spark structured streaming
-
-```python
-(df.writeStream
-   .format("delta")
-   .option("checkpointLocation", "Files/checkpoint")
-   .outputMode("append")
-   .trigger(processingTime="1 minute")
-   .toTable("events"))
-```
-
-- A checkpoint location is required for fault tolerance.
-- Batch writes with `.trigger(processingTime=...)` to produce fewer, larger files. Turn on Optimized Write (`spark.databricks.delta.optimizeWrite.enabled`) or use `partitionBy`, `repartition` or `coalesce`.
-- In production, run streams as a **Spark job definition with a retry policy** (up to unlimited retries), not as a notebook.
-- The Monitoring hub's Structured Streaming tab shows input rate, process rate, input rows, batch duration and operation duration.
-
-### Eventhouse and KQL databases
-
-- An Eventhouse is a container for several KQL databases that share capacity. It suits structured, semi-structured (JSON, XML) and free-text data, indexed by arrival time.
-- Data policies: **retention** defaults to 3,650 days (1 day to 36,500 days, or unlimited). The **caching** (hot cache) period also defaults to 3,650 days and must be less than or equal to retention.
-- **Update policy**: a function runs on each ingestion into a source table and writes the result to a target table, transforming data at ingestion time.
-- **Materialized view**: a precomputed, continuously updated aggregation, for example `arg_max` deduplication.
-- An Eventhouse suspends when idle and resumes in seconds. **Capacity Planner** keeps it always active or sets minimum capacity by schedule (default minimum 2 CUs).
-
-### Native tables vs OneLake shortcuts vs query acceleration
-
-| Option | Data copied into Eventhouse? | Query speed | Supports update policies and materialized views? | Cost |
-| --- | --- | --- | --- | --- |
-| Native table | Yes, ingested | Fastest (indexed, hot cache) | Yes | Ingestion and storage |
-| OneLake shortcut (standard) | No; queried with `external_table()` | Slower: network reads, no indexes | No | Query compute only |
-| Shortcut with query acceleration | No; caches the last N days (the Hot property) and indexes them | Comparable to ingested data | No (behaves like an external table) | OneLake Premium cache meter plus indexing compute |
-
-- Use query acceleration to query OneLake data at high speed without building ingestion pipelines or copying it, to join history in OneLake with live streams, or to join small mirrored dimension tables.
-- Query acceleration limits: up to 900 columns. Parquet files over 6 GB compressed aren't cached. Over 2.5 million data files may not perform well. A schema change needs `.alter external table`.
-
-Sources: [Eventstreams overview](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview) · [Event processing editor](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/process-events-using-event-processor-editor) · [Windowing functions](https://learn.microsoft.com/en-us/stream-analytics-query/windowing-azure-stream-analytics) · [Hopping](https://learn.microsoft.com/en-us/stream-analytics-query/hopping-window-azure-stream-analytics) · [Sliding](https://learn.microsoft.com/en-us/stream-analytics-query/sliding-window-azure-stream-analytics) · [Session](https://learn.microsoft.com/en-us/stream-analytics-query/session-window-azure-stream-analytics) · [Snapshot (Learn module)](https://learn.microsoft.com/en-us/training/modules/explore-event-streams-microsoft-fabric/4-route-event-data-to-destinations) · [Streaming into a lakehouse](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-streaming-data) · [Eventhouse](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse) · [Data policies](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-policies) · [Query acceleration](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/query-acceleration-overview)
-
 ## Part 7 — Orchestrate processes
 
 Pipelines orchestrate: they schedule, trigger, branch, loop and call notebooks, dataflows, Copy jobs and SQL. Notebooks and Dataflow Gen2 do the transformation work inside them.
@@ -433,6 +167,31 @@ Pipelines orchestrate: they schedule, trigger, branch, loop and call notebooks, 
 - **Metadata-driven pattern**: a Lookup reads a control table, ForEach loops over the rows, and each iteration runs a parameterized Copy or Notebook activity.
 - **Fail activity**: stops the pipeline with your own error message and code, usually after an If Condition.
 - **Notebook-to-notebook**: `notebookutils.notebook.run("name", timeout_seconds, {args}, workspaceId)` runs one notebook. `notebookutils.notebook.runMultiple(...)` runs a list in parallel or a DAG with dependencies **in the same Spark session**, which shares compute and cuts cost. DAG settings include `timeoutInSeconds` (default 43,200 = 12 hours) and `concurrency`. Don't call `notebookutils.notebook.exit()` inside a try/catch block.
+
+**Pipeline expressions: `@`, `@{ }` and `@@`, once and for all.** From [Expressions and functions](https://learn.microsoft.com/en-us/fabric/data-factory/expression-language), opened Nov 16, 2026.
+
+Memory aid: `@` starts code, `@{ }` is a code pocket inside text, `@@` is a real at-sign.
+
+- **Rule.** A value in a pipeline can be a literal or an expression evaluated at runtime. If the value is an expression, Fabric removes the `@` and runs the rest. A literal string that starts with `@` must be escaped as `@@`.
+- **`@expr` as the whole value** keeps the type. **`@{expr}` (string interpolation)** always produces a string, even inside a longer text.
+
+| Value (`myNumber` = 42, `myString` = foo) | Result |
+| --- | --- |
+| `@pipeline().parameters.myString` | `foo` as a string |
+| `@{pipeline().parameters.myString}` | `foo` as a string |
+| `@pipeline().parameters.myNumber` | `42` as a **number** |
+| `@{pipeline().parameters.myNumber}` | `42` as a **string** |
+| `Answer is: @{pipeline().parameters.myNumber}` | the string `Answer is: 42` |
+| `@concat('Answer is: ', string(pipeline().parameters.myNumber))` | the string `Answer is: 42` |
+| `Answer is: @@{pipeline().parameters.myNumber}` | the literal text `Answer is: @{pipeline().parameters.myNumber}` |
+| `@@` | a one-character string, `@` |
+
+- **Common building blocks.** `@pipeline().parameters.Name`; `@variables('Name')`; `@activity('Name').output` and `.output.data` for a previous activity's result; `@item()` for the current element inside ForEach; system values such as `@pipeline().RunId`, `@pipeline().PipelineName` and `@pipeline().TriggerTime` (UTC, ISO 8601).
+- **`?` means null-safe.** `@pipeline()?.TriggeredByPipelineName` evaluates to null instead of failing when not applicable. The same idea applies to `@pipeline()?.TriggerEvent?.FileName` in manual test runs.
+- **A parameter that holds an object:** to reach a sub-field, use `[]` syntax instead of the dot operator.
+- **Dynamic content editor.** It escapes characters when you finish editing, which breaks `\n` and `\t` inside `replace()`. Learn suggests editing in code view or using URL-encode, replace and decode steps instead.
+- **Exam traps.** Number vs string: whole-value `@` keeps the number, `@{ }` turns it into text. Literal `@`: `@@`. A text that must show `@{...}` literally: `@@{...}`.
+- Learn doesn't define `variables()` on this page beyond an example, and the function reference part of the page wasn't read in full.
 
 ```python
 DAG = {
@@ -623,6 +382,358 @@ Git integration versions item definitions per workspace, database projects versi
 | Create or edit deployment rules | Pipeline admin, Contributor or higher in the target workspace, and owner of the item |
 
 Sources: [Git integration overview](https://learn.microsoft.com/en-us/fabric/cicd/git-integration/intro-to-git-integration) · [Git integration process and permissions](https://learn.microsoft.com/en-us/fabric/cicd/git-integration/git-integration-process) · [Warehouse development and deployment](https://learn.microsoft.com/en-us/fabric/data-warehouse/development-deployment) · [Cross-warehouse database projects](https://learn.microsoft.com/en-us/fabric/data-warehouse/cross-warehouse-development-database-projects) · [Deployment pipelines overview](https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/intro-to-deployment-pipelines) · [The deployment process](https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/understand-the-deployment-process) · [Deployment rules](https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/create-rules)
+
+# Domain 2 — Ingest and transform data (30–35%)
+
+This domain covers Part 1 (foundations and choosing a data store), Part 3 (batch ingestion), Part 4 (loading patterns), Part 5 (batch transformation) and Part 6 (streaming and Real-Time Intelligence).
+
+## Part 1 — Foundations: OneLake and choosing a data store
+
+Every Fabric data store writes to one OneLake per tenant in open Delta (or Iceberg) format, so the store choice is about who works on the data and how, not where it lives.
+
+### OneLake essentials
+
+- One OneLake per tenant. You can't delete it or create a second one.
+- Hierarchy: tenant → workspace → item (lakehouse, warehouse, eventhouse, KQL database). Each workspace sits on a capacity tied to a region.
+- Tables are stored as Delta Parquet or Apache Iceberg. Spark, T-SQL and Analysis Services all read the same single copy.
+- OneLake is compatible with ADLS Gen2 APIs and SDKs. A workspace appears as a container and an item as a folder.
+- Deleted files are kept for 7 days (soft delete).
+
+### Choose a data store
+
+| Store | Pick it when | Primary languages | Writes |
+| --- | --- | --- | --- |
+| Lakehouse | Big data and ML; unstructured, semi-structured or structured files; data engineering in notebooks | PySpark, Spark SQL, Scala, R | Spark writes; T-SQL is read-only through the SQL analytics endpoint |
+| Warehouse | Enterprise data warehouse, SQL-based BI, star schemas, full multi-table T-SQL transactions | T-SQL | INSERT, UPDATE, DELETE, MERGE, COPY INTO, CTAS |
+| Eventhouse (KQL databases) | Streaming events and high-granularity time, space or text data for interactive analytics | KQL, T-SQL | Streaming or queued ingestion |
+| SQL database in Fabric | OLTP: ACID, high concurrency, enforced foreign keys, automatic index tuning; same engine as Azure SQL Database | T-SQL | Full OLTP DML; mirrored to OneLake automatically |
+| Cosmos DB in Fabric | NoSQL and AI apps with vector data | REST APIs, app SDKs | Document writes |
+
+All stores are in OneLake in open format by default. The exception is a KQL database, where OneLake availability is opt-in.
+
+### Lakehouse SQL analytics endpoint
+
+- It is **read-only** over Delta tables. Use Spark to change data.
+- You can create views, functions, stored procedures and SQL security (object- and row-level) in it.
+- Only Delta tables under `/Tables` appear. Files under `/Files` and external Delta tables created in Spark don't; add a shortcut under Tables to expose them.
+- SQL permissions apply only to queries through the endpoint, not to Spark or OneLake access.
+- Up to 150 warehouse and SQL analytics endpoint items per workspace.
+
+Exam cue: "the team writes T-SQL including INSERT/UPDATE/DELETE" → Warehouse. "Mixed PySpark builders and T-SQL readers" → Lakehouse. "Telemetry, logs, time series, KQL" → Eventhouse.
+
+Sources: [OneLake overview](https://learn.microsoft.com/en-us/fabric/onelake/onelake-overview) · [Choose a data store](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-data-store) · [SQL analytics endpoint](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sql-analytics-endpoint)
+
+## Part 3 — Batch ingestion
+
+Pick the ingestion tool by whether you need to copy the data at all, how much transformation happens on the way in, and who builds it.
+
+| Option | Copies data? | Best for | Transformation | Builder |
+| --- | --- | --- | --- | --- |
+| OneLake shortcut | No (reference in place) | Using data already in OneLake, ADLS, S3, GCS and others without duplication | None | Anyone with access |
+| Mirroring | Yes, continuous near real-time replica in Delta | Keeping an operational database in sync in OneLake | None | Low effort, no ETL |
+| Pipeline copy activity | Yes | Large-scale, scheduled, no-code movement; 50+ sources, 40+ destinations; petabyte scale | Light: type conversion, column mapping, merge/split files, flatten hierarchy | Data engineer or integrator |
+| Copy job | Yes | Full or incremental copy (watermark or CDC) without building a pipeline | Light | Analyst, integrator, engineer |
+| Dataflow Gen2 | Yes | Power Query transformations before load; 150+ connectors | Low to high: 300+ transformation functions | Analyst or engineer who knows Power Query (M) |
+| Notebook (Spark) | Yes | Code-first ingestion and complex logic | Low to high | Engineer (PySpark, Spark SQL, Scala, R) |
+
+**How to choose**
+
+1. Does the data need to be copied at all? Data already in OneLake or cloud storage: shortcut. An operational database to keep in sync: mirroring. Mirroring only goes from the source into OneLake, never back out.
+2. Is there transformation on the way in? None or light: Copy job for a simple scheduled load, or the pipeline Copy activity as one step in a larger workflow. Heavy, with Power Query: Dataflow Gen2. Heavy, in code: notebook.
+3. Is the target a Warehouse and the job a bulk file load? COPY INTO has the highest throughput.
+
+**Copy job vs pipeline Copy activity**
+
+|  | Copy job | Pipeline Copy activity |
+| --- | --- | --- |
+| What it is | Standalone item, no pipeline needed | Activity inside a pipeline |
+| Incremental loads | Built in: tracks the last successful run and resumes after a failure | You build the watermark logic with variables and parameters |
+| Deletes | CDC mode captures deletes and supports SCD Type 2 | Not covered in the Copy activity docs |
+| Scheduling | Its own schedules (several per job) and manual Run | Scheduled by the pipeline; event triggers apply to the pipeline |
+| Tuning | Limited; auto-partitioning is in preview | Throughput units, parallel copies, staging, compression, fault tolerance, consistency checks |
+| Chaining | Copy only, though it can run inside a pipeline through the Copy job activity | Chains with notebooks, stored procedures and alerts |
+| Best for | Simple, reliable movement with no transformation | Copy as one step of a workflow, or fine control over performance and errors |
+
+Sources: [What is Copy job](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [Copy activity](https://learn.microsoft.com/en-us/fabric/data-factory/copy-data-activity) · [Mirroring overview](https://learn.microsoft.com/en-us/fabric/mirroring/overview) · [Ingest data into a Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data-copy)
+
+### OneLake shortcuts
+
+- A shortcut behaves like a symbolic link. Deleting the shortcut leaves the target untouched. Deleting a file **inside** a shortcut deletes it at the target if you have write permission there.
+- You can create shortcuts in lakehouses and KQL databases. In a KQL database, query them with `external_table()`.
+- **Tables folder**: shortcuts only at the top level, no subfolders. Delta data is recognized as a table automatically. Names containing spaces aren't recognized as Delta tables.
+- **Files folder**: any level, any format, no table discovery.
+- **Internal** targets: lakehouses, warehouses, KQL databases, mirrored databases, mirrored Azure Databricks catalogs, semantic models and SQL databases. Access uses the **calling user's identity**, so the user needs permission on the target.
+- **External** targets: ADLS Gen2, Azure Blob, Amazon S3, S3-compatible, Google Cloud Storage, Dataverse, Iceberg, and OneDrive/SharePoint. On-premises targets go through the on-premises data gateway. ADLS and S3 shortcuts authorize through a cloud connection, and you need permission on that connection to bind it.
+- Limits: 100,000 shortcuts per item, 100 unique data source connections per item, 10 shortcuts per OneLake path, 5 direct shortcut-to-shortcut links, and no `%` or `+` in names.
+
+### Mirroring
+
+- **Database mirroring** replicates data. Sources include Azure SQL Database, Azure SQL Managed Instance, SQL Server, Azure Cosmos DB, Azure Database for PostgreSQL, Google BigQuery, Oracle, SAP, Snowflake, and Fabric SQL database (automatic).
+- **Metadata mirroring** syncs catalog, schema and table names only and reads data through shortcuts. Examples are Azure Databricks Unity Catalog and Snowflake.
+- **Open mirroring** lets any app write change data to a landing zone through public APIs.
+- The result is a mirrored database item plus a read-only SQL analytics endpoint. Changes can arrive as often as every 15 seconds.
+- Cost: replication compute is free and doesn't use capacity units. Each capacity unit includes 1 TB of free mirroring storage (F64 = 64 TB). Queries are billed normally, and replication stops while the capacity is paused.
+- Retention: mirrored databases created after mid-June 2025 default to 1 day of history (older ones 7 days). Change it in Settings → Delta table management.
+
+### Copy job
+
+- **Full copy** copies everything each run. **Incremental copy** does a full first load, then only changes.
+- Watermark-based incremental needs a ROWVERSION, datetime, date, integer or string-as-datetime column. It captures inserts and updates only.
+- CDC-based incremental needs CDC enabled on the source. It captures inserts, updates **and deletes**, and supports SCD Type 2.
+- Write methods: Append (default), Merge (uses the primary key by default), Overwrite, SCD Type 2.
+- Copy job tracks its own state. A failed run resumes from the last successful run, and you can reset to a full copy per job or per table.
+
+### Dataflow Gen2 destinations
+
+- Destinations: Lakehouse tables and files, Warehouse, KQL database, Fabric SQL database, Azure SQL, Azure Data Explorer, ADLS Gen2, SharePoint files, Snowflake, PostgreSQL.
+- Update methods are **Append** or **Replace**. KQL database and Azure Data Explorer don't support Replace.
+- Automatic (managed) settings apply only to Lakehouse and Azure SQL. They drop and recreate the table on every refresh.
+- A **Warehouse** destination requires staging, supports only a fixed schema, and only loads into a warehouse in the same workspace.
+
+**Dataflow Gen2 incremental refresh is bucket-based, not a watermark.** From [Incremental refresh in Dataflow Gen2](https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-incremental-refresh), opened Nov 12, 2026.
+
+- **Extract data from the past** is required. It sets the window the dataflow manages and does the initial load. **Bucket size** splits that window by a DateTime, Date or DateTimeZone column.
+- Each refresh compares the maximum value of a change-detection column per bucket with the previous refresh. Only changed buckets are processed: the old data for that bucket is deleted, then the fresh data is inserted.
+- So the only supported update method is **replace**, and the destination must use a **fixed schema**. Append is not supported.
+- Supported destinations: Lakehouse, Warehouse and Azure SQL Database. The default destination configuration is not supported.
+- Lakehouse: `OPTIMIZE` and `REORG TABLE` aren't supported on a table that uses incremental refresh, and other writers such as Spark should be avoided.
+- Limits: 50 buckets per query, 150 per dataflow, and 10 concurrent bucket evaluations for a lakehouse.
+- Contrast: a Copy job keeps a watermark and moves forward from the last successful run. Dataflow Gen2 re-checks every bucket in the window, so it also catches late changes to old rows.
+- Learn doesn't say whether the bucket replace is transactional.
+
+**Dataflow Gen2 destinations, compiled: update method, schema option, incremental refresh.** From [data destinations and managed settings](https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings) and [incremental refresh](https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-incremental-refresh), opened Nov 15, 2026.
+
+Think of it as three layers, decided in this order.
+
+1. **Update method: append or replace.** Replace means the destination's data is replaced at each refresh. KQL databases and Azure Data Explorer don't support replace.
+2. **Schema option, only if you chose replace: dynamic or fixed.** Append has no schema options ("changes to the schema aren't possible"). A Warehouse destination supports only fixed.
+3. **Incremental refresh, only if you turn it on:** replace, fixed schema, Lakehouse, Warehouse or Azure SQL Database.
+
+| Setup | What a refresh does to the table | Relationships and measures |
+| --- | --- | --- |
+| Append | Adds rows. No schema changes possible. | Kept |
+| Replace + fixed schema | Drops and replaces only the rows. If the query's columns no longer match the table, the publish fails. | Kept |
+| Replace + dynamic schema | If the destination schema differs from the expected one, the table is dropped and recreated. | Can be lost |
+| Automatic settings (new tables on Lakehouse, Azure SQL Database, Snowflake) | Replace with managed mapping. The table is dropped and recreated on every refresh. | Can be lost |
+| Replace + incremental refresh | Only the rows of each changed bucket are replaced. Older buckets aren't touched. | Kept (fixed schema) |
+
+**Incremental refresh rules.** Replace only. Fixed schema (change a dynamic table to fixed before configuring it). No `OPTIMIZE` or `REORG TABLE` on a lakehouse table that uses it, and avoid other writers such as Spark. Turn vacuuming off. Limits: 50 buckets per query, 150 per dataflow, 10 concurrent bucket evaluations. A Copy job's watermark incremental copy is a different feature.
+
+**Other facts.** A table the dataflow didn't create is never recreated if you delete it. The Warehouse destination also needs staging and the same workspace.
+
+**Exam shortcuts.** Append: no schema options. Warehouse: fixed only. Incremental refresh: replace and fixed, no `OPTIMIZE`. The table must adapt to new columns: replace and dynamic, and relationships and measures can be lost. Relationships or measures must survive: fixed.
+
+**Learn doesn't say (unverified).** Which destinations other than Snowflake (both options with replace on new tables) and Warehouse (fixed only) offer the dynamic option. Why incremental refresh needs fixed schema: the bucket-by-bucket reason is my reading. What a dynamic-schema refresh does when the schemas already match: "just replaces the data" is my reading of the drop-and-recreate sentence.
+
+### Load a Warehouse
+
+- **COPY INTO** gives the highest throughput. It reads CSV, JSONL and Parquet from ADLS Gen2, Azure Blob and OneLake. `BULK INSERT` maps to the same behavior.
+- By default COPY INTO uses the caller's Microsoft Entra identity. `CREDENTIAL = (IDENTITY = 'Workspace Identity')` uses the workspace identity for the source only.
+- **T-SQL across items**: `INSERT…SELECT`, `SELECT INTO` and `CREATE TABLE AS SELECT` (CTAS) can read warehouses, lakehouses and mirrored databases **in the same workspace** using three-part names. `OPENROWSET` reads Parquet, CSV or JSONL files in Azure storage.
+- Best practice: avoid singleton INSERTs, keep files at least 4 MB (ideally 100 MB–1 GB), and prefer ADLS Gen2 over Blob.
+- The warehouse writes V-Order Parquet by default; Microsoft advises keeping it on.
+
+```sql
+-- Lakehouse to warehouse, same workspace
+INSERT INTO dbo.FactSales
+SELECT * FROM MyLakehouse.dbo.sales;
+```
+
+Sources: [Decision guide: copy, Copy job, dataflow, Eventstream, Spark](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-pipeline-dataflow-spark) · [OneLake shortcuts](https://learn.microsoft.com/en-us/fabric/onelake/onelake-shortcuts) · [Mirroring](https://learn.microsoft.com/en-us/fabric/mirroring/overview) · [Copy job](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [Dataflow Gen2 destinations](https://learn.microsoft.com/en-us/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings) · [Ingest data into the Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data)
+
+## Part 4 — Loading patterns
+
+Load dimensions before facts, load facts incrementally whenever the source lets you detect new rows, and never truncate and reload a dimension that has generated surrogate keys. The streaming loading pattern is covered in Part 6.
+
+### Full vs incremental loads
+
+| Pattern | How new or changed rows are found | Captures deletes? | Fabric tools |
+| --- | --- | --- | --- |
+| Full load | Reload everything each run | Yes, implicitly | Copy activity, Copy job (full copy), Dataflow Gen2 Replace, CTAS |
+| High watermark | Store the last max ID or timestamp; next run reads rows above it | No | Lookup + Copy activity in a pipeline, Copy job (watermark), notebook |
+| Change data capture (CDC) | Source tracks each row change (SQL Server, Azure SQL MI) | Yes | Copy job (CDC), Eventstream CDC sources, mirroring |
+| Change tracking | Source flags changed rows (SQL Server, Azure SQL MI, Azure SQL DB) | Yes | Pipeline queries, notebook |
+
+Upserts: Fabric Warehouse supports `MERGE` as a generally available feature. In a lakehouse, use Delta `MERGE INTO … WHEN MATCHED … WHEN NOT MATCHED` from Spark.
+
+### Prepare data for a dimensional model
+
+**ETL order**: (optional) load staging tables → process dimensions, in dependency order → process facts → post-processing, such as a semantic model refresh.
+
+- Staging tables live in their own schema and are never exposed to business users. `TRUNCATE TABLE` is supported for clearing them. Mirroring and shortcuts can replace staging copies.
+- **Surrogate keys**: use the smallest integer type that fits. Fabric Warehouse `IDENTITY` columns are **bigint only**. Values are unique but not guaranteed sequential, and you can't set seed or increment. `ALTER TABLE` can't add an IDENTITY column; use CTAS instead.
+- Warehouse primary, unique and foreign keys must be `NOT ENFORCED`, so your ETL has to check referential integrity itself.
+- Date dimension keys usually use the `YYYYMMDD` format. Extend the table each year, ideally with a stored procedure.
+
+**Slowly changing dimensions**
+
+| Type | When a tracked attribute changes |
+| --- | --- |
+| SCD 1 | Overwrite the attribute in place; update last-modified columns |
+| SCD 2 | Expire the current row (set the end date and IsCurrent = FALSE), then insert a new row (start date = the old row's end date, IsCurrent = TRUE) |
+| SCD 3 | Update in place like SCD 1, keeping the prior value in its own column |
+
+Fact loads look up the surrogate key of the **current** version of an SCD 2 member.
+
+### Duplicate, missing and late-arriving data
+
+- **Late-arriving dimension (inferred member)**: the fact load inserts a dimension row with the natural key, "Unknown" attributes and `IsInferredMember = TRUE`. When the real details arrive, update that row in place (not as an SCD change) and set the flag to FALSE.
+- **Failed key lookup**: store a special "Unknown" member's key so the fact row still loads, then fix it in a later process.
+- **Deleted source rows**: soft-delete with an `IsDeleted` bit column instead of deleting dimension or fact rows.
+- **Duplicates**: PySpark `df.dropDuplicates(["key"])`; T-SQL `ROW_NUMBER() OVER (PARTITION BY key ORDER BY modified DESC)` and keep row 1; KQL `summarize arg_max(Timestamp, *) by key`.
+- **Missing values**: PySpark `df.fillna(...)` or `df.dropna(...)`; T-SQL `COALESCE` or `ISNULL`; KQL `coalesce()` and `isnull()` / `isempty()`.
+- **Late events in Spark streaming**: `withWatermark("eventTime", "10 minutes")` sets how long state waits for late rows.
+
+Sources: [Load tables in a dimensional model](https://learn.microsoft.com/en-us/fabric/data-warehouse/dimensional-modeling-load-tables) · [IDENTITY columns](https://learn.microsoft.com/en-us/fabric/data-warehouse/identity) · [T-SQL surface area (MERGE, constraints)](https://learn.microsoft.com/en-us/fabric/data-warehouse/tsql-surface-area) · [Copy job incremental and CDC](https://learn.microsoft.com/en-us/fabric/data-factory/what-is-copy-job) · [KQL arg\_max](https://learn.microsoft.com/en-us/kusto/query/arg-max-aggregation-function) · [Spark structured streaming watermarks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
+
+## Part 5 — Batch transformation
+
+Match the transformation tool to where the data lives and the builder's skills: Power Query for low-code shaping, Spark for large or complex lakehouse work, T-SQL inside a warehouse, KQL inside an eventhouse.
+
+### Choose a transformation tool
+
+| Tool | Use when | Skill set | Where results land |
+| --- | --- | --- | --- |
+| Dataflow Gen2 | Low-code cleansing and shaping with 300+ Power Query transformations; analysts or engineers who know Power Query | Power Query (M) | Lakehouse, Warehouse, KQL database, SQL database and other destinations |
+| Notebook | Large volumes, complex logic, ML prep, any file format; lakehouse medallion layers | PySpark, Spark SQL, Scala, R | Lakehouse Delta tables |
+| T-SQL | Data already in a warehouse; set-based CTAS, INSERT…SELECT, MERGE, stored procedures | T-SQL | Warehouse tables |
+| KQL | Data in an eventhouse; time-series, logs, telemetry; transform at ingestion with update policies | KQL | KQL database tables |
+
+### Denormalize
+
+Denormalizing joins dimension attributes onto facts to make wide, read-friendly tables for reporting.
+
+- PySpark: `fact.join(F.broadcast(dim), "key", "left")`. Broadcasting the small dimension avoids shuffling the large fact table.
+- T-SQL: `CREATE TABLE gold.SalesWide AS SELECT f.*, d.Category FROM dbo.FactSales f JOIN dbo.DimProduct d ON f.ProductKey = d.ProductKey;`
+- KQL: `Sales | lookup kind=leftouter Products on ProductId`
+
+### Group and aggregate
+
+Fabric Warehouse and the SQL analytics endpoint support `ROLLUP`, `CUBE` and `GROUPING SETS` in `GROUP BY`.
+
+| Clause | Output for (Region, Territory) |
+| --- | --- |
+| `ROLLUP(Region, Territory)` | Detail rows, a subtotal per Region, and a grand total (hierarchical) |
+| `CUBE(Region, Territory)` | Every combination: detail, per Region, per Territory, grand total |
+| `GROUPING SETS ((Region), ())` | Exactly the sets listed: here per-Region totals plus a grand total |
+| `GROUP BY ALL` | Groups by every non-aggregated column (Fabric Warehouse and SQL analytics endpoint only) |
+
+`GROUPING(col)` returns 1 when the NULL in a result row is a subtotal placeholder rather than real data. `GROUPING_ID()` combines those flags into one number.
+
+- PySpark: `df.groupBy("Region").agg(F.sum("Sales").alias("Total"))`; `df.rollup(...)` and `df.cube(...)` mirror the SQL clauses.
+- KQL: `Sales | summarize Total = sum(Amount) by Region, bin(Timestamp, 1h)`.
+
+Sources: [Decision guide: transform tools](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-pipeline-dataflow-spark) · [Choose a data store](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-data-store) · [GROUP BY in Fabric Warehouse](https://learn.microsoft.com/en-us/sql/t-sql/queries/select-group-by-transact-sql?view=fabric) · [GROUPING](https://learn.microsoft.com/en-us/sql/t-sql/functions/grouping-transact-sql?view=fabric) · [KQL summarize](https://learn.microsoft.com/en-us/kusto/query/summarize-operator) · [KQL lookup](https://learn.microsoft.com/en-us/kusto/query/lookup-operator)
+
+## Part 6 — Streaming and Real-Time Intelligence
+
+Eventstream is the no-code way to capture, transform and route events. Spark structured streaming is the code-first path into lakehouse Delta tables. KQL in an Eventhouse is where streaming data is stored and queried at speed.
+
+### Choose a streaming engine
+
+| Engine | Choose it when | Code | Typical destination |
+| --- | --- | --- | --- |
+| Eventstream | Ingest and route events from Event Hubs, IoT Hub, Kafka, CDC databases or Fabric events with light no-code transforms | No code (SQL operator in preview) | Eventhouse, Lakehouse, Activator, derived stream, custom endpoint |
+| Spark structured streaming | Complex logic, joins with reference data, writing Delta tables; production jobs needing retries | PySpark or Scala | Lakehouse Delta tables |
+| KQL (Eventhouse) | High-speed analytics over time-series, logs and telemetry; transform at ingestion with update policies; precompute with materialized views | KQL | KQL database tables |
+
+### Eventstream
+
+- **Sources** include Azure Event Hubs, IoT Hub, Event Grid, Service Bus, Kafka (Apache, Confluent, Amazon MSK), Amazon Kinesis, Google Pub/Sub, CDC from Azure SQL, SQL MI, SQL Server on VM, PostgreSQL, MySQL, Cosmos DB and MongoDB, Fabric workspace item, OneLake, job and capacity events, Azure Blob Storage events, custom endpoints (Kafka protocol supported) and sample data.
+- **Transformations**: Filter, Manage fields (add, remove, rename, change type; built-in string, date-time and math functions), Aggregate (sum, min, max or average recalculated as each event arrives), Group by (aggregations over a time window), Union (keeps only fields with the same name and type), Expand (one row per array element), Join (two streams on a condition).
+- **Destinations**: Eventhouse (Direct ingestion, or Event processing before ingestion), Lakehouse (Delta), Activator, Derived stream, Custom endpoint, Spark Notebook (preview). Several destinations can be attached at once.
+- Operators can sit before Lakehouse, Eventhouse (processing mode), Derived stream and Activator. For other destinations, send the operator output to a derived stream first.
+- Limits: 1 MB maximum message size, 90 days maximum retention, **at-least-once** delivery. Eventstream needs at least an F4 capacity.
+
+**SQL operator: event time and limits.** From [Process events using a SQL operator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/process-events-using-sql-code-editor) and [TIMESTAMP BY](https://learn.microsoft.com/en-us/stream-analytics-query/timestamp-by-azure-stream-analytics), opened Nov 7, 2026.
+
+**What "topology" means.** The SQL operator page says "if you add a SQL operator to your topology, you must create new destination nodes" and never defines the word. Read it as the layout of your eventstream on the editor canvas: the sources, operators and destinations (the boxes) and the arrows between them. "Existing destination nodes" are the destination boxes already on that canvas. Learn doesn't define the term, so this reading is plain English, not a quoted definition.
+
+- An eventstream uses **arrival time** by default. To window on a field in the event, add `TIMESTAMP BY <field>` after the input name: `FROM input TIMESTAMP BY readingTime`.
+- Window argument order: `HoppingWindow(timeunit, windowsize, hopsize)`. A hop equal to the size is a tumbling window.
+- Adding a SQL operator requires **new destination nodes**; existing destination nodes can't be reused.
+- A SQL operator can't share a processing path with other built-in operators, and SQL operators can't be chained.
+- Eventstream names containing an underscore or a dot aren't compatible with SQL operators.
+- The Fabric page names only Tumbling and Hopping windows. It doesn't say whether Session, Sliding and Snapshot work in the SQL operator, and gives no default late-arrival or out-of-order values.
+
+### Windowing functions
+
+The five window types apply to Eventstream Group by (and Azure Stream Analytics). Tumbling, hopping and session windows emit a result at the window end, timestamped with the window end. A sliding window emits only when its contents change. The maximum size is 7 days.
+
+| Window | Behavior | Parameters |
+| --- | --- | --- |
+| Tumbling | Fixed size, back to back, no overlap; each event lands in exactly one window | Size |
+| Hopping | Fixed size, starts every hop, so windows overlap when hop < size; an event can count in several windows. Hop = size makes it a tumbling window | Size, hop, optional offset |
+| Sliding | One window of fixed length that always covers the last N seconds. Emits output only when an event enters or exits the window; an event exits exactly one window length after it arrived. No hop and no fixed schedule | Size |
+| Session | Starts at the first event, extends while the next event arrives within the timeout, closes on timeout or at the maximum duration; optional partition key | Timeout, max duration |
+| Snapshot | Groups events that share the same timestamp (`GROUP BY System.Timestamp()`) | None |
+
+The same ideas in code:
+
+- Spark: `groupBy(window("eventTime", "10 minutes", "5 minutes"))` makes hopping windows; omit the slide for tumbling; `session_window("eventTime", "5 minutes")` for sessions.
+- KQL: `summarize count() by bin(Timestamp, 5m)` makes tumbling buckets.
+
+**Choosing a window**
+
+- Fixed schedule, no overlap: tumbling ("count orders every 10 minutes").
+- Fixed schedule, overlapping results: hopping ("every 10 minutes, report the last 30"). A 30-minute size with a 10-minute hop puts each event in three windows. If the hop is larger than the size, events in the gaps are never counted.
+- A result whenever the contents change: sliding. It has no hop. An event leaves exactly one window length after it arrived, so results also appear when nothing new arrives. It produces nothing while the window is empty and no event arrives. For a result every second regardless of change, use hopping with a 1-second hop.
+- Activity bursts separated by quiet gaps: session. The maximum duration is checked at fixed intervals, so one session can last up to twice the maximum.
+- Events with the same timestamp: snapshot.
+
+**Sliding vs tumbling.** A tumbling window is anchored to the clock: 3 seconds into the 10-to-20 second bucket, it has seen only 3 seconds of data and reports at second 20. A sliding window is anchored to now: it always covers the previous N seconds. Three failed logins at 9:58 and three at 10:02 fall into different 10-minute tumbling windows, but a 10-minute sliding window at 10:02 sees all six.
+
+Sources (Azure Stream Analytics query docs): [Windowing overview](https://learn.microsoft.com/stream-analytics-query/windowing-azure-stream-analytics) · [Hopping window](https://learn.microsoft.com/stream-analytics-query/hopping-window-azure-stream-analytics) · [Sliding window](https://learn.microsoft.com/stream-analytics-query/sliding-window-azure-stream-analytics) · [Session window](https://learn.microsoft.com/stream-analytics-query/session-window-azure-stream-analytics)
+
+### Spark structured streaming
+
+```python
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "Files/checkpoint")
+   .outputMode("append")
+   .trigger(processingTime="1 minute")
+   .toTable("events"))
+```
+
+- A checkpoint location is required for fault tolerance.
+- Batch writes with `.trigger(processingTime=...)` to produce fewer, larger files. Turn on Optimized Write (`spark.databricks.delta.optimizeWrite.enabled`) or use `partitionBy`, `repartition` or `coalesce`.
+- In production, run streams as a **Spark job definition with a retry policy** (up to unlimited retries), not as a notebook.
+- The Monitoring hub's Structured Streaming tab shows input rate, process rate, input rows, batch duration and operation duration.
+
+**What a "structured streaming job" is.** From [Data streaming into a lakehouse with Spark](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-streaming-data) and the [streaming quickstart](https://learn.microsoft.com/en-us/fabric/data-engineering/get-started-streaming), opened Nov 16, 2026.
+
+- **Structured streaming** is "a scalable, fault-tolerant stream processing engine built on Spark. It treats a live data stream as a table that new rows are continuously appended to." You write it with `readStream` and `writeStream`. Sources include files (CSV, JSON, ORC, Parquet), Kafka and Azure Event Hubs; the sink Learn covers is a Delta table.
+- **A structured streaming job** is that code running continuously. Learn recommends notebooks for developing and testing, and **Spark job definitions** for production: non-interactive, code-oriented tasks that run on a Spark cluster with greater robustness and availability.
+- **Retry policy** (Optimization tab on the job definition): restarts the job when it stops unexpectedly. Set a maximum number of attempts or **Allow unlimited attempts**, plus the time between attempts. Learn notes a **90-day lifetime limit** on the retry policy setup: after 90 days it stops working and the job is terminated, and you must restart it manually, which re-enables the policy.
+- Learn doesn't explain what the checkpoint stores, and gives no delivery guarantee such as exactly-once.
+
+**Why a stream fills a table with tiny files.** Structured streaming writes in micro-batches: it collects the events that have arrived, processes them, and writes them as new Parquet files. The trigger decides when the next micro-batch starts. With the default trigger, Spark starts the next one as soon as the previous one finishes, so each batch holds only a few events and still writes at least one file. Over days that becomes thousands of tiny files, and every read has to open them all. A `processingTime` trigger makes each batch bigger, and Optimized Write sizes the files without manual `repartition()` or `coalesce()`. In a question, "thousands of small files" plus "default trigger" is the clue to change the trigger. Clarified Nov 15, 2026, from coach question 5.
+
+### Eventhouse and KQL databases
+
+- An Eventhouse is a container for several KQL databases that share capacity. It suits structured, semi-structured (JSON, XML) and free-text data, indexed by arrival time.
+- Data policies: **retention** defaults to 3,650 days (1 day to 36,500 days, or unlimited). The **caching** (hot cache) period also defaults to 3,650 days and must be less than or equal to retention.
+- **Update policy**: a function runs on each ingestion into a source table and writes the result to a target table, transforming data at ingestion time.
+- **Materialized view**: a precomputed, continuously updated aggregation, for example `arg_max` deduplication.
+- An Eventhouse suspends when idle and resumes in seconds. **Capacity Planner** keeps it always active or sets minimum capacity by schedule (default minimum 2 CUs).
+
+### Native tables vs OneLake shortcuts vs query acceleration
+
+| Option | Data copied into Eventhouse? | Query speed | Supports update policies and materialized views? | Cost |
+| --- | --- | --- | --- | --- |
+| Native table | Yes, ingested | Fastest (indexed, hot cache) | Yes | Ingestion and storage |
+| OneLake shortcut (standard) | No; queried with `external_table()` | Slower: network reads, no indexes | No | Query compute only |
+| Shortcut with query acceleration | No; caches the last N days (the Hot property) and indexes them | Comparable to ingested data | No (behaves like an external table) | OneLake Premium cache meter plus indexing compute |
+
+- Use query acceleration to query OneLake data at high speed without building ingestion pipelines or copying it, to join history in OneLake with live streams, or to join small mirrored dimension tables.
+- Query acceleration limits: up to 900 columns. Parquet files over 6 GB compressed aren't cached. Over 2.5 million data files may not perform well. A schema change needs `.alter external table`.
+
+Sources: [Eventstreams overview](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview) · [Event processing editor](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/process-events-using-event-processor-editor) · [Windowing functions](https://learn.microsoft.com/en-us/stream-analytics-query/windowing-azure-stream-analytics) · [Hopping](https://learn.microsoft.com/en-us/stream-analytics-query/hopping-window-azure-stream-analytics) · [Sliding](https://learn.microsoft.com/en-us/stream-analytics-query/sliding-window-azure-stream-analytics) · [Session](https://learn.microsoft.com/en-us/stream-analytics-query/session-window-azure-stream-analytics) · [Snapshot (Learn module)](https://learn.microsoft.com/en-us/training/modules/explore-event-streams-microsoft-fabric/4-route-event-data-to-destinations) · [Streaming into a lakehouse](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-streaming-data) · [Eventhouse](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse) · [Data policies](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-policies) · [Query acceleration](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/query-acceleration-overview)
+
+# Domain 3 — Monitor and optimize an analytics solution (30–35%)
+
+This domain covers Part 10 (monitoring and alerts), Part 11 (identify and resolve errors) and Part 12 (optimize performance).
 
 ## Part 10 — Monitor Fabric items and configure alerts
 
@@ -837,6 +948,31 @@ Set a profile with `spark.fabric.resourceProfile` in an Environment, or at runti
 - Use **query acceleration** for OneLake shortcuts you query often.
 - Use **Capacity Planner** for latency-sensitive workloads so the Eventhouse doesn't suspend.
 
+**Optimization rules from practice questions.** Sources opened Nov 13, 2026: [Eventstream settings](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/configure-settings), [Autotune](https://learn.microsoft.com/en-us/fabric/data-engineering/autotune), [Warehouse performance guidelines](https://learn.microsoft.com/en-us/fabric/data-warehouse/guidelines-warehouse-performance), [Copy activity performance](https://learn.microsoft.com/en-us/fabric/data-factory/copy-activity-performance-and-scalability-guide).
+
+*Eventstream throughput*
+
+- Levels: Low is under 10 MB/s, Medium is 10 to 100 MB/s, High is over 100 MB/s.
+- An Azure Event Hubs source with fewer than four partitions is limited by its partition count, whatever the level. One partition gives about 9 MB/s.
+- To change the level, deactivate the nodes that support pause and resume, update, then reactivate them. Nodes that can't be deactivated, such as a custom endpoint, don't block the change.
+- Retention defaults to one day and the maximum is 90 days.
+
+*Spark autotune (preview, off by default)*
+
+- It tunes three settings only: `spark.sql.shuffle.partitions` (default 200), `spark.sql.autoBroadcastJoinThreshold` (default 10 MB) and `spark.sql.files.maxPartitionBytes` (default 128 MB). It doesn't tune executor memory or cores.
+- It is compatible with Runtime 1.2 only, and doesn't run in high concurrency mode or with a private endpoint.
+- It skips queries shorter than 15 seconds and needs about 20 to 25 runs to settle. Enable it with `spark.ms.autotune.enabled=true`.
+
+*Warehouse*
+
+- V-Order is on by default in every warehouse. Once disabled on a warehouse it can't be re-enabled, so disable it only on a write-only staging warehouse. For Spark in a new workspace the default is the opposite: off.
+- A nonzero `data_scanned_remote_storage_mb` in `queryinsights.exec_requests_history` indicates a cold start. Don't judge a query by its first run.
+- Top CPU and who ran it: `exec_requests_history` (`allocated_cpu_time_ms`, `login_name`). Slowest by elapsed time: `long_running_queries`.
+
+*Copy activity*
+
+- Lower the Degree of copy parallelism to reduce load on the source or destination machine. Intelligent throughput optimization (Auto, Standard, Balanced, Maximum, or 4 to 256) controls how much compute the service uses.
+
 ### Optimize query performance
 
 - T-SQL: select only the columns you need, filter before joins, match data types on join and filter columns, and check `queryinsights.long_running_queries`.
@@ -844,6 +980,10 @@ Set a profile with `spark.fabric.resourceProfile` in an Environment, or at runti
 - Lakehouse via SQL endpoint: run OPTIMIZE after big changes, and keep data in the same region as the capacity.
 
 Sources: [V-Order and Delta optimization](https://learn.microsoft.com/en-us/fabric/data-engineering/delta-optimization-and-v-order) · [Table maintenance](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-table-maintenance) · [Z-Order](https://learn.microsoft.com/en-us/fabric/data-engineering/delta-lake-z-order) · [Resource profiles](https://learn.microsoft.com/en-us/fabric/data-engineering/configure-resource-profile-configurations) · [Native execution engine](https://learn.microsoft.com/en-us/fabric/data-engineering/native-execution-engine-overview) · [NEE UDFs and complex types](https://learn.microsoft.com/en-us/fabric/data-engineering/native-execution-engine-udf-complex-types) · [Warehouse performance guidelines](https://learn.microsoft.com/en-us/fabric/data-warehouse/guidelines-warehouse-performance) · [Pipeline limits](https://learn.microsoft.com/en-us/fabric/data-factory/pipeline-limitations) · [Copy performance](https://learn.microsoft.com/en-us/fabric/data-factory/copy-performance-sql-databases) · [Eventstream capacity consumption](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/monitor-capacity-consumption) · [Data policies](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-policies) · [KQL best practices](https://learn.microsoft.com/en-us/kusto/query/best-practices) · [Cross-workload table maintenance](https://learn.microsoft.com/en-us/fabric/fundamentals/table-maintenance-optimization)
+
+# Reference and practice
+
+These parts sit outside the three domains: Part 13 (semantic models) and Part 14 (quiz review: facts I missed). The hands-on tutorials and the accuracy notes follow them.
 
 ## Part 13 — Semantic models
 
@@ -868,11 +1008,52 @@ A semantic model (formerly a dataset) is the Power BI data model that reports an
 
 A Direct Lake model over a warehouse with row-level or column-level security falls back to DirectQuery so the security is enforced.
 
+**Memory picture: the restaurant.** Lakehouse and warehouse tables are the pantry (raw ingredients). The semantic model is the menu and recipe book: named dishes (measures), how ingredients combine (relationships), and who may see which dishes (row-level security). Reports are the diners, and they order from the menu, never from the pantry. A "data model" is the general design idea (tables and keys, usually a star schema). The semantic model is the Fabric item that carries that design plus the business meaning on top. This contrast is a study aid, not a Learn definition.
+
+**Direct Lake has two flavors, and fallback differs.** From [Direct Lake overview](https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview) and [Semantic models in Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/data-warehouse/semantic-models), opened Nov 16, 2026.
+
+- **Direct Lake on SQL** (through the SQL analytics endpoint): falls back to DirectQuery when it can't load straight from a Delta table, such as a SQL view or a warehouse that uses SQL-based granular access control, and when guardrails are exceeded with fallback enabled (the refresh succeeds with a warning and queries run slower). The model's **Direct Lake behavior** property controls it.
+- **Direct Lake on OneLake**: "doesn't fall back to DirectQuery mode via the SQL analytics endpoint." If guardrails are exceeded, the refresh fails and the model can't be queried until the Delta tables are optimized to fit the limits.
+- The sentence above about falling back to DirectQuery to enforce row-level or column-level security describes Direct Lake on SQL.
+
+**Default semantic models.** Since September 5, 2025, a default semantic model is no longer created automatically when a warehouse, lakehouse or mirrored item is created. By November 30, 2025, existing default models were disconnected from their item and became independent semantic models. New semantic models on a warehouse or SQL analytics endpoint use Direct Lake mode.
+
 ### Does a semantic model persist data?
 
 - Import: yes. The model keeps a full cached copy.
 - Direct Lake: no full copy. The model holds metadata and references to the latest Delta files, and data is loaded into memory as queries need it.
 - DirectQuery: no. Nothing is stored.
+
+**Import: disk vs memory.** From [Semantic model modes in the Power BI service](https://learn.microsoft.com/en-us/power-bi/connect-data/service-dataset-modes-understand) and [Large semantic models](https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-large-models), opened Nov 16, 2026.
+
+- Imported data is **stored on disk in the semantic model itself**: "imported data is always stored to disk. When queried or refreshed, the data must be fully loaded into memory of the Power BI capacity." A refresh compresses the data and stores it with the VertiPaq engine.
+- So memory is a loading step, not the home of the data. The source tables are **not** the fallback copy: the model has its own stored copy and is only as current as its latest refresh. A full refresh removes all data from all tables and reloads it from the source.
+- An Import model is never partially loaded: the entire model must be in memory before it can be queried. Direct Lake loads only the data a query needs.
+- Premium evicts inactive models from memory to make room for others, and an evicted model is reloaded when someone queries it, which can cause a noticeable delay. Large semantic models page in only the relevant data on demand.
+- Learn doesn't state what happens after a capacity restart, or where an evicted model is reloaded from. Reloading from the model's own stored copy is my inference from "always stored to disk".
+
+**Keeping a semantic model current.** From [Data refresh in Power BI](https://learn.microsoft.com/en-us/power-bi/connect-data/refresh-data) and [How Direct Lake works](https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-how-it-works), opened Nov 16, 2026.
+
+- **Import is a point-in-time copy.** Learn: "Because Power BI copies the data, you must refresh the semantic model to fetch changes from the underlying data sources." Changes in the source do not appear until a refresh. Learn doesn't say whether you can edit data values inside the model; the page covers schema sync only.
+- **Ways to refresh an Import model:** scheduled refresh (up to 8 a day on shared capacity, up to 48 a day on Premium, PPU or Fabric capacity), **Refresh now** on the model settings page (on-demand refreshes don't count toward the scheduled limit), the REST API, Power Automate, and the XMLA endpoint (including a single partition). The pipeline Semantic model refresh activity is covered in Part 10.
+- **DirectQuery** has no refresh: each query goes to the source. Automatic page refresh works at report page level and is only available for DirectQuery sources.
+- **Direct Lake updates itself by default.** The model-level setting **Keep your Direct Lake data up to date** (Refresh section of the model settings) is on by default. When Delta table changes are detected, the model runs a framing operation, only on the tables that changed. Turn it off when an ETL job must finish before consumers see new data. Then refresh manually, on a schedule, or through the REST API or TOM.
+- Power BI suspends automatic updates after a non-recoverable error, such as a refresh that keeps failing, and resumes them after the next on-demand refresh finishes without errors.
+- Learn doesn't say how changes are detected or how soon framing starts after a change.
+
+**Choosing Direct Lake, Import or DirectQuery.** From [Direct Lake overview](https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview), opened Nov 16, 2026.
+
+| If the situation is | Choose | Why (Learn) |
+| --- | --- | --- |
+| Large data already in OneLake Delta tables, IT-driven, lake-centric | **Direct Lake** | Fast loading into memory, frequent fast refresh, efficient capacity use, fast queries. Useful when copying everything into Import is impractical. |
+| Self-service analyst who needs agility, or can't change the lakehouse, or needs Power Query prep | **Import** | Import supports data preparation with Power Query defined in the model. Learn: it "often works well for a self-service analyst". |
+| Data isn't a Delta table in OneLake, or you need low latency on a source that supports DirectQuery | **DirectQuery** | It works with any connector that supports DirectQuery and reduces data latency without refresh. The source must handle the query load. |
+| Both large lake data and some analyst-added tables | **Composite** (Import and Direct Lake tables together) | Learn: it "offers the scale and flexibility needed for many BI scenarios". |
+
+- Direct Lake needs a **Fabric capacity** (SKU). Import and DirectQuery work with any Fabric or Power BI license. Direct Lake data sources are Fabric items whose OneLake storage resolves to valid Delta tables, natively or through shortcuts.
+- Direct Lake on OneLake can't connect to SQL analytics endpoint views, can't use SQL analytics endpoint object-level or column-level security, and has no hybrid tables or user-defined aggregations.
+- Why Direct Lake is normally faster than DirectQuery: Direct Lake and Import queries run in the model's VertiPaq engine, while DirectQuery sends each query to the source, and source databases "aren't typically optimized for heavy query load coming from reports".
+- Learn recommends a proof of concept before committing to Direct Lake. It gives no numeric size thresholds and no ranking of the modes beyond "normally outperform".
 
 Sources: [Semantic models in Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/data-warehouse/semantic-models) · [Direct Lake overview](https://learn.microsoft.com/en-us/fabric/get-started/direct-lake-overview) · [Semantic models in Power BI](https://learn.microsoft.com/en-us/power-bi/connect-data/service-datasets-understand) · [Column-level security in Fabric Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security)
 
@@ -914,6 +1095,24 @@ Across eight practice sets on Nov 2 and 3, 2026, 40 of 55 answers were correct. 
 | Alerts | Free schedule failure emails fire for scheduled runs only, and recipients must be Entra users, groups or B2B guests (no direct external addresses). Activator alert rules are paid and need workspace monitoring. Configuring failure emails needs Contributor or Write on the item. | Part 10 |
 | Ingestion | Copy job watermark incremental copy captures inserts and updates, and a datetime column is a supported watermark. Default update method is append, which keeps history and duplicates updated rows. Merge uses the primary key. CDC needs CDC enabled on the source and is Preview. A failed run doesn't change the Copy job's state: the next run resumes from the last successful run. | Part 3 |
 | Security | Creating a shortcut needs Write on the item where it is created plus Read on the target; Admin, Member and Contributor also need target Read. T-SQL in Delegated identity mode reads a same-tenant OneLake shortcut as the item owner; User's identity mode uses the caller. | Part 8 |
+| Ingestion | Dataflow Gen2 incremental refresh replaces changed buckets inside a fixed look-back window. It needs the replace update method and a fixed schema, and OPTIMIZE isn't supported on that lakehouse table. Limits are 50 buckets per query and 150 per dataflow. A forward-moving watermark is the Copy job model. | Part 3 |
+| Streaming | An eventstream SQL operator windows on arrival time unless the query says TIMESTAMP BY a field. A requirement to use the device's own timestamp means TIMESTAMP BY. A SQL operator also needs new destination nodes. | Part 6 |
+| Streaming | Eventstream no-code operators: Union combines streams that share fields, Expand makes one row per array element, Join pairs two streams on a condition, Manage fields only adds, removes, renames or retypes fields. | Part 6 |
+| Ingestion | Dataflow Gen2 never recreates an existing table it didn't create if you delete it. KQL database and Azure Data Explorer destinations don't support replace. Automatic settings cover Lakehouse, Azure SQL Database and Snowflake, not Warehouse. | Part 3 |
+| Optimize | Autotune tunes only three Spark settings, runs only on Runtime 1.2, and not in high concurrency mode. Warehouse V-Order can't be re-enabled once disabled. An eventstream's throughput level can't beat an Event Hubs source with fewer than four partitions. | Part 12 |
+| Errors | Warehouse error 24556 or 24706: write conflicts are detected at table level even when the rows differ. Fix by not running UPDATE, DELETE or MERGE concurrently on one table, or retry with backoff. Distributed transactions aren't supported and isolation-level changes are ignored. | Part 11 |
+| Alerts | Missed twice: free schedule failure emails cover failures only. An alert on Succeeded or Started needs an Activator rule, which needs workspace monitoring. | Part 10 |
+| Governance | Missed twice: a label never flows from a Power BI item to a Fabric item. Memory aid: labels follow the data downstream, and a lakehouse sits upstream of a semantic model. An autogenerated SQL analytics endpoint takes its parent lakehouse's label. A .csv or .txt export carries no protection. Mandatory labeling isn't enforced for lakehouses, pipelines or warehouses. | Part 8 |
+| Security | The default() mask shows a number as 0, a string as XXXX and a date as 1900-01-01. A range filter in WHERE still returns the matching rows, so the real value can be inferred; combine masking with column-level and row-level security. | Part 8 |
+| Security | Connecting a workspace to a Git repository is Admin only. A Viewer can read lakehouse and warehouse data with T-SQL (ReadData) but not through Spark or OneLake APIs (ReadAll). | Part 8 |
+| Workspace settings | Two similar names. Customize compute configurations for items (workspace Admin, Pool tab) lets an environment set driver and executor size per item. Customized workspace pools (capacity admin, on by default) allows custom pools at all. A domain contributor assigns their own workspaces from workspace settings and has no Domains tab; a domain admin works in the admin portal. | Part 2 |
+| Security | Column-level security doesn't hide a column, it denies it. SELECT \* fails with Msg 230 (SELECT permission denied on the column); the user must name only the granted columns. Masking is the feature that returns rows with altered values. | Part 8 |
+| Security | With OneLake security on, ReadAll gives data access only through the DefaultReader role. Delete DefaultReader and ReadAll users lose access until added to another role. Admin, Member and Contributor keep access through their Write permission. Across roles, row filters combine with OR; column rules combine as a union except at the SQL analytics endpoint, where any role that hides a column blocks it. | Part 8 |
+| Lifecycle | Deployment rules by item: a notebook supports only a default lakehouse rule. Data source and parameter rules are for semantic models and Dataflow Gen1. Rules are created in the target stage by the item owner, never in the development stage, and apply from the next deployment. | Part 9 |
+| Governance | Endorsement: anyone with write permission can promote. Only admin-specified users can certify or mark master data. Master data applies only to items that contain data, such as lakehouses and semantic models. Dashboards can't be promoted or certified. | Part 8 |
+| Mock 1: ingestion | An Azure SQL database can't be mirrored while CDC is enabled on it, and only a writable primary can be mirrored. Mirroring types: database mirroring copies the data, metadata mirroring leaves it in the source (Snowflake, Databricks), open mirroring means writing your own application. COPY INTO file types are CSV, JSONL and PARQUET only. In a lakehouse, shortcuts go at the top level of Tables, or at any level of Files. | Part 3 |
+| Mock 1: missed again | Three facts missed a second time. Dataflow Gen2 incremental refresh needs replace AND a fixed schema. A KQL update policy with a 0s soft-delete on the source must be transactional. Deleting DefaultReader removes access for ReadAll users, while Admin, Member and Contributor keep it. | Parts 3, 6, 8 |
+| Mock 1: monitor and optimize | Throttling by future capacity used: up to 10 minutes nothing, 10 to 60 minutes a 20-second delay on interactive requests, 60 minutes to 24 hours interactive rejected, over 24 hours everything rejected. HTTP 429 is an API rate limit (back off and retry); HTTP 430 is Spark capacity (Autoscale Billing). The native execution engine falls back for JSON, XML and structured streaming. A default domain never overrides a workspace's existing domain. | Parts 11, 12 |
 
 **Numbers to memorize**
 
@@ -1006,6 +1205,16 @@ Microsoft recommends `true` in production. A bad query can block ingestion into 
 
 **Staging-table pattern (drop the raw data).** Set the source table's soft-delete period to `0s` and make the update policy transactional. The raw data isn't queryable or kept in durable storage. A policy that reads from a `0s` soft-delete table must be transactional.
 
+**Why the staging pattern pairs `0s` soft-delete with a transactional policy.** From [Update policy overview](https://learn.microsoft.com/en-us/kusto/management/update-policy?view=microsoft-fabric) and [Retention policy](https://learn.microsoft.com/en-us/kusto/management/retention-policy?view=microsoft-fabric), opened Nov 15, 2026.
+
+- **Soft-delete period here is a retention setting**, not the soft-delete command or a deleted flag. It is how long data is guaranteed to stay queryable after ingestion. Learn: with a period of `0`, "the ingested data won't be committed to the source table, avoiding the need to persist the data."
+- **Transactional** controls what happens when the update policy fails. `false` (default): the data lands only in the source table and the ingestion still succeeds, so the target silently misses rows. `true`: the data goes to neither table and the ingestion fails, so you can retry.
+- Put together: with `0s` the source keeps nothing, so a non-transactional failure would leave the rows in neither table while the ingestion looks successful. Learn states the rule ("any update policy referencing this table must be transactional") and that transactional policies avoid losing target data on transient failures. The combined "rows would be gone" reasoning is my reading, not a quoted sentence.
+- With `0s`, `Recoverability` can only be `Disabled`. Learn names the staging use: ingest into a table, transform with a transactional update policy, redirect the output to another table.
+- Q15 in one line: parse at ingestion means an update policy on the target `Events`; raw rows not kept means `0s` on `RawJson`; no loss on a transient failure means `IsTransactional: true`. A materialized view aggregates and doesn't fit.
+
+**"Source table" in an update policy is not Event Hubs.** The outside feed (Event Hubs, an eventstream, a file) is just where data comes from. Learn's `Source` property is "the name of the table that triggers invocation of the update policy". So an Eventhouse update policy involves two tables: the table that data is ingested into first (the policy's source, `RawJson` in Q15) and the table the policy writes to (the target, `Events`). The policy is defined on the **target** table and names the source. You control each table with its own command: the retention (soft-delete) policy on the source table, `.alter-merge table RawJson policy retention softdelete = 0s`, and the update policy on the target table, with `Source`, `Query` and `IsTransactional` in its JSON. Flow: Event Hubs, then the source table, then the policy query, then the target table.
+
 ```kusto
 .alter-merge table RawLogs policy retention softdelete = 0s
 ```
@@ -1018,6 +1227,14 @@ Microsoft recommends `true` in production. A bad query can block ingestion into 
 - A `0s` soft-delete source requires a transactional policy.
 - Same database only. Cross-database lookups need `ManagedIdentity` with `viewer`.
 - Update policy and materialized view solve different problems. An update policy transforms and routes rows at ingestion into another table. A materialized view keeps an always-fresh aggregation, and `materialized_view("Name")` reads only the already-processed part for speed.
+
+**Materialized view: query by name vs `materialized_view()`.** From [Materialized views overview](https://learn.microsoft.com/en-us/kusto/management/materialized-views/materialized-view-overview?view=microsoft-fabric) and [materialized\_view() function](https://learn.microsoft.com/en-us/kusto/query/materialized-view-function?view=microsoft-fabric), opened Nov 15, 2026.
+
+- A view has two parts: the **materialized part** (aggregated rows already processed, one row per group-by combination) and the **delta** (rows newly ingested into the source table that aren't processed yet).
+- **Query by name** (`ViewName`): combines the materialized part with the delta at query time. The result is always up to date, but it may not perform best, because the delta is aggregated at query time. Speed depends on the view's age and your filters.
+- **`materialized_view("ViewName")`**: reads the materialized part only. Always faster than the full view, but not guaranteed to be the most up-to-date. Learn says to use it "when applicable", for example telemetry dashboards that tolerate some staleness.
+- **`materialized_view("ViewName", 10m)`**: the optional `max_age` is the maximum staleness you accept. If the last materialization is newer than now minus `max_age`, you get the materialized part only. Otherwise you get the entire view, identical to querying by name (slower).
+- Exam shortcut: need the newest rows, query by name. Fast dashboard where slight lag is fine, `materialized_view()`. Fast but with a staleness cap, `materialized_view()` with `max_age`.
 
 Sources: [Update policy overview](https://learn.microsoft.com/en-us/kusto/management/update-policy?view=microsoft-fabric), [Materialized views overview](https://learn.microsoft.com/en-us/kusto/management/materialized-views/materialized-view-overview?view=microsoft-fabric).
 
@@ -1145,6 +1362,62 @@ Sources: [Deployment process](https://learn.microsoft.com/en-us/fabric/cicd/depl
 - Smoothing doesn't apply when Autoscale Billing for Spark is enabled.
 
 Sources: [Delta update and merge](https://docs.delta.io/latest/delta-update.html), [Warehouse ingestion](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data), [Warehouse table clones](https://learn.microsoft.com/en-us/fabric/data-warehouse/clone-table), [Fabric capacity throttling](https://learn.microsoft.com/en-us/fabric/enterprise/throttling).
+
+### Reading section: code patterns to recognise
+
+Exam questions show short code and ask which line meets a requirement. You need to recognise these patterns, not write them from memory. Sources opened Nov 12, 2026.
+
+**The same window has different names in each engine.**
+
+| Requirement | Eventstream SQL operator | Spark structured streaming | KQL |
+| --- | --- | --- | --- |
+| Fixed, non-overlapping window | `TumblingWindow(minute, 5)` | `window("event_time", "5 minutes")` | `bin(Timestamp, 5m)` |
+| Last 10 minutes, a result every minute (overlapping) | `HoppingWindow(minute, 10, 1)` | `window("event_time", "10 minutes", "1 minute")`. Spark calls this a sliding window | Not covered here |
+| Group events that arrive close together | `SessionWindow(...)` with a timeout and a maximum duration | `session_window("event_time", "15 minutes")` | Not covered here |
+
+In Spark the order is window size, then slide. In the SQL operator it is unit, size, then hop. Spark session-window aggregations don't support `update` output mode.
+
+**Spark streaming: late data and duplicates.**
+
+```python
+# Allow events up to 10 minutes late, by the event_time column
+events.withWatermark("event_time", "10 minutes")
+
+# A: no watermark. Spark keeps every event_id for the life of the query (unbounded state)
+events.dropDuplicates(["event_id"])
+
+# B: state is evicted only because the watermark column is in the key.
+#    A retry with a different event_time is NOT treated as a duplicate
+events.withWatermark("event_time", "10 minutes").dropDuplicates(["event_id", "event_time"])
+
+# C: event_id alone defines a duplicate, and state is kept only for the watermark horizon
+events.withWatermark("event_time", "10 minutes").dropDuplicatesWithinWatermark(["event_id"])
+```
+
+Learn doesn't say late rows are always dropped: data older than the watermark might still be processed, with no guarantee.
+
+**Warehouse: COPY INTO.**
+
+```sql
+-- Parquet, wildcard, caller's Entra identity
+COPY INTO dbo.Sales
+FROM 'https://myaccount.blob.core.windows.net/mycontainer/folder1/*.parquet'
+WITH (FILE_TYPE = 'PARQUET');
+
+-- CSV from OneLake, skip the header row
+COPY INTO dbo.Sales
+FROM 'https://onelake.dfs.fabric.microsoft.com/<workspaceId>/<lakehouseId>/Files/*.csv'
+WITH (FILE_TYPE = 'CSV', FIRSTROW = 2);
+```
+
+- `FILE_TYPE` is CSV, JSONL or PARQUET. `FIRSTROW = 2` skips a header.
+- `MAXERRORS` (default 0) is the number of rejected rows allowed, and `ERRORFILE` is where rejected rows go. Both are for CSV and JSONL; `MAXERRORS` can't be used with Parquet.
+- Parquet column names must match the table exactly; a mismatch loads NULL.
+- Cross-item load in one statement: `CREATE TABLE dbo.Orders AS SELECT * FROM SilverLH.dbo.Orders;` The source must be in the same workspace.
+
+**KQL update policy.** The full command and its properties are in the section "Reading section: KQL update policies" above. The pattern to recognise: the policy is defined on the target table, `Source` names the table that triggers it, and `IsTransactional: true` plus a `0s` soft-delete on the source means raw rows are never kept and a failure loses nothing.
+
+Sources: [Stateful structured streaming](https://learn.microsoft.com/en-us/fabric/data-engineering/structured-streaming-stateful-processing) · [COPY INTO](https://learn.microsoft.com/en-us/sql/t-sql/statements/copy-into-transact-sql?view=fabric) · [Ingest data into the Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/ingest-data) · [SQL operator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/process-events-using-sql-code-editor) · [Update policy](https://learn.microsoft.com/en-us/kusto/management/update-policy?view=microsoft-fabric)
 
 ## Hands-on tutorials
 
