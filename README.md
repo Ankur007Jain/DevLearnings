@@ -17,6 +17,7 @@ Personal reference notes — things I learned while building, organized by topic
 | [backend/](backend/) | FastAPI, Python, auth patterns |
 | [general/](general/) | Cross-stack patterns, tooling, AI workflow |
 | [templates/](templates/) | Copy-paste starter files for new projects |
+| [DP700-Study-Pack/](DP700-Study-Pack/) | Free DP-700 (Fabric Data Engineer) study pack: reading pack, 66-question bank, three mocks with keys |
 
 ---
 

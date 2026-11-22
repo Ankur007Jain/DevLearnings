@@ -1,6 +1,6 @@
 # DP-700 Mock 2 — 45 questions
 
-Rules: 100 minutes total, 3 parts of 15. One best answer per question. Answer by number in chat (e.g. "1 C, 2 A ..."). Send Part 1, Part 2 and Part 3 answers; I grade only after Part 3 is in. No notes, no docs.
+Rules: 100 minutes total, 3 parts of 15. One best answer per question. No notes, no docs. Write down your answers, then check them against [the answer key](mock-2-answers.md). All companies and scenarios are fictional, and none of the questions come from the real exam. Facts were checked against Microsoft Learn on Nov 16, 2026.
 Domains: Part 1 = Implement and manage an analytics solution. Part 2 = Ingest and transform data. Part 3 = Monitor and optimize.
 
 ---

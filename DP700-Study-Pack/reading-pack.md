@@ -1,10 +1,12 @@
 # DP-700 Reading Pack
 
-Oct 11, 2026 · @AJ
+By **Ankur Jain**, built with Claude (Anthropic) as study coach · October–November 2026
+
+> Not affiliated with or endorsed by Microsoft. Contains no real exam questions. Every fact comes from public Microsoft Learn pages, linked in each part. Fabric changes often, so check the linked page before relying on a detail.
 
 ## How to use this pack
 
-Your Nov 17 exam uses the skills outline dated **October 19, 2026**. This pack covers every bullet in that outline, grouped under the three exam domains. Part numbers are fixed labels that the Update log and the Part 14 table refer to, so they are not sequential inside a domain. Every fact comes from a Microsoft Learn page opened on Oct 11, 2026, and each part links its sources.
+This pack follows the DP-700 skills outline dated **October 19, 2026** (the study guide page was last updated Oct 30, 2026, with no change notes). It covers every bullet in that outline, grouped under the three exam domains. Part numbers are fixed labels that the Update log and the Part 14 table refer to, so they are not sequential inside a domain. Facts come from Microsoft Learn pages opened between Oct 11 and Nov 16, 2026, and each part links its sources.
 
 | Item | Detail |
 | --- | --- |
@@ -32,29 +34,29 @@ Your Nov 17 exam uses the skills outline dated **October 19, 2026**. This pack c
 | 11 | Identify and resolve errors | Monitor and optimize |
 | 12 | Optimize performance | Monitor and optimize |
 
-After each part, run the matching lab in **Hands-on tutorials** near the end. The labs stay in build order (Part 1 to Part 12) because later labs extend earlier ones. The **Accuracy notes** section lists places where your Study Hub disagrees with current docs; read it before your next mock.
+After each part, run the matching lab in **Hands-on tutorials** near the end. The labs stay in build order (Part 1 to Part 12) because later labs extend earlier ones. The **Accuracy notes** section lists claims common in older DP-700 notes that current docs contradict.
 
-**Update log (newest first).** Graded misses and Learn-verified facts get added here after each answered coach question.
+**Change log (oldest first).** Every addition made during study, with where it went and why.
 
 | Date | Where | What changed |
 | --- | --- | --- |
-| Nov 6, 2026 | Header, Parts 8, 11, 12, 14 | Exam date corrected to Nov 17. Added the item-permissions table (Part 8), a Copy activity error table (Part 11), a flag on two Learn pages that disagree about the activity timeout (Parts 11 and 12), and the facts missed in today's coach session (Part 14). |
+| Nov 6, 2026 | Header, Parts 8, 11, 12, 14 | Added the item-permissions table (Part 8), a Copy activity error table (Part 11), a flag on two Learn pages that disagree about the activity timeout (Parts 11 and 12), and the facts missed in today's practice session (Part 14). |
 | Nov 6, 2026 | Study guide check | The study guide page showed "last updated 2026-10-30" with no change notes. The Oct 19 outline mapping in this pack has not been re-diffed against it. |
-| Nov 6, 2026 | Parts 8, 14 | Added a table of where sensitivity labels carry and where they don't, plus the two statements missed in coach question 3. |
+| Nov 6, 2026 | Parts 8, 14 | Added a table of where sensitivity labels carry and where they don't, plus the two statements missed in practice question 3. |
 | Nov 6, 2026 | Parts 11, 14 | Added a table of Spark and notebook capacity and permission errors (HTTP 430, 429, ReadAll, 403, Capacity Not Active). |
 | Nov 7, 2026 | Parts 10, 14 | Added the Monitor hub job alerts comparison (free failure emails vs paid Activator rules) and three facts from case study 1. |
 | Nov 12, 2026 | Whole pack | Regrouped the chapters under the three exam domains. Part numbers are unchanged, so they are not sequential inside a domain. |
-| Nov 12, 2026 | Parts 3, 6, 14 | Added Dataflow Gen2 incremental refresh (Part 3) and the SQL operator's event-time rule and limits (Part 6), from coach questions 6 and 8. |
+| Nov 12, 2026 | Parts 3, 6, 14 | Added Dataflow Gen2 incremental refresh (Part 3) and the SQL operator's event-time rule and limits (Part 6), from practice questions 6 and 8. |
 | Nov 12, 2026 | Part 14 | Added a reading section on code patterns (window syntax per engine, Spark deduplication, COPY INTO) and two missed facts from questions 18 and 20. |
 | Nov 13, 2026 | Parts 12, 14 | Added optimization rules from practice (eventstream throughput, autotune, warehouse V-Order and cold start, copy parallelism) and three missed facts from questions 22 to 41. |
 | Nov 13, 2026 | Part 14 | Added four missed facts from the Implement and manage set (questions 42 to 51): labels, masking, roles, and two workspace-setting names. |
 | Nov 15, 2026 | Part 14 | Added four missed facts from the second Implement and manage set (questions 52 to 61): column-level security, DefaultReader, deployment rules, endorsement. |
 | Nov 15, 2026 | Part 14 | Added three rows of missed facts from full mock 1 (34 of 45). |
 | Nov 15, 2026 | Part 6 | Added a note on why the default streaming trigger creates tiny files, from a clarification question. |
-| Nov 15, 2026 | Part 6 | Added a note on what "topology" means in the SQL operator rule (new destination nodes), from coach question 6. |
-| Nov 15, 2026 | Part 3 | Added a compiled summary of Dataflow Gen2 update methods, fixed vs dynamic schema and incremental refresh, from coach question 8. |
+| Nov 15, 2026 | Part 6 | Added a note on what "topology" means in the SQL operator rule (new destination nodes), from practice question 6. |
+| Nov 15, 2026 | Part 3 | Added a compiled summary of Dataflow Gen2 update methods, fixed vs dynamic schema and incremental refresh, from practice question 8. |
 | Nov 15, 2026 | Part 6 | Added materialized view query by name vs materialized\_view() and the max\_age option. |
-| Nov 15, 2026 | Part 6 | Added why a 0s soft-delete source needs a transactional update policy, from coach question 15. |
+| Nov 15, 2026 | Part 6 | Added why a 0s soft-delete source needs a transactional update policy, from practice question 15. |
 | Nov 15, 2026 | Part 6 | Clarified that an update policy's source table is the ingestion table, not Event Hubs. |
 | Nov 16, 2026 | Part 6 | Added what a structured streaming job is, the Spark job definition retry policy and its 90-day lifetime limit. |
 | Nov 16, 2026 | Part 13 | Added a restaurant memory picture, Direct Lake on SQL vs on OneLake fallback, and the default semantic model change. |
@@ -62,6 +64,7 @@ After each part, run the matching lab in **Hands-on tutorials** near the end. Th
 | Nov 16, 2026 | Part 13 | Added how each semantic model mode stays current: Import refresh options and limits, Direct Lake automatic updates. |
 | Nov 16, 2026 | Part 13 | Added how to choose between Direct Lake, Import and DirectQuery. |
 | Nov 16, 2026 | Part 2 | Added a full explainer of pipeline expressions: @, @{ } and @@. |
+| Nov 17, 2026 | Part 14 | Added traps from full mocks 2 and 3, and prepared the pack for public release. |
 
 # Domain 1 — Implement and manage an analytics solution (30–35%)
 
@@ -708,7 +711,7 @@ Sources (Azure Stream Analytics query docs): [Windowing overview](https://learn.
 - **Retry policy** (Optimization tab on the job definition): restarts the job when it stops unexpectedly. Set a maximum number of attempts or **Allow unlimited attempts**, plus the time between attempts. Learn notes a **90-day lifetime limit** on the retry policy setup: after 90 days it stops working and the job is terminated, and you must restart it manually, which re-enables the policy.
 - Learn doesn't explain what the checkpoint stores, and gives no delivery guarantee such as exactly-once.
 
-**Why a stream fills a table with tiny files.** Structured streaming writes in micro-batches: it collects the events that have arrived, processes them, and writes them as new Parquet files. The trigger decides when the next micro-batch starts. With the default trigger, Spark starts the next one as soon as the previous one finishes, so each batch holds only a few events and still writes at least one file. Over days that becomes thousands of tiny files, and every read has to open them all. A `processingTime` trigger makes each batch bigger, and Optimized Write sizes the files without manual `repartition()` or `coalesce()`. In a question, "thousands of small files" plus "default trigger" is the clue to change the trigger. Clarified Nov 15, 2026, from coach question 5.
+**Why a stream fills a table with tiny files.** Structured streaming writes in micro-batches: it collects the events that have arrived, processes them, and writes them as new Parquet files. The trigger decides when the next micro-batch starts. With the default trigger, Spark starts the next one as soon as the previous one finishes, so each batch holds only a few events and still writes at least one file. Over days that becomes thousands of tiny files, and every read has to open them all. A `processingTime` trigger makes each batch bigger, and Optimized Write sizes the files without manual `repartition()` or `coalesce()`. In a question, "thousands of small files" plus "default trigger" is the clue to change the trigger. Clarified Nov 15, 2026, from practice question 5.
 
 ### Eventhouse and KQL databases
 
@@ -983,7 +986,7 @@ Sources: [V-Order and Delta optimization](https://learn.microsoft.com/en-us/fabr
 
 # Reference and practice
 
-These parts sit outside the three domains: Part 13 (semantic models) and Part 14 (quiz review: facts I missed). The hands-on tutorials and the accuracy notes follow them.
+These parts sit outside the three domains: Part 13 (semantic models) and Part 14 (common traps from practice questions). The hands-on tutorials and the accuracy notes follow them.
 
 ## Part 13 — Semantic models
 
@@ -1057,9 +1060,9 @@ A Direct Lake model over a warehouse with row-level or column-level security fal
 
 Sources: [Semantic models in Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/data-warehouse/semantic-models) · [Direct Lake overview](https://learn.microsoft.com/en-us/fabric/get-started/direct-lake-overview) · [Semantic models in Power BI](https://learn.microsoft.com/en-us/power-bi/connect-data/service-datasets-understand) · [Column-level security in Fabric Warehouse](https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security)
 
-## Part 14 — Quiz review: facts I missed
+## Part 14 — Common traps from practice questions
 
-Across eight practice sets on Nov 2 and 3, 2026, 40 of 55 answers were correct. Most misses were exceptions to a general rule, so review these before the exam.
+Each row is a fact that a practice answer got wrong during study. Most are exceptions to a general rule, so review these before the exam.
 
 | Area | The fact | See |
 | --- | --- | --- |
@@ -1078,7 +1081,7 @@ Across eight practice sets on Nov 2 and 3, 2026, 40 of 55 answers were correct. 
 | Delta | VACUUM keeps 7 days by default. Portal and API requests under 7 days fail unless spark.databricks.delta.retentionDurationCheck.enabled is false. | Part 12 |
 | Delta | Lakehouse maintenance (OPTIMIZE, VACUUM) works only on Delta tables, not legacy Parquet, ORC, AVRO or CSV tables. | Part 12 |
 
-**Added Nov 6, 2026: facts missed or confirmed in the coach session**
+**Added Nov 6, 2026: facts missed or confirmed in the practice session**
 
 | Area | The fact | See |
 | --- | --- | --- |
@@ -1113,6 +1116,17 @@ Across eight practice sets on Nov 2 and 3, 2026, 40 of 55 answers were correct. 
 | Mock 1: ingestion | An Azure SQL database can't be mirrored while CDC is enabled on it, and only a writable primary can be mirrored. Mirroring types: database mirroring copies the data, metadata mirroring leaves it in the source (Snowflake, Databricks), open mirroring means writing your own application. COPY INTO file types are CSV, JSONL and PARQUET only. In a lakehouse, shortcuts go at the top level of Tables, or at any level of Files. | Part 3 |
 | Mock 1: missed again | Three facts missed a second time. Dataflow Gen2 incremental refresh needs replace AND a fixed schema. A KQL update policy with a 0s soft-delete on the source must be transactional. Deleting DefaultReader removes access for ReadAll users, while Admin, Member and Contributor keep it. | Parts 3, 6, 8 |
 | Mock 1: monitor and optimize | Throttling by future capacity used: up to 10 minutes nothing, 10 to 60 minutes a 20-second delay on interactive requests, 60 minutes to 24 hours interactive rejected, over 24 hours everything rejected. HTTP 429 is an API rate limit (back off and retry); HTTP 430 is Spark capacity (Autoscale Billing). The native execution engine falls back for JSON, XML and structured streaming. A default domain never overrides a workspace's existing domain. | Parts 11, 12 |
+| Mock 2: security | Trusted workspace access lets supported items such as pipelines reach a firewall-protected ADLS Gen2 account through the workspace identity. It needs an F SKU capacity and a resource instance rule created with an ARM template or PowerShell, and it doesn't cover Spark. Notebooks need a managed private endpoint, created by a workspace admin. | Part 8 |
+| Mock 2: ingestion | Dataflow Gen2 incremental refresh has two bucket limits: 50 per query and 150 per dataflow. Check the per-query limit first: one query with 60 buckets fails even though the dataflow total is under 150. Replace with a dynamic schema drops and recreates the destination table when the schema changes, which can lose relationships and measures; a fixed schema fails the publish instead. | Part 3 |
+| Mock 3: streaming | When an eventstream with a database CDC source is published, ingestion can start before routing, so part of the initial snapshot never reaches the destination. Clear **Activate ingestion** on the Lakehouse or Eventhouse destination before publishing, then activate it manually with **Custom time** set before the snapshot started. | Part 6 |
+| Mock 3: streaming | Event throughput levels: Low under 10 MB/s, Medium 10 to 100 MB/s, High over 100 MB/s. To change the level, deactivate every node that supports pause and resume, change it, then reactivate them. A custom endpoint source and an Eventhouse destination in Direct ingestion mode can't be deactivated and don't block the change. | Part 6 |
+| Mock 3: KQL | A materialized view created with `backfill=true` also covers rows already in the source table, and the command must be `.create async materialized-view`. Without backfill, the view covers only records ingested after it was created. To deduplicate continuously, use a materialized view with `take_any` or `arg_max` rather than deduplicating in every query. | Part 6 |
+| Mock 3: orchestration | Inside longer text, a pipeline expression must be wrapped in `@{...}`; a bare `@` in the middle of a string isn't evaluated. A Lookup with First row only returns `output.firstRow.<column>`; without it, rows come back in `output.value`. `@@` escapes a literal `@`. | Part 7 |
+| Mock 3: governance | A domain admin can't rename or delete the domain, or add or remove other domain admins. A domain admin can override the delegated certification setting and name the domain's own certifiers. | Part 2 |
+| Mock 3: warehouse | IDENTITY columns in a Fabric Warehouse are `bigint` only. Values are unique but not sequential, and gaps can occur. You can't add an IDENTITY column with ALTER TABLE; rebuild the table with CTAS or SELECT...INTO. | Part 4 |
+| Mock 3: transformation | `GROUP BY ROLLUP (Region, Territory)` returns each (Region, Territory) pair, a subtotal per Region and a grand total. `CUBE` also adds a total per Territory across regions. `GROUPING SETS` returns only the sets listed. | Part 5 |
+| Mock 3: monitoring | OneLake diagnostics (Workspace settings, OneLake tab) writes JSON events about OneLake access, including API calls and access through shortcuts from other workspaces, to a lakehouse in the same capacity. A workspace admin with Contributor on that lakehouse can turn it on, and the events can be made immutable. Purview audit logs need the Audit Logs role instead. | Part 10 |
+| Mock 3: missed again | Facts missed a second time: CDC must be disabled before an Azure SQL database can be mirrored; a default domain never overrides an existing domain assignment; sensitivity labels flow only downstream and never from a Power BI item to a Fabric item; autotune runs only on Runtime 1.2 and not in high concurrency mode. | Parts 2, 3, 8, 12 |
 
 **Numbers to memorize**
 
@@ -1503,11 +1517,11 @@ These are Microsoft's official Fabric labs and Learn tutorials, mapped to the pa
 
 Source: [Microsoft Fabric interactive exercises (DP-700 list)](https://microsoftlearning.github.io/mslearn-fabric/)
 
-## Accuracy notes — fix these in your Study Hub
+## Accuracy notes — common outdated claims
 
-Eight items in your Study Hub tracker and exam-trap notes are outdated or incomplete according to current Microsoft Learn docs. Fix them before your next mock.
+These eight claims appear in older DP-700 study notes but are outdated or incomplete according to current Microsoft Learn docs.
 
-| Study Hub says | Current docs say | Source |
+| Older notes say | Current docs say | Source |
 | --- | --- | --- |
 | queryinsights has **5** views | **6** views: exec\_requests\_history, exec\_sessions\_history, long\_running\_queries, frequently\_run\_queries, sql\_pool\_insights, external\_api\_call\_stats | [Query insights](https://learn.microsoft.com/en-us/fabric/data-warehouse/query-insights) |
 | Native execution engine does **not** support Python/Scala UDFs; switch to standard Spark | It now supports Python UDFs, Scala UDFs and complex types. Unsupported work (structured streaming, JSON, XML) falls back to standard Spark **automatically**, with no switch needed | [NEE overview](https://learn.microsoft.com/en-us/fabric/data-engineering/native-execution-engine-overview) |
@@ -1518,7 +1532,7 @@ Eight items in your Study Hub tracker and exam-trap notes are outdated or incomp
 | Column-level security = DENY SELECT on columns | Microsoft's CLS article uses `GRANT SELECT ON table(allowed columns)`. Querying a column you lack, even via `SELECT *`, returns error 230 | [Column-level security](https://learn.microsoft.com/en-us/fabric/data-warehouse/column-level-security) |
 | Monitor hub: 100 activities, 30 days | The current Job runs page (preview) doesn't state limits; older doc versions said 30 days and 100 activities per item. Know both | [Monitor hub job runs](https://learn.microsoft.com/en-us/fabric/admin/monitoring-hub-jobs) |
 
-Confirmed correct in your Study Hub: one OneLake per tenant; shortcut caching excludes ADLS; VACUUM default 7 days; deployment pipelines 2–10 stages; four DDM mask types; high concurrency limited to one user per session; the Oct 26 exam uses the Oct 19, 2026 outline.
+Still correct in current docs: one OneLake per tenant; shortcut caching excludes ADLS; VACUUM default 7 days; deployment pipelines 2–10 stages; four DDM mask types; high concurrency limited to one user per session.
 
 ### Who bypasses what
 

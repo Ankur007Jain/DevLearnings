@@ -1,4 +1,4 @@
-# DP-700 Mock 3 — 45 questions (final mock)
+# DP-700 Mock 3 — 45 questions
 
 **Rules**
 - 100 minutes total. No notes, no docs.
@@ -7,8 +7,8 @@
   - **One best answer:** one letter, for example `3 B`.
   - **Choose two:** both letters, for example `6 A,C`. Both must be right to score.
   - **Yes/No statements:** three answers in order, for example `12 Y,N,Y`. All three must be right to score.
-- Send your answers by number in chat. I grade only after question 45 is answered.
-- All companies and scenarios are fictional. Every fact was checked against Microsoft Learn pages opened on Nov 16, 2026.
+- Write down your answers, then check them against [the answer key](mock-3-answers.md).
+- All companies and scenarios are fictional, and none of the questions come from the real exam. Every fact was checked against Microsoft Learn pages opened on Nov 16, 2026.
 
 ---
 
