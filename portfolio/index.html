@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ankur | Data Engineer</title>
+<meta name="description" content="Data engineer with 15+ years in healthcare data. Microsoft Certified: Fabric Data Engineer Associate (DP-700).">
+<meta property="og:title" content="Ankur | Data Engineer">
+<meta property="og:description" content="Data engineer with 15+ years in healthcare data. Microsoft Certified: Fabric Data Engineer Associate (DP-700).">
+<meta property="og:type" content="profile">
+<!--
+  DRAFT FOR REVIEW.
+  Anything shown with a yellow highlight (class="ph") is a placeholder to fill in or confirm.
+  Search this file for "TODO" to find every one of them.
+-->
+<style>
+  :root {
+    --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+    --text: #0f172a; --muted: #475569; --faint: #64748b;
+    --accent: #0e7490; --accent-hover: #155e75; --accent-soft: #ecfeff;
+    --cert-1: #ecfeff; --cert-2: #f0fdf4; --cert-border: #a5f3fc;
+    --chip: #f1f5f9;
+    --ph-bg: #fef9c3; --ph-text: #713f12; --ph-border: #facc15;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b1220; --surface: #111a2e; --border: #1f2a44;
+      --text: #e2e8f0; --muted: #a5b4c8; --faint: #8a9ab3;
+      --accent: #22d3ee; --accent-hover: #67e8f9; --accent-soft: #0e2a35;
+      --cert-1: #0e2a35; --cert-2: #0f2a1f; --cert-border: #155e75;
+      --chip: #1a2540;
+      --ph-bg: #3a3108; --ph-text: #fde68a; --ph-border: #a16207;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: var(--accent); }
+  a:hover { color: var(--accent-hover); }
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .page { max-width: 860px; margin: 0 auto; padding: 48px 20px 40px; }
+
+  /* Placeholder marker: visible on purpose so nothing unconfirmed ships unnoticed */
+  .ph {
+    background: var(--ph-bg); color: var(--ph-text);
+    border: 1px dashed var(--ph-border); border-radius: 4px;
+    padding: 0 4px; font-style: normal;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 36px; }
+  .hero h1 { font-size: clamp(28px, 6vw, 38px); line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+  .hero .role { margin-top: 8px; font-size: 17px; color: var(--muted); font-weight: 500; }
+  .hero .summary { margin-top: 16px; max-width: 640px; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    text-decoration: none; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text);
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @media (prefers-color-scheme: dark) { .btn.primary { color: #06202a; } }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+  @media (prefers-color-scheme: dark) { .btn.primary:hover { color: #06202a; } }
+
+  /* Sections */
+  section { margin-top: 40px; }
+  h2 {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--faint); margin-bottom: 14px;
+  }
+
+  /* Certification */
+  .cert {
+    background: linear-gradient(135deg, var(--cert-1), var(--cert-2));
+    border: 1px solid var(--cert-border); border-radius: 12px; padding: 20px 22px;
+    display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap;
+  }
+  .cert .score { font-size: 40px; font-weight: 800; line-height: 1; color: var(--accent); }
+  .cert .score small { display: block; font-size: 12px; font-weight: 600; color: var(--faint); margin-top: 6px; letter-spacing: 0.02em; }
+  .cert .body { flex: 1 1 260px; }
+  .cert h3 { font-size: 17px; font-weight: 700; }
+  .cert p { margin-top: 6px; color: var(--muted); font-size: 15px; }
+
+  /* Cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; display: flex; flex-direction: column;
+  }
+  .card h3 { font-size: 16px; font-weight: 700; }
+  .card .tag { font-size: 12.5px; color: var(--faint); margin-top: 2px; }
+  .card p { margin-top: 10px; font-size: 14.5px; color: var(--muted); }
+  .card ul { margin-top: 10px; padding-left: 18px; font-size: 14.5px; color: var(--muted); }
+  .card li { margin-bottom: 4px; }
+  .card .more { margin-top: auto; padding-top: 14px; font-size: 14px; font-weight: 600; }
+  .card .more a { text-decoration: none; }
+  .card .more a:hover { text-decoration: underline; }
+  .stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .stack span { background: var(--chip); font-size: 12px; padding: 2px 8px; border-radius: 999px; color: var(--muted); }
+
+  /* Experience */
+  .jobs { list-style: none; border-left: 2px solid var(--border); padding-left: 18px; }
+  .jobs li { position: relative; padding-bottom: 18px; }
+  .jobs li:last-child { padding-bottom: 0; }
+  .jobs li::before {
+    content: ""; position: absolute; left: -24px; top: 8px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--accent);
+  }
+  .jobs .co { font-weight: 700; }
+  .jobs .meta { font-size: 14px; color: var(--faint); }
+  .jobs .what { font-size: 14.5px; color: var(--muted); margin-top: 2px; }
+
+  /* Skills */
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .skills div { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .skills strong { display: block; font-size: 13px; margin-bottom: 6px; }
+  .skills .stack { margin-top: 0; }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--faint); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between;
+  }
+
+  @media (max-width: 520px) {
+    .page { padding-top: 32px; }
+    .btn { flex: 1 1 calc(50% - 10px); justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <!-- TODO: confirm how you want your name shown (first name only, or full name). -->
+    <h1>Ankur <span class="ph">[Last name]</span></h1>
+    <p class="role">Senior Data Engineer at Evolent</p>
+    <p class="summary">
+      Data engineer with 15+ years in healthcare data. I build and modernize data pipelines
+      on SQL Server, SSIS, Azure Data Factory and Microsoft Fabric, and I build AI-powered apps on the side.
+    </p>
+    <nav class="links" aria-label="Contact and profiles">
+      <!-- TODO: replace the # with your LinkedIn URL. -->
+      <a class="btn primary" href="#"><span class="ph">LinkedIn URL</span></a>
+      <!-- TODO: replace with mailto:your-address, or remove if you'd rather not list email. -->
+      <a class="btn" href="#"><span class="ph">Email</span></a>
+      <a class="btn" href="https://github.com/Ankur007Jain">GitHub</a>
+      <!-- TODO: link a résumé PDF, or remove this button. -->
+      <a class="btn" href="#"><span class="ph">Résumé PDF</span></a>
+    </nav>
+  </header>
+
+  <section aria-labelledby="cert-h">
+    <h2 id="cert-h">Certification</h2>
+    <div class="cert">
+      <div class="score">745<small>DP-700 score</small></div>
+      <div class="body">
+        <h3>Microsoft Certified: Fabric Data Engineer Associate (DP-700)</h3>
+        <p>
+          Passed in November 2026 on my second attempt, up from 619 the first time.
+          I used AI as a study coach, with every fact checked against Microsoft Learn,
+          and turned my notes into a free study hub.
+        </p>
+        <p>
+          <!-- TODO: paste your Microsoft Learn credential URL (from your Learn profile > Credentials). -->
+          <a href="#"><span class="ph">Verify credential on Microsoft Learn</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="proj-h">
+    <h2 id="proj-h">Projects</h2>
+    <div class="grid">
+
+      <article class="card">
+        <h3>TravelAI</h3>
+        <p class="tag">AI trip-planning website</p>
+        <p>
+          A full-stack AI trip planner with maps and voice input, live on the web.
+        </p>
+        <!-- TODO: confirm how the five-agent pipeline relates to TravelAI (used to build it, or part of the app). -->
+        <p>
+          Multi-agent work: a five-agent Python orchestration pipeline (product, frontend,
+          backend, QA, DevOps) with async parallel execution and JSON checkpointing.
+        </p>
+        <div class="stack">
+          <span>Next.js</span><span>FastAPI</span><span>PostgreSQL</span><span>Anthropic API</span><span>Leaflet</span><span>Vercel</span><span>Railway</span>
+        </div>
+        <p class="more"><a href="https://mytravelai.info">mytravelai.info →</a></p>
+      </article>
+
+      <article class="card">
+        <h3>Finance Companion</h3>
+        <p class="tag">AI stock analysis app</p>
+        <p>
+          Tracks insider activity (SEC EDGAR and Finnhub data, including Form 4 cluster buying)
+          alongside Reddit and news sentiment, and flags when a stock's thesis breaks.
+          Gives confidence bands instead of yes/no verdicts, and logs past analyses.
+          Informational only, not investment advice.
+        </p>
+        <div class="stack">
+          <span>SEC EDGAR</span><span>Finnhub</span><span>NewsAPI</span><span>Reddit</span>
+        </div>
+        <!-- TODO: add a link (live app or repo), or delete this line. -->
+        <p class="more"><a href="#"><span class="ph">Link</span></a></p>
+      </article>
+
+      <article class="card">
+        <h3>DP-700 Study Hub</h3>
+        <p class="tag">Free exam prep, built while studying</p>
+        <p>
+          Interactive notes, KQL labs, mock exams and a progress tracker for the
+          Fabric Data Engineer Associate exam.
+        </p>
+        <div class="stack">
+          <span>HTML/CSS/JS</span><span>GitHub Pages</span><span>Microsoft Fabric</span><span>KQL</span>
+        </div>
+        <p class="more"><a href="../DP700/DP700_Tracker.html">Open the Study Hub →</a></p>
+      </article>
+
+      <article class="card">
+        <h3>Fabric modernization POC</h3>
+        <p class="tag">Data platform modernization</p>
+        <!-- TODO: confirm you're comfortable showing this work project publicly, and at this level of detail. -->
+        <p>
+          A proof of concept replacing SSIS packages with Microsoft Fabric pipelines for
+          Excel-to-SQL loads, using managed identity, with the aim of a simple file-upload
+          screen for non-technical users.
+        </p>
+        <div class="stack">
+          <span>Microsoft Fabric</span><span>SSIS</span><span>SQL Server</span><span>Managed identity</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Dev Learnings</h3>
+        <p class="tag">Public engineering notes</p>
+        <p>
+          Notes from building with AI agents: agentic loops, multi-agent orchestration,
+          prompt caching and context tiering, and a GitHub Actions QA pipeline.
+        </p>
+        <div class="stack">
+          <span>Claude API</span><span>GitHub Actions</span><span>Python</span>
+        </div>
+        <p class="more"><a href="../">Read the notes →</a></p>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="exp-h">
+    <h2 id="exp-h">Experience</h2>
+    <!-- TODO: fill in the years for each role, and optionally one line on what you did. -->
+    <ul class="jobs">
+      <li>
+        <div class="co">Evolent</div>
+        <div class="meta">Senior Data Engineer · <span class="ph">[Year]</span> to present</div>
+        <div class="what"><span class="ph">[One line on what you do]</span></div>
+      </li>
+      <li>
+        <div class="co">Cognizant</div>
+        <div class="meta">Client: Cigna · <span class="ph">[Years]</span></div>
+        <div class="what"><span class="ph">[Your role, one line on what you did]</span></div>
+      </li>
+      <li>
+        <div class="co">TCS</div>
+        <div class="meta">Clients: PNC, Citi · <span class="ph">[Years]</span></div>
+        <div class="what"><span class="ph">[Your role, one line on what you did]</span></div>
+      </li>
+      <li>
+        <div class="co">Tech Mahindra</div>
+        <div class="meta">Client: Citi · <span class="ph">[Years]</span></div>
+        <div class="what"><span class="ph">[Your role, one line on what you did]</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="skills-h">
+    <h2 id="skills-h">Skills</h2>
+    <div class="skills">
+      <div><strong>SQL and databases</strong><div class="stack"><span>T-SQL</span><span>SQL Server</span></div></div>
+      <div><strong>Pipelines and ETL</strong><div class="stack"><span>SSIS</span><span>Azure Data Factory</span><span>Microsoft Fabric</span></div></div>
+      <div><strong>Big data</strong><div class="stack"><span>PySpark</span><span>Delta Lake</span></div></div>
+      <div><strong>Apps and cloud</strong><div class="stack"><span>Python</span><span>Flask</span><span>Azure</span></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Ankur <span class="ph">[Last name]</span></span>
+    <span><a href="https://github.com/Ankur007Jain">GitHub</a> · <a href="#"><span class="ph">LinkedIn</span></a></span>
+  </footer>
+
+</main>
+</body>
+</html>
